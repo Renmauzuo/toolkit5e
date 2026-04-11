@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": ["dist"],
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,6 +11,9 @@
   "keywords": ["dnd", "dungeons-and-dragons", "5e", "monster", "scaling"],
   "author": "",
   "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@toolkit5e/base": "1.0.0"
   }
