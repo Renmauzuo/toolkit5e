@@ -1,0 +1,12 @@
+{
+  "name": "toolkit5e",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"No test specified\" && exit 0"
+  }
+}
