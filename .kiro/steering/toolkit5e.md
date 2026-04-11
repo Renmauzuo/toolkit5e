@@ -27,6 +27,18 @@ cd monster-scaler && npm run build
 
 The Gulp watch (`npm run watch` in monster-scaler) does not currently watch for toolkit5e package changes — it only watches the site's own `src/` files. Cross-project watch is a known gap to address later.
 
+## Publishing
+
+Packages are published to npm under the `@toolkit5e` org (public). Publish each package individually from its directory:
+
+```bash
+cd packages/base && npm publish
+cd packages/monster-scaler && npm publish
+cd packages/statblock && npm publish
+```
+
+`--workspaces` from the root is unreliable with npm 7 — publish per-package instead. The root `package.json` is `"private": true` to prevent accidentally publishing the workspace root.
+
 ## Package Contents
 
 ### @toolkit5e/base

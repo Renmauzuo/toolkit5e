@@ -5,9 +5,10 @@ import {
 } from '@toolkit5e/base';
 import type { Statblock, Trait, Attack, ChallengeRating } from '@toolkit5e/base';
 import type { MonsterTemplate, MonsterVariant, ScaleMonsterOptions, Benchmarks } from './types.js';
+import { monsterList } from './monsters.js';
 
 export type { MonsterTemplate, MonsterVariant, ScaleMonsterOptions };
-export { monsterList } from './monsters.js';
+export { monsterList };
 
 // ---------------------------------------------------------------------------
 // Scaling helpers
@@ -15,6 +16,12 @@ export { monsterList } from './monsters.js';
 
 /**
  * Finds the closest statblocks above and below the target CR that have all the requested stat(s).
+ * Used as the first step in extrapolation — call this, then pass the result to `extrapolateFromBenchmark`.
+ *
+ * @param stats A stat name or array of stat names to search for (supports flattened dot-path notation, e.g. `'attacks__bite__damageDice'`)
+ * @param targetCR The CR to find benchmarks around
+ * @param sourceStats The monster's stat entries keyed by CR
+ * @returns An object with `upper` and/or `lower` benchmark entries, or null if no matching entries exist
  */
 export function findBenchmarksForStat(
   stats: string | string[],
@@ -49,7 +56,15 @@ export function findBenchmarksForStat(
 
 /**
  * Extrapolates a stat value for the target CR from the given benchmarks.
- * @param linearExtrapolation If true uses an offset from average; if false uses a ratio.
+ *
+ * If only one benchmark direction exists, extrapolates from that alone.
+ * If both upper and lower benchmarks exist, takes a weighted average based on CR distance.
+ *
+ * @param stat The stat name to extrapolate
+ * @param targetCR The target CR
+ * @param benchmarks Result from `findBenchmarksForStat`
+ * @param linearExtrapolation If true, uses an additive offset from the CR average. If false, uses a multiplicative ratio.
+ *   Use linear for stats like size where proportional scaling doesn't make sense; use ratio for most numeric stats.
  */
 export function extrapolateFromBenchmark(
   stat: string,
@@ -148,7 +163,15 @@ export function hitPointsPerHitDie(statblock: { size: number; con: number }): nu
 }
 
 /**
- * Scales a damage roll (dice count + die size) to the target CR.
+ * Scales a damage roll to the target CR by extrapolating from benchmark entries.
+ * Finds the nearest stat entries that have both dice count and die size, extrapolates
+ * the average damage, then finds the best dice combination to match that average.
+ *
+ * @param damageDiceString Flattened path to the dice count stat (e.g. `'attacks__bite__damageDice'`)
+ * @param damageDieSizeString Flattened path to the die size stat (e.g. `'attacks__bite__damageDieSize'`)
+ * @param targetCR The target CR
+ * @param sourceStats The monster's stat entries keyed by CR
+ * @returns A `[diceCount, dieSize]` tuple
  */
 export function scaleDamageRoll(
   damageDiceString: string,
@@ -198,7 +221,13 @@ export function findDamageDice(targetDamage: number, preferredDieSize: number): 
 }
 
 /**
- * Generates a trait/proc/action object for the target CR, scaling damage, DC, and other attributes.
+ * Generates a fully resolved trait, proc, or action for the target CR.
+ * Looks up the base trait definition, applies any CR-specific overrides from the source stats,
+ * then scales damage, DC adjustments, durations, and conditions as needed.
+ *
+ * @param traitName The trait/proc/action key (e.g. `'packTactics'`, `'grappleBite'`)
+ * @param targetCR The CR to generate the trait for
+ * @param sourceStats The monster's stat entries keyed by CR
  */
 export function generateTrait(
   traitName: string,
@@ -261,19 +290,27 @@ export function generateTrait(
 // Main export
 // ---------------------------------------------------------------------------
 
+export type MonsterID = keyof typeof monsterList;
+
+// ---------------------------------------------------------------------------
+// Main export
+// ---------------------------------------------------------------------------
+
 /**
- * Scales a monster template to the target challenge rating.
+ * Scales a monster to the target challenge rating.
  *
- * @param selectedMonster The monster template to scale
- * @param targetCR The target CR (as a string key matching averageStats)
- * @param options Optional variant/race selections
+ * @param monster A monster ID string (keyof monsterList) or a MonsterTemplate object
+ * @param targetCR The target CR as a string — '0', '0.5', '1', '5', '20', etc.
+ * @param options Optional variant and race selections
  * @returns A fully derived statblock for the target CR
  */
+export function scaleMonster(monster: MonsterID | MonsterTemplate, targetCR: string, options?: ScaleMonsterOptions): Statblock;
 export function scaleMonster(
-  selectedMonster: MonsterTemplate,
+  monster: MonsterID | MonsterTemplate,
   targetCR: string,
   options: ScaleMonsterOptions = {},
 ): Statblock {
+  const selectedMonster: MonsterTemplate = typeof monster === 'string' ? monsterList[monster] : monster;
   const numTargetCR = Number(targetCR);
   let selectedVariant: MonsterVariant | undefined;
   if (selectedMonster.variants) {

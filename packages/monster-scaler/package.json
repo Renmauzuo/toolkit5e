@@ -1,16 +1,16 @@
 {
   "name": "@toolkit5e/monster-scaler",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": ["dist", "README.md"],
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["dnd", "dungeons-and-dragons", "5e", "monster", "scaling"],
+  "keywords": ["dnd", "dungeons-and-dragons", "5e"],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
