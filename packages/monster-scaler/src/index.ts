@@ -185,11 +185,11 @@ export function scaleDamageRoll(
   for (const key of ['upper', 'lower'] as const) {
     const b = damageBenchmarks[key] as Record<string, number> | undefined;
     if (b) {
-      b.averageDamage = averageRoll(b[damageDiceString], b[damageDieSizeString]);
+      b.damagePerRound = averageRoll(b[damageDiceString], b[damageDieSizeString]);
     }
   }
 
-  const estimatedDamage = extrapolateFromBenchmark('averageDamage', targetCR, damageBenchmarks, false);
+  const estimatedDamage = extrapolateFromBenchmark('damagePerRound', targetCR, damageBenchmarks, false);
   const preferredDieSize = findNearestLowerBenchmark(damageDieSizeString, targetCR, sourceStats) as number ?? 4;
   return findDamageDice(estimatedDamage, preferredDieSize);
 }
@@ -467,6 +467,8 @@ export function scaleMonster(
           const attackCopy = Object.assign({}, crAttacks[attack]) as Record<string, unknown>;
           delete attackCopy.damageDice;
           delete attackCopy.damageDieSize;
+          delete attackCopy.damageRiderDice;
+          delete attackCopy.damageRiderDieSize;
           (derivedStats.attacks as Record<string, unknown>)[attack] = attackCopy;
         }
       }
@@ -477,7 +479,8 @@ export function scaleMonster(
     const currentAttack = (derivedStats.attacks as Record<string, Record<string, unknown>>)[attack];
     const crAttacks = (sourceStats[numTargetCR] as Record<string, Record<string, Record<string, unknown>>> | undefined)?.attacks;
     if (crAttacks?.[attack]) {
-      (derivedStats.attacks as Record<string, Record<string, unknown>>)[attack] = Object.assign(currentAttack, crAttacks[attack]);
+      const { damageRiderDice: _rdc, damageRiderDieSize: _rdcs, ...crAttackRest } = crAttacks[attack];
+      (derivedStats.attacks as Record<string, Record<string, unknown>>)[attack] = Object.assign(currentAttack, crAttackRest);
     }
 
     if (!currentAttack.damageDice) {

@@ -18,7 +18,7 @@ const statblock = scaleMonster(monsterList.wolf, '5');
 renderStatblock(statblock, document.getElementById('statblock-container'));
 ```
 
-The target element should contain the expected statblock HTML structure. See the HTML structure section below.
+The target element just needs to exist — `renderStatblock` clears it and builds all required DOM from scratch. Optional sections (saving throws, skills, resistances, languages, traits, bonus actions, etc.) are only added when the statblock has data for them.
 
 ## API
 
@@ -27,9 +27,7 @@ The target element should contain the expected statblock HTML structure. See the
 Renders a `Statblock` object into the provided element.
 
 - `statblock` — a `Statblock` object, typically from `scaleMonster`
-- `target` — the root `HTMLElement` containing the statblock markup
-
-Populates the following elements within `target` by ID: `#monster-name`, `#monster-type`, `#armor-class`, `#hit-points`, `#speed`, `#monster-str/dex/con/int/wis/cha`, `#saving-throws`, `#skills`, `#vulnerabilities`, `#resistances`, `#immunities`, `#condition-immunities`, `#senses`, `#challenge-rating`, `#traits`, `#languages`, `#attacks`, `#bonus-actions`.
+- `target` — any `HTMLElement`; its contents will be replaced and its class set to `stat-block`
 
 ### `replaceTokensInString(str, statblock, trait)`
 
@@ -43,40 +41,6 @@ replaceTokensInString('{{description}} has advantage.', statblock, trait);
 ```
 
 Supported tokens include `{{description}}`, `{{pronoun:subject}}`, `{{trait:DC}}`, `{{trait:damage}}`, `{{DC:str}}`, `{{size:-1}}`, and more.
-
-## HTML structure
-
-Your target element needs to contain elements with the IDs that `renderStatblock` writes to. A minimal example:
-
-```html
-<div id="stat-block">
-  <h1 id="monster-name"></h1>
-  <p id="monster-type"></p>
-  <p id="armor-class"><span></span></p>
-  <p id="hit-points"><span></span></p>
-  <p id="speed"><span></span></p>
-  <p id="monster-str"></p>
-  <p id="monster-dex"></p>
-  <p id="monster-con"></p>
-  <p id="monster-int"></p>
-  <p id="monster-wis"></p>
-  <p id="monster-cha"></p>
-  <p id="saving-throws"><span></span></p>
-  <p id="skills"><span></span></p>
-  <p id="vulnerabilities"><span></span></p>
-  <p id="resistances"><span></span></p>
-  <p id="immunities"><span></span></p>
-  <p id="condition-immunities"><span></span></p>
-  <p id="senses"><span></span></p>
-  <p id="challenge-rating"><span></span></p>
-  <div id="traits"></div>
-  <p id="languages"><span></span></p>
-  <div id="attacks"></div>
-  <div id="bonus-actions-wrapper">
-    <div id="bonus-actions"></div>
-  </div>
-</div>
-```
 
 ## License
 

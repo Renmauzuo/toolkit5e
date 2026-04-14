@@ -28,6 +28,8 @@ export interface Attack {
   creatureOnly?: boolean;
   notGrappled?: boolean;
   enhancement?: number;
+  bonusAttack?: number;
+  bonusDamage?: number;
   proc?: string;
   generatedProc?: Trait;
   text?: string;

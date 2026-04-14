@@ -65,6 +65,9 @@ cd packages/statblock && npm publish
 - `averageStats` is keyed by `ChallengeRating`, not `number`. Lookups with a plain `number` require a cast: `averageStats[cr as ChallengeRating]`.
 - The statblock renderer is framework-agnostic vanilla DOM — no React dependency. If a React wrapper is ever needed, it should be a separate `@toolkit5e/statblock-react` package.
 - The standalone monster-scaler site (`monster-scaler/`) is the primary consumer and test bed for these packages.
+- `renderStatblock` builds all its own DOM from scratch into the target element — the caller only needs to provide an empty container. Optional sections (saves, skills, resistances, traits, bonus actions, etc.) are only added when the statblock has data for them. The target's class is set to `stat-block` automatically.
+- `Attack` has `bonusAttack` and `bonusDamage` fields for applying flat bonuses (e.g. wild shape modifiers) on top of the computed ability-score-based values. These should be set on the attack objects before calling `renderStatblock`, not inside the renderer.
+- `damageRiderDice`/`damageRiderDieSize`/`damageRiderDieType` on an attack are always scaled by `scaleMonster` — they are stripped from the source stats before the scaling pass so the scaler always recomputes them proportionally.
 
 ## Typical Usage
 
