@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -24,17 +25,11 @@ jobs:
       - name: Set version from release tag
         run: npm version ${{ github.ref_name }} --no-git-tag-version --workspaces
 
-      - run: npm publish
+      - run: npm publish --provenance --access public
         working-directory: packages/base
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - run: npm publish
+      - run: npm publish --provenance --access public
         working-directory: packages/monster-scaler
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - run: npm publish
+      - run: npm publish --provenance --access public
         working-directory: packages/statblock
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
