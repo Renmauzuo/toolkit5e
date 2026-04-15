@@ -25,7 +25,7 @@ cd toolkit5e && npm run build
 cd monster-scaler && npm run build
 ```
 
-The Gulp watch (`npm run watch` in monster-scaler) does not currently watch for toolkit5e package changes — it only watches the site's own `src/` files. Cross-project watch is a known gap to address later.
+The Gulp watch (`npm run watch` in monster-scaler) watches both the site's own `src/` files and the toolkit5e package `dist/` folders — changes to package source will trigger a site JS rebuild after `tsc --watch` recompiles them.
 
 ## Publishing
 
@@ -87,7 +87,7 @@ renderStatblock(statblock, document.getElementById('statblock'));
 ### Stats vs lockedStats
 
 - `lockedStats` — stats that never change regardless of CR or variant: attack definitions (reach, damage type, name), condition immunities, languages, fixed ability scores (e.g. `int: 2`), `slug`, `size` if it never scales.
-- `stats` — keyed by CR, used as benchmarks for interpolation/extrapolation. Only include stats that are *meaningfully different* from CR averages or that anchor the scaling curve. Stats that would just match the average (dex, con, wis, cha for a typical beast) can be omitted and will be interpolated automatically.
+- `stats` — keyed by CR, used as benchmarks for interpolation/extrapolation. `averageStats` is used as a *ratio reference* (how does this creature compare to average at its CR?) not as a fallback — so if a stat is missing from all benchmarks, it comes out undefined. Every core stat (str, dex, con, int, wis, cha, hitDice, size) must appear at least once somewhere across the base `stats`, `lockedStats`, or variant `stats`. Stats can be spread across multiple CR benchmarks — a stat only in the CR 1 benchmark will be extrapolated to other CRs. Variant `stats` only need to specify what differs from the base; everything else is inherited via the merge.
 
 ### Variant authoring
 

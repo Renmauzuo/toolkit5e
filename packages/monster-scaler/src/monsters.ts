@@ -1,7 +1,7 @@
 import {
   typeBeast, typeElemental, typeHumanoid, typePlant, typeFey, typeUndead,
   alignmentUnaligned, alignmentNeutral, alignmentAny, alignmentChaoticNeutral,
-  alignmentChaoticGood, alignmentChaoticEvil,
+  alignmentChaoticGood, alignmentChaoticEvil, alignmentNeutralGood,
   sizeTiny, sizeSmall, sizeMedium, sizeLarge, sizeHuge,
   reachShort, reachMediumShort, reachMedium,
   damageTypePiercing, damageTypeBludgeoning, damageTypeSlashing,
@@ -200,7 +200,6 @@ export const monsterList: Record<string, MonsterTemplate> = {
       armorDescription: armorNatural,
       attacks: {
         bite: { reach: reachMedium, damageType: damageTypePiercing, name: 'Bite', proc: 'poisonBite' },
-        web:  { damageType: damageTypePoison, name: 'Web', ranged: true },
       },
       int: 2,
       blindsight: 10,
@@ -209,8 +208,9 @@ export const monsterList: Record<string, MonsterTemplate> = {
       skills: { stealth: skillRankExpert },
     },
     traits: ['spiderClimb', 'webSense', 'webWalker'],
+    actions: ['web'],
     stats: {
-      1: { name: 'Giant Spider', hitDice: 4, bonusArmor: 4, speed: 30, climb: 30, size: sizeLarge, str: 14, dex: 16, con: 12, wis: 11, cha: 4, attacks: { bite: { damageDice: 1, damageDieSize: 8 }, web: { range: 30, longRange: 60, damageDice: 0, damageDieSize: 0 } } },
+      1: { name: 'Giant Spider', hitDice: 4, bonusArmor: 4, speed: 30, climb: 30, size: sizeLarge, str: 14, dex: 16, con: 12, wis: 11, cha: 4, attacks: { bite: { damageDice: 1, damageDieSize: 8 } } },
     },
   },
   horse: {
@@ -249,8 +249,26 @@ export const monsterList: Record<string, MonsterTemplate> = {
       },
     },
     stats: {
-      0.25: { hitDice: 2, speed: 60, str: 16, attacks: { hooves: { damageDice: 2, damageDieSize: 4 } } },
-      0.5:  { hitDice: 3, speed: 60, str: 18, attacks: { hooves: { damageDice: 2, damageDieSize: 6 } }, traits: { tramplingCharge: { chargeAttack: 'hooves', knockdownAttack: 'hooves' } } },
+      0.25: { hitDice: 2, speed: 60, str: 16, dex: 10, con: 12, wis: 11, cha: 7, attacks: { hooves: { damageDice: 2, damageDieSize: 4 } } },
+      0.5:  { hitDice: 3, speed: 60, str: 18, dex: 12, con: 13, wis: 12, cha: 7, attacks: { hooves: { damageDice: 2, damageDieSize: 6 } }, traits: { tramplingCharge: { chargeAttack: 'hooves', knockdownAttack: 'hooves' } } },
+    },
+  },
+  eagle: {
+    type: typeBeast,
+    alignment: alignmentNeutralGood,
+    lockedStats: {
+      attacks: {
+        beak:   { reach: reachMedium, damageType: damageTypePiercing, name: 'Beak' },
+        talons: { reach: reachMedium, damageType: damageTypeSlashing, name: 'Talons' },
+      },
+      slug: 'eagle',
+      skills: { perception: skillRankProficient },
+    },
+    traits: ['keenSight'],
+    stats: {
+      0: { name: 'Eaglet' },
+      0.125: { name: 'Eagle',       hitDice: 1, speed: 10, fly: 60, size: sizeSmall,  str: 6,  dex: 15, con: 10, int: 2, wis: 14, cha: 7,  attacks: { talons: { damageDice: 1, damageDieSize: 4 } } },
+      1:     { name: 'Giant Eagle', hitDice: 4, speed: 10, fly: 80, size: sizeLarge,  str: 16, dex: 17, con: 13, int: 8, wis: 14, cha: 10, multiattack: { attacks: { beak: 1, talons: 1 } }, attacks: { beak: { damageDice: 1, damageDieSize: 6 }, talons: { damageDice: 2, damageDieSize: 6 } }, languages: ['Giant Eagle'] },
     },
   },
   fireElemental: {

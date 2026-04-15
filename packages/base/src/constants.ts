@@ -30,6 +30,7 @@ export const alignmentAny = 'any alignment' as const;
 export const alignmentChaoticNeutral = 'chaotic neutral' as const;
 export const alignmentChaoticGood = 'chaotic good' as const;
 export const alignmentChaoticEvil = 'chaotic evil' as const;
+export const alignmentNeutralGood = 'neutral good' as const;
 
 // Alignment masks
 export const alignmentMaskUnaligned = 0;
