@@ -53,21 +53,24 @@ cd packages/statblock && npm publish
 - `monsters.ts` — `monsterList`: the full dataset of scalable monster templates
 - `index.ts` — `scaleMonster(template, targetCR, options?)` plus exported helpers: `findBenchmarksForStat`, `extrapolateFromBenchmark`, `generateTrait`, `findNearestLowerBenchmark`, `hitPointsPerHitDie`, `scaleDamageRoll`, `findDamageDice`, `calculateWeightedAverage`
 - `types.ts` — `MonsterTemplate`, `MonsterVariant`, `ScaleMonsterOptions`, `Benchmarks`
+  - `ScaleMonsterOptions.legendary: 3 | 5` — upgrades the statblock with legendary resistances and auto-generated legendary actions after scaling
 
 ### @toolkit5e/statblock
 
 - `index.ts` — `renderStatblock(statblock, targetElement)` and `replaceTokensInString(str, statblock, trait)`
 - `types.ts` — `StatblockRenderer`, `RenderStatblockOptions`, `WildShapeOptions`
-
 ## Key Design Decisions
 
 - `Statblock.traits`, `.attacks`, `.actions`, `.bonusActions` are all `Record<string, Partial<T>>` — at the template level these are always partial overrides. Fully resolved objects only exist on the derived statblock after `scaleMonster` runs.
 - `averageStats` is keyed by `ChallengeRating`, not `number`. Lookups with a plain `number` require a cast: `averageStats[cr as ChallengeRating]`.
 - The statblock renderer is framework-agnostic vanilla DOM — no React dependency. If a React wrapper is ever needed, it should be a separate `@toolkit5e/statblock-react` package.
 - The standalone monster-scaler site (`monster-scaler/`) is the primary consumer and test bed for these packages.
-- `renderStatblock` builds all its own DOM from scratch into the target element — the caller only needs to provide an empty container. Optional sections (saves, skills, resistances, traits, bonus actions, etc.) are only added when the statblock has data for them. The target's class is set to `stat-block` automatically.
+- `renderStatblock` builds all its own DOM from scratch into the target element — the caller only needs to provide an empty container. Optional sections (saves, skills, resistances, traits, bonus actions, legendary actions, etc.) are only added when the statblock has data for them. The target's class is set to `stat-block` automatically.
 - `Attack` has `bonusAttack` and `bonusDamage` fields for applying flat bonuses (e.g. wild shape modifiers) on top of the computed ability-score-based values. These should be set on the attack objects before calling `renderStatblock`, not inside the renderer.
 - `damageRiderDice`/`damageRiderDieSize`/`damageRiderDieType` on an attack are always scaled by `scaleMonster` — they are stripped from the source stats before the scaling pass so the scaler always recomputes them proportionally.
+- `tramplingCharge` (and any trait that references an attack by name) uses `{{trait:chargeAttack}}` / `{{trait:knockdownAttack}}` tokens. When a `{{trait:key}}` value is a string matching an attack key on the statblock, `replaceTokensInString` resolves it to that attack's display name. Monsters set these fields in their per-CR trait data (e.g. `traits: { tramplingCharge: { chargeAttack: 'hooves', knockdownAttack: 'hooves' } }`). Defaults (`'gore'`/`'stomp'`) are set on the trait definition in `data.ts`.
+- Trait names go through `replaceTokensInString` in the renderer, so tokens like `{{trait:count}}` work in names as well as descriptions.
+- `Statblock.legendaryActions` and `Statblock.legendaryResistances` are populated by `applyLegendary()` inside `scaleMonster` when `options.legendary` is set. Legendary action costs are derived from each attack's average damage as a fraction of the CR's expected DPR: <25% → cost 1, 25–50% → cost 2, >50% → cost 3. The `description` field on the statblock is set by the caller (site) after `scaleMonster` returns — `applyLegendary` constructs the resistance trait inline rather than relying on it.
 
 ## Typical Usage
 
@@ -78,3 +81,26 @@ import { renderStatblock } from '@toolkit5e/statblock';
 const statblock = scaleMonster(monsterList.wolf, '5');
 renderStatblock(statblock, document.getElementById('statblock'));
 ```
+
+## Monster Template Authoring
+
+### Stats vs lockedStats
+
+- `lockedStats` — stats that never change regardless of CR or variant: attack definitions (reach, damage type, name), condition immunities, languages, fixed ability scores (e.g. `int: 2`), `slug`, `size` if it never scales.
+- `stats` — keyed by CR, used as benchmarks for interpolation/extrapolation. Only include stats that are *meaningfully different* from CR averages or that anchor the scaling curve. Stats that would just match the average (dex, con, wis, cha for a typical beast) can be omitted and will be interpolated automatically.
+
+### Variant authoring
+
+- Variant `stats` and `lockedStats` are merged on top of the base after scaling. Only include what genuinely differs from the base.
+- Stats shared by all variants belong in the base `lockedStats` (e.g. `size`, `int`, base `slug`).
+- Stats shared by most variants but overridden by one should still live in the base — the outlier variant overrides just that field (e.g. `slug: 'warhorse'` on the war variant while base has `slug: 'horse'`).
+- Avoid repeating `name` in base `stats` benchmarks when variants exist — `findNearestLowerBenchmark('name', ...)` will bleed the highest-CR benchmark's name across all variants. Put `name` only in each variant's `stats` entries.
+- Variant-specific traits (e.g. `tramplingCharge` only on the warhorse) go in the variant's `traits` array, not the base `traits` array. The variant's per-CR `traits` object still carries the trait's data fields (DC adjustments, attack key overrides, etc.).
+- `description` on the rendered statblock is set by the caller (site) after `scaleMonster` returns, as `'the ' + statblock.slug`. Make sure slugs are human-readable lowercase strings (`'horse'`, `'warhorse'`) not camelCase (`'ridingHorse'`).
+- Movement speeds (`speed`, `swim`, `climb`, `burrow`, `fly`) are resolved exclusively from `sourceStats` benchmarks via `findNearestLowerBenchmark` — they are **not** read from `lockedStats`. If a speed is identical across all benchmarks, it can go in `lockedStats` as a fixed value. If it varies across benchmarks (e.g. two otherwise similar creatures consolidated into one entry with different speeds), put it in the per-CR `stats` entries so the scaler picks up the nearest lower value. If a variant lacks a speed that the base has (e.g. polar bear has no climb), simply omit it from that benchmark — don't try to zero it out.
+
+### Trait tokens and attack references
+
+- `{{trait:key}}` in a trait description or name resolves the trait's own field. If the value is a string matching an attack key on the statblock, it resolves to that attack's display name (lowercased). Use this for traits that reference a specific attack by name so the text stays correct across variants (e.g. `tramplingCharge` with `chargeAttack: 'hooves'` vs `'gore'`).
+- Trait names go through `replaceTokensInString` in the renderer — tokens work in names as well as descriptions.
+- Avoid constructing trait text that depends on `statblock.description` inside `scaleMonster` or `applyLegendary` — `description` is set by the caller after scaling. Construct inline strings using `statblock.slug` as a fallback if needed.

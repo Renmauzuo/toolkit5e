@@ -29,7 +29,6 @@ export interface MonsterTemplate {
   }>;  traits?: string[];
   actions?: string[];
   bonusActions?: string[];
-  sounds?: string[];
 }
 
 export interface ScaleMonsterOptions {
@@ -37,6 +36,8 @@ export interface ScaleMonsterOptions {
   variant?: string;
   /** Index into the races array if the creature is a humanoid of "any race" */
   race?: number;
+  /** Make this creature legendary, with 3 or 5 legendary resistances */
+  legendary?: 3 | 5;
 }
 
 export interface Benchmarks {

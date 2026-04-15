@@ -293,6 +293,73 @@ export function generateTrait(
 export type MonsterID = keyof typeof monsterList;
 
 // ---------------------------------------------------------------------------
+// Legendary modifier
+// ---------------------------------------------------------------------------
+
+/**
+ * Augments a fully-scaled statblock with legendary resistances and auto-generated legendary actions.
+ * Attack action costs are derived from each attack's average damage relative to the CR's expected DPR:
+ *   < 25% of expected DPR → cost 1
+ *   25–50%                → cost 2
+ *   > 50%                 → cost 3
+ */
+function applyLegendary(statblock: Statblock, count: 3 | 5): Statblock {
+  const stats = statblock as Statblock & Record<string, unknown>;
+  const cr = Number(statblock.cr) as ChallengeRating;
+  const expectedDPR = averageStats[cr].damagePerRound;
+  const abilityMods = statblock.abilityModifiers as Record<string, number>;
+
+  // Add legendary resistance trait
+  stats.legendaryResistances = count;
+  stats.traits = stats.traits ?? {};
+  (stats.traits as Record<string, Partial<Trait>>)['legendaryResistance'] = {
+    name: `Legendary Resistance (${count}/Day)`,
+    description: `If ${statblock.description ?? `the ${statblock.slug}`} fails a saving throw, it can choose to succeed instead.`,
+  };
+
+  // Build legendary actions
+  const legendaryActions: Record<string, Partial<Trait> & { cost: number }> = {};
+
+  // Detect and Move are always free (cost 1)
+  legendaryActions['legendaryDetect'] = {
+    name: 'Detect',
+    description: '{{description}} makes a Wisdom (Perception) check.',
+    cost: 1,
+  };
+  legendaryActions['legendaryMove'] = {
+    name: 'Move',
+    description: '{{description}} moves up to its speed without provoking opportunity attacks.',
+    cost: 1,
+  };
+
+  // Generate an attack legendary action for each attack, costed by DPR fraction
+  if (statblock.attacks) {
+    for (const attackKey in statblock.attacks) {
+      const atk = statblock.attacks[attackKey] as Attack;
+      if (!atk.damageDice || !atk.damageDieSize) continue;
+
+      const abilityMod = atk.finesse
+        ? Math.max(abilityMods.str, abilityMods.dex)
+        : abilityMods.str;
+      const avgDamage = averageRoll(atk.damageDice, atk.damageDieSize) + abilityMod;
+      const fraction = avgDamage / expectedDPR;
+
+      const cost = fraction > 0.5 ? 3 : fraction >= 0.25 ? 2 : 1;
+      const costLabel = cost > 1 ? ` (Costs ${cost} Actions)` : '';
+
+      legendaryActions[`legendary_${attackKey}`] = {
+        name: `${atk.name ?? attackKey}${costLabel}`,
+        description: `{{description}} makes a ${(atk.name ?? attackKey).toLowerCase()} attack.`,
+        cost,
+      };
+    }
+  }
+
+  stats.legendaryActions = legendaryActions;
+  return stats as unknown as Statblock;
+}
+
+// ---------------------------------------------------------------------------
 // Main export
 // ---------------------------------------------------------------------------
 
@@ -564,6 +631,10 @@ export function scaleMonster(
     if (!derivedStats[sense]) {
       derivedStats[sense] = findNearestLowerBenchmark(sense, targetCR, sourceStats);
     }
+  }
+
+  if (options.legendary) {
+    return applyLegendary(derivedStats as unknown as Statblock, options.legendary);
   }
 
   return derivedStats as unknown as Statblock;

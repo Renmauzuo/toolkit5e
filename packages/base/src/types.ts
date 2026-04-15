@@ -116,4 +116,6 @@ export interface Statblock {
   sensesString?: string;
   passivePerception?: number;
   multiattackString?: string;
+  legendaryActions?: Record<string, Partial<Trait> & { cost?: number }>;
+  legendaryResistances?: number;
 }

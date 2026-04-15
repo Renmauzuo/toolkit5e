@@ -22,7 +22,7 @@ export function replaceTokensInString(
   statBlock: Statblock & Record<string, unknown>,
   trait: Trait & Record<string, unknown>,
 ): string {
-  let outputString = targetString;
+  let outputString = targetString ?? '';
   while (outputString.includes('{{')) {
     const tokenStartIndex = outputString.indexOf('{{');
     const tokenEndIndex = outputString.indexOf('}}') + 2;
@@ -51,7 +51,13 @@ export function replaceTokensInString(
         tokenValue = sizes[statBlock.size! + parseInt(tokenArray[1])].name;
       } else if (tokenArray[0] === 'trait') {
         if (trait[tokenArray[1]] !== undefined) {
-          tokenValue = trait[tokenArray[1]] as string | number;
+          // If the trait value is a string key that matches an attack, resolve to the attack's display name
+          const traitVal = trait[tokenArray[1]];
+          if (typeof traitVal === 'string' && statBlock.attacks && (statBlock.attacks as Record<string, unknown>)[traitVal]) {
+            tokenValue = ((statBlock.attacks as Record<string, { name?: string }>)[traitVal].name ?? traitVal).toLowerCase();
+          } else {
+            tokenValue = traitVal as string | number;
+          }
         } else if (tokenArray[1] === 'DC') {
           let dc = 8 + (statBlock.proficiency ?? 0) + (statBlock.abilityModifiers as Record<string, number>)[trait.dcStat as string];
           if (trait.dcAdjustment) dc += trait.dcAdjustment;
@@ -301,8 +307,9 @@ export function renderStatblock(sourceStats: Statblock, target: HTMLElement): vo
     for (const traitName in stats.traits) {
       const t = stats.traits[traitName] as Trait & Record<string, unknown>;
       t.text = replaceTokensInString(t.description, stats, t);
+      const resolvedName = replaceTokensInString(t.name, stats, t);
       const p = mkEl('p');
-      p.innerHTML = `<strong><em>${t.name}.</em></strong> ${t.text}`;
+      p.innerHTML = `<strong><em>${resolvedName}.</em></strong> ${t.text}`;
       traitsEl.appendChild(p);
     }
     target.appendChild(traitsEl);
@@ -441,5 +448,25 @@ export function renderStatblock(sourceStats: Statblock, target: HTMLElement): vo
       bonusActionsEl.appendChild(p);
     }
     target.appendChild(bonusActionsEl);
+  }
+
+  // Legendary actions (optional)
+  if (stats.legendaryActions && Object.keys(stats.legendaryActions).length) {
+    const legendaryHeader = mkEl('h3');
+    legendaryHeader.textContent = 'Legendary Actions';
+    target.appendChild(legendaryHeader);
+    const legendaryEl = mkEl('div', 'legendary-actions');
+    const preamble = mkEl('p');
+    const legendaryDesc = stats.description ?? `the ${stats.slug ?? stats.name?.toLowerCase() ?? 'creature'}`;
+    preamble.textContent = `${toSentenceCase(legendaryDesc)} can take 3 legendary actions, choosing from the options below. Only one legendary action option can be used at a time and only at the end of another creature's turn. ${toSentenceCase(legendaryDesc)} regains spent legendary actions at the start of its turn.`;
+    legendaryEl.appendChild(preamble);
+    for (const actionName in stats.legendaryActions) {
+      const la = stats.legendaryActions[actionName] as Trait & Record<string, unknown>;
+      la.text = replaceTokensInString(la.description, stats, la);
+      const p = mkEl('p');
+      p.innerHTML = `<strong><em>${la.name}.</em></strong> ${la.text}`;
+      legendaryEl.appendChild(p);
+    }
+    target.appendChild(legendaryEl);
   }
 }

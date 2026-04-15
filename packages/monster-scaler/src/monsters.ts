@@ -92,6 +92,37 @@ export const monsterList: Record<string, MonsterTemplate> = {
       0.25: { name: 'Giant Bat', hitDice: 12, speed: 30, fly: 30, size: sizeMedium, str: 15, dex: 16, con: 11, wis: 12, cha: 6, attacks: { bite: { damageDice: 1, damageDieSize: 6 } } },
     },
   },
+  camel: {
+    type: typeBeast,
+    alignment: alignmentUnaligned,
+    lockedStats: { attacks: { bite: { reach: reachMedium, damageType: damageTypeBludgeoning, name: 'Bite' } }, int: 2, slug: 'camel' },
+    stats: {
+      0.125: { name: 'Camel', hitDice: 2, speed: 50, size: sizeLarge, str: 16, dex: 8, con: 14, wis: 8, cha: 5, attacks: { bite: { damageDice: 1, damageDieSize: 4 } } },
+    },
+  },
+  bear: {
+    type: typeBeast,
+    alignment: alignmentUnaligned,
+    lockedStats: {
+      armorDescription: armorNatural,
+      attacks: {
+        bite:  { reach: reachMedium, damageType: damageTypePiercing, name: 'Bite' },
+        claws: { reach: reachMedium, damageType: damageTypeSlashing, name: 'Claws' },
+      },
+      multiattack: { attacks: { bite: 1, claws: 1 } },
+      int: 2,
+      slug: 'bear',
+      speed: 40,
+      skills: { perception: skillRankProficient },
+    },
+    traits: ['keenSmell'],
+    stats: {
+      0:   { name: 'Bear Cub' },
+      0.5: { name: 'Black Bear', hitDice: 3, bonusArmor: 1, size: sizeMedium, str: 15, con: 14, climb: 30, attacks: { bite: { damageDice: 1, damageDieSize: 6 }, claws: { damageDice: 2, damageDieSize: 4 } } },
+      1:   { name: 'Brown Bear', hitDice: 4, bonusArmor: 1, size: sizeLarge,  str: 19, con: 16, climb: 30, attacks: { bite: { damageDice: 1, damageDieSize: 8 }, claws: { damageDice: 2, damageDieSize: 6 } } },
+      2:   { name: 'Polar Bear', hitDice: 5, bonusArmor: 2, size: sizeLarge,  str: 20, con: 16, swim: 30,  attacks: { bite: { damageDice: 1, damageDieSize: 8 }, claws: { damageDice: 2, damageDieSize: 6 } } },
+    },
+  },
   commoner: {
     type: typeHumanoid,
     alignment: alignmentAny,
@@ -160,7 +191,67 @@ export const monsterList: Record<string, MonsterTemplate> = {
       5: { bonusArmor: 4, hitDice: 10, size: sizeHuge, str: 22, dex: 9, con: 17, wis: 11, traits: { tramplingCharge: { dcAdjustment: -4 } }, attacks: { gore: { damageDice: 4, damageDieSize: 8 }, stomp: { damageDice: 3, damageDieSize: 10 } } },
       6: { bonusArmor: 4, hitDice: 11, size: sizeHuge, str: 24, dex: 9, con: 21, wis: 11, traits: { tramplingCharge: { dcAdjustment: 0 } }, attacks: { gore: { damageDice: 4, damageDieSize: 8, reach: reachMediumShort }, stomp: { damageDice: 4, damageDieSize: 10 } } },
     },
-    sounds: ['elephant-trumpet'],
+  },
+  giantSpider: {
+    name: 'Giant Spider',
+    type: typeBeast,
+    alignment: alignmentUnaligned,
+    lockedStats: {
+      armorDescription: armorNatural,
+      attacks: {
+        bite: { reach: reachMedium, damageType: damageTypePiercing, name: 'Bite', proc: 'poisonBite' },
+        web:  { damageType: damageTypePoison, name: 'Web', ranged: true },
+      },
+      int: 2,
+      blindsight: 10,
+      darkvision: 60,
+      slug: 'giantSpider',
+      skills: { stealth: skillRankExpert },
+    },
+    traits: ['spiderClimb', 'webSense', 'webWalker'],
+    stats: {
+      1: { name: 'Giant Spider', hitDice: 4, bonusArmor: 4, speed: 30, climb: 30, size: sizeLarge, str: 14, dex: 16, con: 12, wis: 11, cha: 4, attacks: { bite: { damageDice: 1, damageDieSize: 8 }, web: { range: 30, longRange: 60, damageDice: 0, damageDieSize: 0 } } },
+    },
+  },
+  horse: {
+    type: typeBeast,
+    alignment: alignmentUnaligned,
+    lockedStats: {
+      attacks: { hooves: { reach: reachMedium, damageType: damageTypeBludgeoning, name: 'Hooves' } },
+      int: 2,
+      size: sizeLarge,
+      slug: 'horse',
+    },
+    variants: {
+      riding: {
+        name: 'Riding Horse',
+        stats: {
+          0:    { name: 'Foal' },
+          0.25: { name: 'Riding Horse', hitDice: 2, speed: 60, str: 16, attacks: { hooves: { damageDice: 2, damageDieSize: 4 } } },
+        },
+      },
+      draft: {
+        name: 'Draft Horse',
+        stats: {
+          0:    { name: 'Foal' },
+          0.25: { name: 'Draft Horse', hitDice: 3, speed: 40, str: 18, attacks: { hooves: { damageDice: 2, damageDieSize: 4 } } },
+        },
+      },
+      war: {
+        name: 'Warhorse',
+        traits: ['tramplingCharge'],
+        lockedStats: { slug: 'warhorse', bonusArmor: 1 },
+        stats: {
+          0:   { name: 'Foal' },
+          0.5: { name: 'Warhorse', hitDice: 3, speed: 60, str: 18, attacks: { hooves: { damageDice: 2, damageDieSize: 6 } }, traits: { tramplingCharge: { chargeAttack: 'hooves', knockdownAttack: 'hooves' } } },
+          4:   { name: 'Destrier' },
+        },
+      },
+    },
+    stats: {
+      0.25: { hitDice: 2, speed: 60, str: 16, attacks: { hooves: { damageDice: 2, damageDieSize: 4 } } },
+      0.5:  { hitDice: 3, speed: 60, str: 18, attacks: { hooves: { damageDice: 2, damageDieSize: 6 } }, traits: { tramplingCharge: { chargeAttack: 'hooves', knockdownAttack: 'hooves' } } },
+    },
   },
   fireElemental: {
     name: 'Fire Elemental',
@@ -221,7 +312,6 @@ export const monsterList: Record<string, MonsterTemplate> = {
     alignment: alignmentChaoticEvil,
     type: typeUndead,
     lockedStats: { attacks: { strengthDrain: { reach: reachMedium, damageType: damageTypeNecrotic, name: 'Strength Drain', finesse: true, proc: 'strengthDrain' } }, conditionImmunities: [conditionExhaustion, conditionFrightened, conditionGrappled, conditionParalyzed, conditionPetrified, conditionPoisoned, conditionProne, conditionRestrained], immunities: [damageTypeNecrotic, damageTypePoison], resistances: [damageTypeAcid, damageTypeCold, damageTypeFire, damageTypeLightning, damageTypethunder], skills: { stealth: skillRankProficient }, slug: 'shadow' },
-    sounds: ['creepy-sound'],
     traits: ['amorphous', 'shadowStealth', 'sunlightWeakness'],
     variants: {
       shadow: { name: 'Shadow', type: typeUndead, lockedStats: { resistances: [damageTypeMundanePhysical], vulnerabilities: [damageTypeRadiant] }, stats: { 2: { name: 'Shadow' } } },
@@ -257,7 +347,6 @@ export const monsterList: Record<string, MonsterTemplate> = {
     alignment: alignmentUnaligned,
     lockedStats: { armorDescription: armorNatural, attacks: { bite: { reach: reachShort, proc: 'takeDown', damageType: damageTypePiercing, name: 'Bite', finesse: true } }, int: 3, skills: { perception: skillRankProficient, stealth: skillRankProficient }, slug: 'wolf' },
     traits: ['keenHearingSmell', 'packTactics'],
-    sounds: ['howl', 'growl'],
     stats: {
       0:    { name: 'Wolf Pup' },
       0.25: { name: 'Wolf',      bonusArmor: 1, hitDice: 2, speed: 40, size: sizeMedium, str: 12, dex: 15, con: 12, wis: 12, cha: 6, attacks: { bite: { damageDice: 2, damageDieSize: 4 } } },

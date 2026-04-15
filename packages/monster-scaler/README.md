@@ -26,6 +26,9 @@ const shark = scaleMonster(monsterList.shark, '3', { variant: 'packHunter' });
 
 // Scale a humanoid of any race
 const commoner = scaleMonster(monsterList.commoner, '2', { race: 1 }); // 1 = dwarf
+
+// Make a legendary version (3 or 5 resistances)
+const legendaryWolf = scaleMonster(monsterList.wolf, '8', { legendary: 3 });
 ```
 
 ## API
@@ -38,6 +41,7 @@ Scales a monster template to the target CR and returns a fully derived `Statbloc
 - `targetCR` — CR as a string: `'0'`, `'0.5'`, `'1'`, `'5'`, `'20'`, etc.
 - `options.variant` — key of the variant to use, if the template has variants
 - `options.race` — index into the `races` array from `@toolkit5e/base`, for humanoid templates with `race: 'any race'`
+- `options.legendary` — `3` or `5`: adds Legendary Resistance, auto-generates legendary actions (Detect, Move, and per-attack actions with costs derived from DPR fraction), and populates `statblock.legendaryActions` and `statblock.legendaryResistances`
 
 ### `monsterList`
 
@@ -47,10 +51,10 @@ A record of built-in monster templates keyed by ID:
 import { monsterList } from '@toolkit5e/monster-scaler';
 
 Object.keys(monsterList);
-// ['ape', 'awakenedPlant', 'baboon', 'badger', 'bat', 'commoner',
-//  'crocodile', 'dolphinDelighter', 'dryad', 'elephant', 'fireElemental',
-//  'killerWhale', 'naiad', 'quetzalcoatlus', 'saberToothedTiger',
-//  'shadow', 'shark', 'trex', 'wolf']
+// ['ape', 'awakenedPlant', 'baboon', 'badger', 'bat', 'bear', 'camel',
+//  'commoner', 'crocodile', 'dolphinDelighter', 'dryad', 'elephant',
+//  'fireElemental', 'giantSpider', 'horse', 'killerWhale', 'naiad',
+//  'quetzalcoatlus', 'saberToothedTiger', 'shadow', 'shark', 'trex', 'wolf']
 ```
 
 ### How scaling works

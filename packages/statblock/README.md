@@ -18,7 +18,7 @@ const statblock = scaleMonster(monsterList.wolf, '5');
 renderStatblock(statblock, document.getElementById('statblock-container'));
 ```
 
-The target element just needs to exist — `renderStatblock` clears it and builds all required DOM from scratch. Optional sections (saving throws, skills, resistances, languages, traits, bonus actions, etc.) are only added when the statblock has data for them.
+The target element just needs to exist — `renderStatblock` clears it and builds all required DOM from scratch. Optional sections (saving throws, skills, resistances, languages, traits, bonus actions, legendary actions, etc.) are only added when the statblock has data for them.
 
 ## API
 
@@ -40,7 +40,7 @@ replaceTokensInString('{{description}} has advantage.', statblock, trait);
 // "The wolf has advantage."
 ```
 
-Supported tokens include `{{description}}`, `{{pronoun:subject}}`, `{{trait:DC}}`, `{{trait:damage}}`, `{{DC:str}}`, `{{size:-1}}`, and more.
+Supported tokens include `{{description}}`, `{{pronoun:subject}}`, `{{trait:DC}}`, `{{trait:damage}}`, `{{DC:str}}`, `{{size:-1}}`, and more. Trait names also go through token replacement, so `{{trait:count}}` in a name resolves correctly (e.g. "Legendary Resistance (3/Day)"). If a `{{trait:key}}` value is a string matching an attack key on the statblock, it resolves to that attack's display name — used by `tramplingCharge` to reference the correct attack regardless of creature type.
 
 ## License
 
