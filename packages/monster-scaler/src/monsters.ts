@@ -7,7 +7,7 @@ import {
   damageTypePiercing, damageTypeBludgeoning, damageTypeSlashing,
   damageTypeMundanePhysical, damageTypeMundanePiercingSlashing,
   damageTypeAcid, damageTypeCold, damageTypeFire, damageTypeLightning,
-  damageTypeNecrotic, damageTypePoison, damageTypePsychic, damageTypeRadiant, damageTypethunder,
+  damageTypeNecrotic, damageTypePoison, damageTypePsychic, damageTypeRadiant, damageTypeThunder,
   conditionExhaustion, conditionGrappled, conditionParalyzed, conditionPetrified,
   conditionPoisoned, conditionProne, conditionRestrained, conditionUnconscious,
   conditionCharmed, conditionFrightened, conditionBlinded,
@@ -329,7 +329,7 @@ export const monsterList: Record<string, MonsterTemplate> = {
   shadow: {
     alignment: alignmentChaoticEvil,
     type: typeUndead,
-    lockedStats: { attacks: { strengthDrain: { reach: reachMedium, damageType: damageTypeNecrotic, name: 'Strength Drain', finesse: true, proc: 'strengthDrain' } }, conditionImmunities: [conditionExhaustion, conditionFrightened, conditionGrappled, conditionParalyzed, conditionPetrified, conditionPoisoned, conditionProne, conditionRestrained], immunities: [damageTypeNecrotic, damageTypePoison], resistances: [damageTypeAcid, damageTypeCold, damageTypeFire, damageTypeLightning, damageTypethunder], skills: { stealth: skillRankProficient }, slug: 'shadow' },
+    lockedStats: { attacks: { strengthDrain: { reach: reachMedium, damageType: damageTypeNecrotic, name: 'Strength Drain', finesse: true, proc: 'strengthDrain' } }, conditionImmunities: [conditionExhaustion, conditionFrightened, conditionGrappled, conditionParalyzed, conditionPetrified, conditionPoisoned, conditionProne, conditionRestrained], immunities: [damageTypeNecrotic, damageTypePoison], resistances: [damageTypeAcid, damageTypeCold, damageTypeFire, damageTypeLightning, damageTypeThunder], skills: { stealth: skillRankProficient }, slug: 'shadow' },
     traits: ['amorphous', 'shadowStealth', 'sunlightWeakness'],
     variants: {
       shadow: { name: 'Shadow', type: typeUndead, lockedStats: { resistances: [damageTypeMundanePhysical], vulnerabilities: [damageTypeRadiant] }, stats: { 2: { name: 'Shadow' } } },

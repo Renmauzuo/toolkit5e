@@ -71,7 +71,7 @@ export const damageTypeNecrotic = 'necrotic' as const;
 export const damageTypePoison = 'poison' as const;
 export const damageTypePsychic = 'psychic' as const;
 export const damageTypeRadiant = 'radiant' as const;
-export const damageTypethunder = 'thunder' as const;
+export const damageTypeThunder = 'thunder' as const;
 
 // Conditions
 export const conditionExhaustion = 'exhaustion' as const;

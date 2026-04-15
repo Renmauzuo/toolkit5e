@@ -3,7 +3,7 @@ import {
   damageTypePiercing, damageTypeBludgeoning, damageTypeSlashing,
   damageTypeMundanePhysical, damageTypeMundanePiercingSlashing,
   damageTypeAcid, damageTypeCold, damageTypeFire, damageTypeLightning,
-  damageTypeNecrotic, damageTypePoison, damageTypePsychic, damageTypeRadiant, damageTypethunder,
+  damageTypeNecrotic, damageTypePoison, damageTypePsychic, damageTypeRadiant, damageTypeThunder,
   conditionExhaustion, conditionGrappled, conditionParalyzed, conditionPetrified,
   conditionPoisoned, conditionProne, conditionRestrained, conditionUnconscious,
   conditionCharmed, conditionFrightened, conditionBlinded,
@@ -138,7 +138,7 @@ export const traits: Record<string, Trait> = {
   amphibious:           { name: 'Amphibious',            description: '{{description}} can breathe air and water.' },
   bloodyFrenzy:         { name: 'Bloody Frenzy',         description: "{{description}} has advantage on melee attack rolls against any creature that doesn't have all its hit points." },
   dwarvenResilience:    { name: 'Dwarven Resilience',    description: '{{description}} has advantage on saving throws against poison.' },
-  dwarvenToughness:     { name: 'Dwarven Tougness',      description: '{{description}} has one extra hit point per hit die.', hitPointsPerHitDie: 1 },
+  dwarvenToughness:     { name: 'Dwarven Toughness',      description: '{{description}} has one extra hit point per hit die.', hitPointsPerHitDie: 1 },
   dwarvenTraining:      { name: 'Dwarven Combat Training',description: '{{description}} has proficiency with the battleaxe, handaxe, light hammer, and warhammer.' },
   echolocation:         { name: 'Echolocation',          description: "{{description}} can't use {{pronoun:possessiveAdj}} blindsight while deafened." },
   empoweredSpells:      { name: 'Empowered Spells',      description: 'Whenever {{description}} casts a spell of the {{trait:school}} school by expending a spell slot, {{description}} can add {{pronoun:possessiveAdj}} spellcasting ability modifier ({{castingModifier}}) to the spell\'s damage roll or healing roll, if any.' },
@@ -171,7 +171,7 @@ export const traits: Record<string, Trait> = {
   webSense:             { name: 'Web Sense',             description: 'While in contact with a web, {{description}} knows the exact location of any other creature in contact with the same web.' },
   webWalker:            { name: 'Web Walker',            description: '{{description}} ignores movement restrictions caused by webbing.' },
   waterBreathing:       { name: 'Water Breathing',       description: '{{description}} can breathe only underwater.' },
-  waterSusceptibility:  { name: 'Water Suspceptibility', description: 'For every 5 ft. {{description}} moves in water, or for every gallon of water splashed on {{pronoun:object}}, {{pronoun:subject}} takes {{trait:damage}} cold damage.', dealsDamage: true },
+  waterSusceptibility:  { name: 'Water Susceptibility', description: 'For every 5 ft. {{description}} moves in water, or for every gallon of water splashed on {{pronoun:object}}, {{pronoun:subject}} takes {{trait:damage}} cold damage.', dealsDamage: true },
 };
 
 export const procs: Record<string, Trait> = {
