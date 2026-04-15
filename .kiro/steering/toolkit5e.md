@@ -29,15 +29,17 @@ The Gulp watch (`npm run watch` in monster-scaler) watches both the site's own `
 
 ## Publishing
 
-Packages are published to npm under the `@toolkit5e` org (public). Publish each package individually from its directory:
+Packages are published to npm under the `@toolkit5e` org (public). Publishing is automated via GitHub Actions — create a release in GitHub with a tag matching the version (e.g. `1.2.0`, no `v` prefix) and the workflow handles the rest.
 
-```bash
-cd packages/base && npm publish
-cd packages/monster-scaler && npm publish
-cd packages/statblock && npm publish
-```
+The workflow (`publish.yml`):
+1. Upgrades npm to latest (required for OIDC Trusted Publishing)
+2. Builds all packages
+3. Sets the version in each package from the release tag
+4. Publishes each package with provenance via npm Trusted Publishing (no token needed)
 
-`--workspaces` from the root is unreliable with npm 7 — publish per-package instead. The root `package.json` is `"private": true` to prevent accidentally publishing the workspace root.
+After changing inter-package dependencies (e.g. bumping the `@toolkit5e/base` version range in monster-scaler/statblock), run `npm install` from the workspace root and commit the updated `package-lock.json` before releasing — `npm ci` in the workflow requires the lock file to be in sync.
+
+The root `package.json` is `"private": true` to prevent accidentally publishing the workspace root.
 
 ## Package Contents
 
