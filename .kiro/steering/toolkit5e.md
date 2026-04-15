@@ -103,4 +103,5 @@ renderStatblock(statblock, document.getElementById('statblock'));
 
 - `{{trait:key}}` in a trait description or name resolves the trait's own field. If the value is a string matching an attack key on the statblock, it resolves to that attack's display name (lowercased). Use this for traits that reference a specific attack by name so the text stays correct across variants (e.g. `tramplingCharge` with `chargeAttack: 'hooves'` vs `'gore'`).
 - Trait names go through `replaceTokensInString` in the renderer — tokens work in names as well as descriptions.
+- Any `proc` key referenced on an attack (e.g. `proc: 'poisonBite'`) must have a corresponding entry in `procs` in `data.ts`. If the key is missing, `generateTrait` will receive `undefined` as `baseTrait` and crash with a `Cannot read properties of undefined` error at runtime. Always define the proc before referencing it.
 - Avoid constructing trait text that depends on `statblock.description` inside `scaleMonster` or `applyLegendary` — `description` is set by the caller after scaling. Construct inline strings using `statblock.slug` as a fallback if needed.
