@@ -22,8 +22,17 @@ jobs:
 
       - run: npm run build
 
-      - name: Set version from release tag
-        run: npm version ${{ github.ref_name }} --no-git-tag-version --workspaces
+      - name: Set version (base)
+        run: npm version ${{ github.ref_name }} --no-git-tag-version
+        working-directory: packages/base
+
+      - name: Set version (monster-scaler)
+        run: npm version ${{ github.ref_name }} --no-git-tag-version
+        working-directory: packages/monster-scaler
+
+      - name: Set version (statblock)
+        run: npm version ${{ github.ref_name }} --no-git-tag-version
+        working-directory: packages/statblock
 
       - run: npm publish --provenance --access public
         working-directory: packages/base
