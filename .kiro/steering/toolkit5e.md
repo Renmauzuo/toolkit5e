@@ -74,6 +74,33 @@ The root `package.json` is `"private": true` to prevent accidentally publishing 
 - Trait names go through `replaceTokensInString` in the renderer, so tokens like `{{trait:count}}` work in names as well as descriptions.
 - `Statblock.legendaryActions` and `Statblock.legendaryResistances` are populated by `applyLegendary()` inside `scaleMonster` when `options.legendary` is set. Legendary action costs are derived from each attack's average damage as a fraction of the CR's expected DPR: <25% → cost 1, 25–50% → cost 2, >50% → cost 3. The `description` field on the statblock is set by the caller (site) after `scaleMonster` returns — `applyLegendary` constructs the resistance trait inline rather than relying on it.
 
+## Code Documentation
+
+Use JSDoc comments on all exported functions, types, and interfaces. This enables hover documentation in the IDE and makes the API easier to navigate without digging into source.
+
+For TypeScript functions, include a description and `@param` / `@returns` tags even when types are already declared — the description is what shows up in the hover tooltip:
+
+```ts
+/**
+ * Scales a monster template to the target CR.
+ * @param template - The monster template from `monsterList`
+ * @param targetCR - The desired challenge rating
+ * @param options - Optional overrides (e.g. legendary upgrades)
+ * @returns A fully resolved `Statblock` at the target CR
+ */
+export function scaleMonster(template: MonsterTemplate, targetCR: ChallengeRating, options?: ScaleMonsterOptions): Statblock { ... }
+```
+
+For interfaces and type aliases, document each field with an inline or block comment:
+
+```ts
+/** Options passed to `scaleMonster` to modify scaling behavior. */
+export interface ScaleMonsterOptions {
+  /** Adds legendary resistances and auto-generates legendary actions. `3` or `5` resistances. */
+  legendary?: 3 | 5;
+}
+```
+
 ## Typical Usage
 
 ```ts

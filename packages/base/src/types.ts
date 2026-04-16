@@ -39,6 +39,7 @@ export interface Trait {
   name: string;
   description: string;
   text?: string;
+  recharge?: 'short' | 'long';
   allowsSave?: boolean;
   dcStat?: AbilityKey;
   dcAdjustment?: number;
