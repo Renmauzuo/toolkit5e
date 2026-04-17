@@ -100,6 +100,21 @@ export const monsterList: Record<string, MonsterTemplate> = {
       0.125: { name: 'Camel', hitDice: 2, speed: 50, size: sizeLarge, str: 16, dex: 8, con: 14, wis: 8, cha: 5, attacks: { bite: { damageDice: 1, damageDieSize: 4 } } },
     },
   },
+  boar: {
+    type: typeBeast,
+    alignment: alignmentUnaligned,
+    lockedStats: {
+      attacks: { tusk: { reach: reachMedium, damageType: damageTypeSlashing, name: 'Tusk' } },
+      int: 2,
+      slug: 'boar',
+    },
+    traits: ['relentless', 'tramplingCharge'],
+    stats: {
+      0:    { name: 'Piglet' },
+      0.25: { name: 'Boar',       hitDice: 2, speed: 40, size: sizeMedium, str: 13, dex: 11, con: 12, wis: 9, cha: 5, attacks: { tusk: { damageDice: 1, damageDieSize: 6 } }, traits: { relentless: { damageDice: 7, damageDieSize: 1 }, tramplingCharge: { chargeAttack: 'tusk', knockdownAttack: 'tusk', dcAdjustment: -4 } } },
+      2:    { name: 'Giant Boar', hitDice: 5, speed: 40, size: sizeLarge,  str: 17, dex: 10, con: 16, wis: 9, cha: 5, attacks: { tusk: { damageDice: 2, damageDieSize: 6 } }, traits: { relentless: { damageDice: 10, damageDieSize: 1 }, tramplingCharge: { chargeAttack: 'tusk', knockdownAttack: 'tusk', dcAdjustment: -2 } } },
+    },
+  },
   bear: {
     type: typeBeast,
     alignment: alignmentUnaligned,

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { replaceTokensInString } from './index.ts';
+import { replaceTokensInString } from './index.js';
 
 // Minimal statblock fixture — only the fields each test group needs.
 function makeStatblock(overrides: Record<string, unknown> = {}) {

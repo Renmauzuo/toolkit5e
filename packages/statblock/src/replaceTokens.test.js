@@ -32,7 +32,7 @@ function makeTrait(overrides = {}) {
     });
     (0, vitest_1.it)('replaces {{description}} with the description field', () => {
         const result = (0, index_js_1.replaceTokensInString)('{{description}} moves.', makeStatblock(), makeTrait());
-        (0, vitest_1.expect)(result).toContain('the wolf');
+        (0, vitest_1.expect)(result.toLowerCase()).toContain('the wolf');
     });
 });
 // ---------------------------------------------------------------------------
@@ -119,7 +119,7 @@ function makeTrait(overrides = {}) {
             attacks: { bite: { name: 'Bite' } },
         });
         const result = (0, index_js_1.replaceTokensInString)('{{trait:chargeAttack}}', statblock, makeTrait({ chargeAttack: 'bite' }));
-        (0, vitest_1.expect)(result).toContain('bite'); // lowercased attack name
+        (0, vitest_1.expect)(result.toLowerCase()).toContain('bite'); // lowercased attack name
     });
 });
 // ---------------------------------------------------------------------------

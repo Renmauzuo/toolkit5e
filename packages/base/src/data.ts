@@ -159,6 +159,7 @@ export const traits: Record<string, Trait> = {
   magicResistance:      { name: 'Magic Resistance',      description: '{{description}} has advantage on saving throws against spells and other magical effects.' },
   potentCantrips:       { name: 'Potent Cantrips',       description: '{{description}} can add {{pronoun:possessiveAdj}} spellcasting ability modifier ({{castingModifier}}) to the damage {{pronoun:subject}} deals with any cantrip.' },
   pounce:               { name: 'Pounce',                description: 'If {{description}} moves at least 20 feet straight toward a creature and then hits it with a claw attack on the same turn, that target must succeed on a DC {{trait:DC}} Strength saving throw or be knocked prone. If the target is prone, {{description}} can make one bite attack against it as a bonus action.', allowsSave: true, dcStat: 'str' },
+  relentless:           { name: 'Relentless (Recharges after a Short or Long Rest)', description: 'If {{description}} takes {{trait:damage}} damage or less that would reduce {{pronoun:object}} to 0 hit points, {{pronoun:subject}} is reduced to 1 hit point instead.', dealsDamage: true },
   shadowStealth:        { name: 'Shadow Stealth',        description: 'While in dim light or darkness, {{description}} can take the Hide action as a bonus action. {{pronoun:possessive}} stealth bonus is also improved to {{abilityBonus:dex:2}}.' },
   speakWithBeastsAndPlants: { name: 'Speak with Beasts and Plants', description: '{{description}} can communicate with beasts and plants as if they shared a language.' },
   spellcasting:         { name: 'Spellcasting',          description: '{{description}} is a {{trait:ordinalLevel}}-level spellcaster. {{pronoun:object}} spellcasting ability is {{castingStatName}} (spell save DC {{spellSaveDC}}, {{spellAttackModifier}} to hit with spell attacks). {{description}} has the following {{trait:castingClass}} spells prepared:{{spellListClass}}' },
@@ -218,6 +219,155 @@ export const spells: Record<string, { name: string; level?: number; classes?: st
   passWithoutTrace: { name: 'pass without trace' },
   phantasmalForce:  { name: 'phantasmal force' },
   shillelagh:       { name: 'shillelagh' },
+};
+
+export interface ClassData {
+  /** Display name of the class. */
+  name: string;
+  /** Hit die size (e.g. 8 for d8). */
+  hitDie: number;
+  /** Saving throw proficiencies (two ability keys). */
+  savingThrows: string[];
+  /** Armor proficiencies. */
+  armorProficiencies: string[];
+  /** Weapon proficiencies. */
+  weaponProficiencies: string[];
+  /** Number of skill proficiencies granted at level 1. */
+  skillCount: number;
+  /** Pool of skills the class can choose from. Empty array means any skill. */
+  skillPool: string[];
+  /** Spellcasting ability key, if the class casts spells. */
+  spellcastingStat?: string;
+  /** Spell slot progression type. 'full' = wizard/cleric, 'half' = paladin/ranger, 'third' = eldritch knight/arcane trickster. */
+  spellProgression?: 'full' | 'half' | 'third';
+}
+
+/** The 12 core PHB player classes, with data relevant for NPC generation. */
+export const classes: Record<string, ClassData> = {
+  barbarian: {
+    name: 'Barbarian',
+    hitDie: 12,
+    savingThrows: ['str', 'con'],
+    armorProficiencies: ['light', 'medium', 'shields'],
+    weaponProficiencies: ['simple', 'martial'],
+    skillCount: 2,
+    skillPool: ['animalHandling', 'athletics', 'intimidation', 'nature', 'perception', 'survival'],
+  },
+  bard: {
+    name: 'Bard',
+    hitDie: 8,
+    savingThrows: ['dex', 'cha'],
+    armorProficiencies: ['light'],
+    weaponProficiencies: ['simple', 'hand crossbows', 'longswords', 'rapiers', 'shortswords'],
+    skillCount: 3,
+    skillPool: [], // any skill
+    spellcastingStat: 'cha',
+    spellProgression: 'full',
+  },
+  cleric: {
+    name: 'Cleric',
+    hitDie: 8,
+    savingThrows: ['wis', 'cha'],
+    armorProficiencies: ['light', 'medium', 'shields'],
+    weaponProficiencies: ['simple'],
+    skillCount: 2,
+    skillPool: ['history', 'insight', 'medicine', 'persuasion', 'religion'],
+    spellcastingStat: 'wis',
+    spellProgression: 'full',
+  },
+  druid: {
+    name: 'Druid',
+    hitDie: 8,
+    savingThrows: ['int', 'wis'],
+    armorProficiencies: ['light', 'medium', 'shields'],
+    weaponProficiencies: ['clubs', 'daggers', 'darts', 'javelins', 'maces', 'quarterstaffs', 'scimitars', 'sickles', 'slings', 'spears'],
+    skillCount: 2,
+    skillPool: ['arcana', 'animalHandling', 'insight', 'medicine', 'nature', 'perception', 'religion', 'survival'],
+    spellcastingStat: 'wis',
+    spellProgression: 'full',
+  },
+  fighter: {
+    name: 'Fighter',
+    hitDie: 10,
+    savingThrows: ['str', 'con'],
+    armorProficiencies: ['light', 'medium', 'heavy', 'shields'],
+    weaponProficiencies: ['simple', 'martial'],
+    skillCount: 2,
+    skillPool: ['acrobatics', 'animalHandling', 'athletics', 'history', 'insight', 'intimidation', 'perception', 'survival'],
+  },
+  monk: {
+    name: 'Monk',
+    hitDie: 8,
+    savingThrows: ['str', 'dex'],
+    armorProficiencies: [],
+    weaponProficiencies: ['simple', 'shortswords'],
+    skillCount: 2,
+    skillPool: ['acrobatics', 'athletics', 'history', 'insight', 'religion', 'stealth'],
+  },
+  paladin: {
+    name: 'Paladin',
+    hitDie: 10,
+    savingThrows: ['wis', 'cha'],
+    armorProficiencies: ['light', 'medium', 'heavy', 'shields'],
+    weaponProficiencies: ['simple', 'martial'],
+    skillCount: 2,
+    skillPool: ['athletics', 'insight', 'intimidation', 'medicine', 'persuasion', 'religion'],
+    spellcastingStat: 'cha',
+    spellProgression: 'half',
+  },
+  ranger: {
+    name: 'Ranger',
+    hitDie: 10,
+    savingThrows: ['str', 'dex'],
+    armorProficiencies: ['light', 'medium', 'shields'],
+    weaponProficiencies: ['simple', 'martial'],
+    skillCount: 3,
+    skillPool: ['animalHandling', 'athletics', 'insight', 'investigation', 'nature', 'perception', 'stealth', 'survival'],
+    spellcastingStat: 'wis',
+    spellProgression: 'half',
+  },
+  rogue: {
+    name: 'Rogue',
+    hitDie: 8,
+    savingThrows: ['dex', 'int'],
+    armorProficiencies: ['light'],
+    weaponProficiencies: ['simple', 'hand crossbows', 'longswords', 'rapiers', 'shortswords'],
+    skillCount: 4,
+    skillPool: ['acrobatics', 'athletics', 'deception', 'insight', 'intimidation', 'investigation', 'perception', 'performance', 'persuasion', 'sleightOfHand', 'stealth'],
+  },
+  sorcerer: {
+    name: 'Sorcerer',
+    hitDie: 6,
+    savingThrows: ['con', 'cha'],
+    armorProficiencies: [],
+    weaponProficiencies: ['daggers', 'darts', 'slings', 'quarterstaffs', 'light crossbows'],
+    skillCount: 2,
+    skillPool: ['arcana', 'deception', 'insight', 'intimidation', 'persuasion', 'religion'],
+    spellcastingStat: 'cha',
+    spellProgression: 'full',
+  },
+  warlock: {
+    name: 'Warlock',
+    hitDie: 8,
+    savingThrows: ['wis', 'cha'],
+    armorProficiencies: ['light'],
+    weaponProficiencies: ['simple'],
+    skillCount: 2,
+    skillPool: ['arcana', 'deception', 'history', 'intimidation', 'investigation', 'nature', 'religion'],
+    spellcastingStat: 'cha',
+    spellProgression: 'full',
+  },
+  wizard: {
+    name: 'Wizard',
+    hitDie: 6,
+    savingThrows: ['int', 'wis'],
+    armorProficiencies: [],
+    weaponProficiencies: ['daggers', 'darts', 'slings', 'quarterstaffs', 'light crossbows'],
+    skillCount: 2,
+    skillPool: ['arcana', 'history', 'insight', 'investigation', 'medicine', 'religion'],
+    spellcastingStat: 'int',
+    spellProgression: 'full',
+  },
 };
 
 export interface RaceData {
