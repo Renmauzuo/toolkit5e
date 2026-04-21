@@ -47,7 +47,7 @@ The root `package.json` is `"private": true` to prevent accidentally publishing 
 
 - `types.ts` — Core interfaces: `Statblock`, `Trait`, `Attack`, `Multiattack`, `ChallengeRating`, `AbilityKey`, `SkillRank`
 - `constants.ts` — String constants use `as const` for literal types (creature types, damage types, conditions, alignments, etc.). Numeric constants do not need `as const` as TypeScript infers literal types for them already.
-- `data.ts` — Reference data: `sizes`, `abilities`, `skills`, `averageStats`, `traits`, `procs`, `actions`, `armorTypes`, `spells`, `pronouns`, `races`
+- `data.ts` — Reference data: `sizes`, `abilities`, `skills`, `averageStats`, `traits`, `procs`, `actions`, `armorTypes`, `spells`, `fullCasterSlots`, `pronouns`, `races`
 - `utils.ts` — Pure utility functions: `abilityScoreModifier`, `averageRoll`, `damageString`, `stringForCR`, `stepForCR`, `toSentenceCase`, `toTitleCase`, `getOrdinal`, `flattenObject`, `mergeObjects`, `mergeArrays`
 
 ### @toolkit5e/monster-scaler
@@ -134,3 +134,9 @@ renderStatblock(statblock, document.getElementById('statblock'));
 - Trait names go through `replaceTokensInString` in the renderer — tokens work in names as well as descriptions.
 - Any `proc` key referenced on an attack (e.g. `proc: 'poisonBite'`) must have a corresponding entry in `procs` in `data.ts`. If the key is missing, `generateTrait` will receive `undefined` as `baseTrait` and crash with a `Cannot read properties of undefined` error at runtime. Always define the proc before referencing it.
 - Avoid constructing trait text that depends on `statblock.description` inside `scaleMonster` or `applyLegendary` — `description` is set by the caller after scaling. Construct inline strings using `statblock.slug` as a fallback if needed.
+- `{{trait:damage}}` renders as a dice string (e.g. `2d6 (7)`) when `damageDieSize > 1`, or as a plain number when `damageDieSize === 1`. Use `damageDieSize: 1` for traits whose "damage" is actually a flat threshold or count (e.g. Relentless's hit point threshold) — the scaler will still interpolate `damageDice` proportionally across CRs, and the renderer will output just the number with no dice notation.
+- Trait tokens (`{{trait:key}}`) are the right choice for any value that lives on the trait itself — spell lists, caster level, DC adjustments, etc. Bare tokens (`{{key}}`) resolve against the statblock, not the trait. When in doubt, use `{{trait:key}}`.
+- `Trait.classSpells` is a `string[]` of spell keys for class-based prepared spellcasting, rendered via `{{trait:spellListClass}}`. Spell levels are looked up from the `spells` registry in `data.ts`. Slot counts come from `fullCasterSlots[spellcastingLevel]`. Unpopulated slot tiers (where the caster level unlocks slots but no spells are listed) render as "choose appropriate spells".
+- `Trait.spellList` (`Record<string, { uses? }>`) is for innate spellcasting, rendered via `{{trait:spellListInnate}}`, grouped by uses/day.
+- `Trait.scalesSpellcasting: true` on a trait definition tells `generateTrait` to compute `spellcastingLevel` using a linear offset from the benchmark CR: `offset = benchmarkLevel - benchmarkCR`, then `round(targetCR + offset)`, clamped to `[1, 20]`. Set `spellcastingLevel` in the per-CR `traits` benchmark data (not `lockedStats`) so the scaler can find the benchmark CR.
+- `{{trait:ordinalLevel}}` resolves `trait.spellcastingLevel ?? trait.level ?? statblock.level` — prefer `spellcastingLevel` for NPC spellcasters so it doesn't collide with the sidekick `level` field.

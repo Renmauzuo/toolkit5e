@@ -55,9 +55,11 @@ export function stepForCR(cr: number | string): number {
 
 /**
  * Returns a sentence-case version of a string.
+ * Capitalizes the first letter and letters following sentence-ending punctuation.
+ * Avoids capitalizing after abbreviations like "ft.", "dr.", "mr.", etc.
  */
 export function toSentenceCase(targetString: string): string {
-  return targetString.replace(/(^\s*\w|[.!?]\s*\w)/g, c => c.toUpperCase());
+  return targetString.replace(/(^\s*\w|(?<!\b(?:ft|dr|mr|mrs|ms|prof|st|vs|etc|approx|avg)\b)[.!?]\s*\w)/gi, c => c.toUpperCase());
 }
 
 /**

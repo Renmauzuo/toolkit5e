@@ -53,9 +53,14 @@ export interface Trait {
   appliesCondition?: boolean;
   condition?: string;
   hitPointsPerHitDie?: number;
-  spellList?: Record<string, { uses: number }>;
+  spellList?: Record<string, { uses?: number }>;
+  /** Spell keys for class-based spellcasting (prepared spells, grouped by level from the spells registry). */
+  classSpells?: string[];
   school?: string;
   level?: number;
+  spellcastingLevel?: number;
+  /** If true, `spellcastingLevel` is scaled linearly by `scaleMonster` using the offset from the benchmark CR. */
+  scalesSpellcasting?: boolean;
   [key: string]: unknown;
 }
 

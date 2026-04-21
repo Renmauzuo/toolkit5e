@@ -90,6 +90,9 @@ const utils_js_1 = require("./utils.js");
     (0, vitest_1.it)('capitalizes after period', () => (0, vitest_1.expect)((0, utils_js_1.toSentenceCase)('hello. world')).toBe('Hello. World'));
     (0, vitest_1.it)('capitalizes after exclamation', () => (0, vitest_1.expect)((0, utils_js_1.toSentenceCase)('hello! world')).toBe('Hello! World'));
     (0, vitest_1.it)('leaves already-capitalized strings alone', () => (0, vitest_1.expect)((0, utils_js_1.toSentenceCase)('Hello World')).toBe('Hello World'));
+    (0, vitest_1.it)('does not capitalize after ft. abbreviation', () => (0, vitest_1.expect)((0, utils_js_1.toSentenceCase)('move up to 10 ft. toward a creature')).toBe('Move up to 10 ft. toward a creature'));
+    (0, vitest_1.it)('does not capitalize after dr. abbreviation', () => (0, vitest_1.expect)((0, utils_js_1.toSentenceCase)('consult dr. smith for details')).toBe('Consult dr. smith for details'));
+    (0, vitest_1.it)('still capitalizes after a real sentence boundary', () => (0, vitest_1.expect)((0, utils_js_1.toSentenceCase)('it falls prone. the creature takes damage')).toBe('It falls prone. The creature takes damage'));
 });
 // ---------------------------------------------------------------------------
 // toTitleCase

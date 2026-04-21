@@ -1,5 +1,5 @@
 import {
-  sizes, abilities, skills, averageStats, armorTypes, senses, pronouns, spells,
+  sizes, abilities, skills, averageStats, armorTypes, senses, pronouns, spells, fullCasterSlots,
   abilityScoreModifier, averageRoll, damageString, stringForCR, toSentenceCase, getOrdinal,
   armorTypeLight, armorTypeMedium,
 } from '@toolkit5e/base';
@@ -73,11 +73,11 @@ export function replaceTokensInString(
         } else if (tokenArray[1] === 'castingClass') {
           tokenValue = ('' + statBlock.castingClass).replace(',', ' and ');
         } else if (tokenArray[1] === 'ordinalLevel') {
-          tokenValue = getOrdinal(trait.level ?? (statBlock.level as number));
+          tokenValue = getOrdinal(trait.spellcastingLevel ?? trait.level ?? (statBlock.level as number));
         } else if (tokenArray[1] === 'spellListInnate') {
           const spellsByUses: Record<number, string[]> = {};
           for (const spellId in trait.spellList) {
-            const uses = trait.spellList![spellId].uses;
+            const uses = trait.spellList![spellId].uses ?? 0;
             if (!spellsByUses[uses]) spellsByUses[uses] = [];
             spellsByUses[uses].push(spellId);
           }
@@ -90,6 +90,27 @@ export function replaceTokensInString(
             result += `${uses}/day${spellsByUses[uses].length > 1 ? ' each' : ''}: ${formatNames(spellsByUses[uses])}`;
           }
           tokenValue = "<span class='trait-spacer'></span>" + result;
+        } else if (tokenArray[1] === 'spellListClass') {
+          const level = Math.min((trait.spellcastingLevel as number) ?? 1, fullCasterSlots.length - 1);
+          const slots = fullCasterSlots[level] ?? [];
+          const spellsByLevel: Record<number, string[]> = {};
+          for (const spellId of (trait.classSpells as string[] ?? [])) {
+            const spellLevel = (spells as Record<string, { name: string; level?: number }>)[spellId]?.level ?? 0;
+            if (!spellsByLevel[spellLevel]) spellsByLevel[spellLevel] = [];
+            spellsByLevel[spellLevel].push(spellId);
+          }
+          const formatNames = (arr: string[]) => arr.map(id => (spells as Record<string, { name: string }>)[id]?.name ?? id).join(', ');
+          const parts: string[] = [];
+          if (spellsByLevel[0]) parts.push(`Cantrips (at will): ${formatNames(spellsByLevel[0])}`);
+          for (let sl = 1; sl <= slots.length; sl++) {
+            const slotCount = slots[sl - 1];
+            const known = spellsByLevel[sl];
+            const slotLabel = `${getOrdinal(sl)}-level (${slotCount} slot${slotCount !== 1 ? 's' : ''})`;
+            parts.push(known
+              ? `${slotLabel}: ${formatNames(known)}`
+              : `${slotLabel}: choose appropriate spells`);
+          }
+          tokenValue = "<span class='trait-spacer'></span>" + parts.join('<br/>');
         }
       } else if (tokenArray[0] === 'pronoun') {
         tokenValue = (pronouns[statBlock.gender ?? 4] as Record<string, string>)[tokenArray[1]] ?? '';

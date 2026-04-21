@@ -162,7 +162,7 @@ export const traits: Record<string, Trait> = {
   relentless:           { name: 'Relentless (Recharges after a Short or Long Rest)', description: 'If {{description}} takes {{trait:damage}} damage or less that would reduce {{pronoun:object}} to 0 hit points, {{pronoun:subject}} is reduced to 1 hit point instead.', dealsDamage: true },
   shadowStealth:        { name: 'Shadow Stealth',        description: 'While in dim light or darkness, {{description}} can take the Hide action as a bonus action. {{pronoun:possessive}} stealth bonus is also improved to {{abilityBonus:dex:2}}.' },
   speakWithBeastsAndPlants: { name: 'Speak with Beasts and Plants', description: '{{description}} can communicate with beasts and plants as if they shared a language.' },
-  spellcasting:         { name: 'Spellcasting',          description: '{{description}} is a {{trait:ordinalLevel}}-level spellcaster. {{pronoun:object}} spellcasting ability is {{castingStatName}} (spell save DC {{spellSaveDC}}, {{spellAttackModifier}} to hit with spell attacks). {{description}} has the following {{trait:castingClass}} spells prepared:{{spellListClass}}' },
+  spellcasting:         { name: 'Spellcasting', scalesSpellcasting: true,  description: '{{description}} is a {{trait:ordinalLevel}}-level spellcaster. {{pronoun:object}} spellcasting ability is {{castingStatName}} (spell save DC {{spellSaveDC}}, {{spellAttackModifier}} to hit with spell attacks). {{description}} has the following {{trait:castingClass}} spells prepared:{{trait:spellListClass}}' },
   stoneCunning:         { name: 'Stonecunning',          description: 'Whenever {{description}} makes an Intelligence (History) check related to the origin of stonework, {{pronoun:subject}} is considered proficient in the History skill and add double {{pronoun:possessiveAdj}} proficiency bonus to the check, instead of {{pronoun:possessiveAdj}} normal proficiency bonus.' },
   sunlightWeakness:     { name: 'Sunlight Weakness',     description: 'While in sunlight, {{description}} has disadvantage on attack rolls, ability checks, and saving throws.' },
   treeStride:           { name: 'Tree Stride',           description: 'Once on {{pronoun:object}} turn, {{description}} can use 10 feet of {{pronoun:object}} movement to step magically into one living tree within {{pronoun:object}} reach and emerge from a second living tree within 60 feet of the first tree, appearing in an unoccupied space within 5 feet of the second tree. Both trees must be large or bigger.' },
@@ -208,17 +208,55 @@ export const armorTypes: Record<string, { ac: number; type: number; name?: strin
   plate:          { ac: 18,                           type: armorTypeHeavy },
 };
 
+/**
+ * Spell slot counts per caster level for full casters (cleric, druid, wizard, etc.).
+ * Index is caster level (1-based), value is an array of slot counts per spell level.
+ * e.g. `fullCasterSlots[3]` = `[4, 3]` → 4 first-level slots, 3 second-level slots.
+ */
+export const fullCasterSlots: number[][] = [
+  [],              // placeholder for index 0
+  [2],             // level 1
+  [3],             // level 2
+  [4, 2],          // level 3
+  [4, 3],          // level 4
+  [4, 3, 2],       // level 5
+  [4, 3, 3],       // level 6
+  [4, 3, 3, 1],    // level 7
+  [4, 3, 3, 2],    // level 8
+  [4, 3, 3, 3, 1], // level 9
+  [4, 3, 3, 3, 2], // level 10
+  [4, 3, 3, 3, 2, 1],    // level 11
+  [4, 3, 3, 3, 2, 1],    // level 12
+  [4, 3, 3, 3, 2, 1, 1], // level 13
+  [4, 3, 3, 3, 2, 1, 1], // level 14
+  [4, 3, 3, 3, 2, 1, 1, 1],    // level 15
+  [4, 3, 3, 3, 2, 1, 1, 1],    // level 16
+  [4, 3, 3, 3, 2, 1, 1, 1, 1], // level 17
+  [4, 3, 3, 3, 3, 1, 1, 1, 1], // level 18
+  [4, 3, 3, 3, 3, 2, 1, 1, 1], // level 19
+  [4, 3, 3, 3, 3, 2, 2, 1, 1], // level 20
+];
+
 export const spells: Record<string, { name: string; level?: number; classes?: string[] }> = {
   barkskin:         { name: 'barkskin' },
-  druidcraft:       { name: 'druidcraft' },
+  bless:            { name: 'bless',              level: 1 },
+  cureWounds:       { name: 'cure wounds',        level: 1 },
+  druidcraft:       { name: 'druidcraft',         level: 0 },
   entangle:         { name: 'entangle' },
   fly:              { name: 'fly' },
   goodberry:        { name: 'goodberry' },
+  guidingBolt:      { name: 'guiding bolt',       level: 1 },
   hypnoticPattern:  { name: 'hypnotic pattern' },
+  lesserRestoration:{ name: 'lesser restoration', level: 2 },
+  light:            { name: 'light',              level: 0 },
   minorIllusion:    { name: 'minor illusion' },
   passWithoutTrace: { name: 'pass without trace' },
   phantasmalForce:  { name: 'phantasmal force' },
+  sacredFlame:      { name: 'sacred flame',       level: 0 },
+  sanctuary:        { name: 'sanctuary',          level: 1 },
   shillelagh:       { name: 'shillelagh' },
+  spiritualWeapon:  { name: 'spiritual weapon',   level: 2 },
+  thaumaturgy:      { name: 'thaumaturgy',        level: 0 },
 };
 
 export interface ClassData {

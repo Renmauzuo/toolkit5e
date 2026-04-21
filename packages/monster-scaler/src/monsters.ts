@@ -11,7 +11,7 @@ import {
   conditionExhaustion, conditionGrappled, conditionParalyzed, conditionPetrified,
   conditionPoisoned, conditionProne, conditionRestrained, conditionUnconscious,
   conditionCharmed, conditionFrightened, conditionBlinded,
-  languageCreator, languageIgnan, languageCommon, languageDwarfish, languageElvish, languageSylvan,
+  languageCreator, languageIgnan, languageAnyOne, languageCommon, languageDwarfish, languageElvish, languageSylvan,
   skillRankProficient, skillRankExpert,
   raceAny, genderFemale, genderNeutral,
   armorNatural,
@@ -184,6 +184,24 @@ export const monsterList: Record<string, MonsterTemplate> = {
     traits: ['innateSpellcasting', 'magicResistance', 'speakWithBeastsAndPlants', 'treeStride'],
     stats: { 1: { name: 'Dryad', hitDice: 5, speed: 30, str: 10, dex: 12, con: 11, int: 14, wis: 15, cha: 18, attacks: { club: { damageDice: 1, damageDieSize: 4 } } } },
   },
+eagle: {
+    type: typeBeast,
+    alignment: alignmentNeutralGood,
+    lockedStats: {
+      attacks: {
+        beak:   { reach: reachMedium, damageType: damageTypePiercing, name: 'Beak' },
+        talons: { reach: reachMedium, damageType: damageTypeSlashing, name: 'Talons' },
+      },
+      slug: 'eagle',
+      skills: { perception: skillRankProficient },
+    },
+    traits: ['keenSight'],
+    stats: {
+      0: { name: 'Eaglet' },
+      0.125: { name: 'Eagle',       hitDice: 1, speed: 10, fly: 60, size: sizeSmall,  str: 6,  dex: 15, con: 10, int: 2, wis: 14, cha: 7,  attacks: { talons: { damageDice: 1, damageDieSize: 4 } } },
+      1:     { name: 'Giant Eagle', hitDice: 4, speed: 10, fly: 80, size: sizeLarge,  str: 16, dex: 17, con: 13, int: 8, wis: 14, cha: 10, multiattack: { attacks: { beak: 1, talons: 1 } }, attacks: { beak: { damageDice: 1, damageDieSize: 6 }, talons: { damageDice: 2, damageDieSize: 6 } }, languages: ['Giant Eagle'] },
+    },
+  },
   elephant: {
     type: typeBeast,
     alignment: alignmentUnaligned,
@@ -206,6 +224,15 @@ export const monsterList: Record<string, MonsterTemplate> = {
       5: { bonusArmor: 4, hitDice: 10, size: sizeHuge, str: 22, dex: 9, con: 17, wis: 11, traits: { tramplingCharge: { dcAdjustment: -4 } }, attacks: { gore: { damageDice: 4, damageDieSize: 8 }, stomp: { damageDice: 3, damageDieSize: 10 } } },
       6: { bonusArmor: 4, hitDice: 11, size: sizeHuge, str: 24, dex: 9, con: 21, wis: 11, traits: { tramplingCharge: { dcAdjustment: 0 } }, attacks: { gore: { damageDice: 4, damageDieSize: 8, reach: reachMediumShort }, stomp: { damageDice: 4, damageDieSize: 10 } } },
     },
+  },
+
+  fireElemental: {
+    name: 'Fire Elemental',
+    type: typeElemental,
+    alignment: alignmentNeutral,
+    lockedStats: { darkvision: 60, languages: [languageIgnan], resistances: [damageTypeMundanePhysical], immunities: [damageTypeFire, damageTypePoison], conditionImmunities: [conditionExhaustion, conditionGrappled, conditionParalyzed, conditionPetrified, conditionPoisoned, conditionProne, conditionRestrained, conditionUnconscious], attacks: { touch: { reach: reachMediumShort, damageType: damageTypeFire, name: 'Touch', proc: 'ignite' } }, slug: 'elemental', multiattack: { attacks: { touch: 2 } } },
+    traits: ['fireForm', 'illumination', 'waterSusceptibility'],
+    stats: { 5: { name: 'Fire Elemental', hitDice: 12, speed: 50, size: sizeLarge, str: 10, dex: 17, con: 16, int: 6, wis: 10, cha: 7, attacks: { touch: { damageDice: 2, damageDieSize: 6, finesse: true } }, traits: { ignite: { damageDice: 1, damageDieSize: 10 }, fireForm: { damageDice: 1, damageDieSize: 10 }, waterSusceptibility: { damageDice: 1, damageDieSize: 1 } } } },
   },
   giantSpider: {
     name: 'Giant Spider',
@@ -268,32 +295,6 @@ export const monsterList: Record<string, MonsterTemplate> = {
       0.5:  { hitDice: 3, speed: 60, str: 18, dex: 12, con: 13, wis: 12, cha: 7, attacks: { hooves: { damageDice: 2, damageDieSize: 6 } }, traits: { tramplingCharge: { chargeAttack: 'hooves', knockdownAttack: 'hooves' } } },
     },
   },
-  eagle: {
-    type: typeBeast,
-    alignment: alignmentNeutralGood,
-    lockedStats: {
-      attacks: {
-        beak:   { reach: reachMedium, damageType: damageTypePiercing, name: 'Beak' },
-        talons: { reach: reachMedium, damageType: damageTypeSlashing, name: 'Talons' },
-      },
-      slug: 'eagle',
-      skills: { perception: skillRankProficient },
-    },
-    traits: ['keenSight'],
-    stats: {
-      0: { name: 'Eaglet' },
-      0.125: { name: 'Eagle',       hitDice: 1, speed: 10, fly: 60, size: sizeSmall,  str: 6,  dex: 15, con: 10, int: 2, wis: 14, cha: 7,  attacks: { talons: { damageDice: 1, damageDieSize: 4 } } },
-      1:     { name: 'Giant Eagle', hitDice: 4, speed: 10, fly: 80, size: sizeLarge,  str: 16, dex: 17, con: 13, int: 8, wis: 14, cha: 10, multiattack: { attacks: { beak: 1, talons: 1 } }, attacks: { beak: { damageDice: 1, damageDieSize: 6 }, talons: { damageDice: 2, damageDieSize: 6 } }, languages: ['Giant Eagle'] },
-    },
-  },
-  fireElemental: {
-    name: 'Fire Elemental',
-    type: typeElemental,
-    alignment: alignmentNeutral,
-    lockedStats: { darkvision: 60, languages: [languageIgnan], resistances: [damageTypeMundanePhysical], immunities: [damageTypeFire, damageTypePoison], conditionImmunities: [conditionExhaustion, conditionGrappled, conditionParalyzed, conditionPetrified, conditionPoisoned, conditionProne, conditionRestrained, conditionUnconscious], attacks: { touch: { reach: reachMediumShort, damageType: damageTypeFire, name: 'Touch', proc: 'ignite' } }, slug: 'elemental', multiattack: { attacks: { touch: 2 } } },
-    traits: ['fireForm', 'illumination', 'waterSusceptibility'],
-    stats: { 5: { name: 'Fire Elemental', hitDice: 12, speed: 50, size: sizeLarge, str: 10, dex: 17, con: 16, int: 6, wis: 10, cha: 7, attacks: { touch: { damageDice: 2, damageDieSize: 6, finesse: true } }, traits: { ignite: { damageDice: 1, damageDieSize: 10 }, fireForm: { damageDice: 1, damageDieSize: 10 }, waterSusceptibility: { damageDice: 1, damageDieSize: 1 } } } },
-  },
   killerWhale: {
     name: 'Killer Whale',
     type: typeBeast,
@@ -321,6 +322,49 @@ export const monsterList: Record<string, MonsterTemplate> = {
     },
     traits: ['amphibious', 'invisibleInWater', 'innateSpellcasting', 'magicResistance'],
     stats: { 2: { name: 'Naiad', bonusArmor: 2, hitDice: 7, speed: 30, swim: 30, str: 10, dex: 16, con: 11, int: 15, wis: 10, cha: 18, attacks: { psychicTouch: { damageDice: 1, damageDieSize: 10 } } } },
+  },
+  priest: {
+    name: 'Priest',
+    type: typeHumanoid,
+    alignment: alignmentAny,
+    race: raceAny,
+    lockedStats: {
+      castingStat: 'wis',
+      castingClass: 'cleric',
+      extraLanguages: 1,
+      size: sizeMedium,
+      skills: { medicine: skillRankProficient, persuasion: skillRankProficient, religion: skillRankProficient },
+    },
+    traits: ['spellcasting'],
+    variants: {
+      healer: {
+        name: 'Healer',
+        lockedStats: {
+          slug: 'acolyte',
+          attacks: { club: { reach: reachMedium, damageType: damageTypeBludgeoning, name: 'Club' } },
+        },
+        stats: {
+          0.25: { name: 'Acolyte',  hitDice: 2, bonusArmor: 0, attacks: { club: { damageDice: 1, damageDieSize: 4 } }, traits: { spellcasting: { spellcastingLevel: 1, classSpells: ['light', 'sacredFlame', 'thaumaturgy', 'bless', 'cureWounds', 'sanctuary'] } } },
+          2:    { name: 'Priest',   hitDice: 5, bonusArmor: 3, attacks: { club: { damageDice: 1, damageDieSize: 4 } }, traits: { spellcasting: { spellcastingLevel: 5, classSpells: ['light', 'sacredFlame', 'thaumaturgy', 'guidingBolt', 'cureWounds', 'sanctuary', 'lesserRestoration', 'spiritualWeapon'] } } },
+        },
+      },
+      warpriest: {
+        name: 'War Priest',
+        lockedStats: {
+          slug: 'warpriest',
+          attacks: { mace: { reach: reachMedium, damageType: damageTypeBludgeoning, name: 'Mace' } },
+          armor: 'chainMail',
+        },
+        stats: {
+          0.25: { name: 'Acolyte',    hitDice: 2, attacks: { mace: { damageDice: 1, damageDieSize: 6 } }, traits: { spellcasting: { spellcastingLevel: 1, classSpells: ['light', 'sacredFlame', 'thaumaturgy', 'guidingBolt', 'cureWounds', 'sanctuary'] } } },
+          2:    { name: 'War Priest', hitDice: 5, attacks: { mace: { damageDice: 1, damageDieSize: 6 } }, traits: { spellcasting: { spellcastingLevel: 5, classSpells: ['light', 'sacredFlame', 'thaumaturgy', 'guidingBolt', 'cureWounds', 'sanctuary', 'lesserRestoration', 'spiritualWeapon'] } } },
+        },
+      },
+    },
+    stats: {
+      0.25: { hitDice: 2, speed: 30, str: 10, dex: 10, con: 10, int: 10, wis: 14, cha: 11 },
+      2:    { bonusArmor: 3, hitDice: 5, speed: 30, str: 10, dex: 10, con: 12, int: 13, wis: 16, cha: 13, saves: ['wis', 'cha'] },
+    },
   },
   quetzalcoatlus: {
     type: typeBeast,

@@ -107,6 +107,9 @@ describe('toSentenceCase', () => {
   it('capitalizes after period', () => expect(toSentenceCase('hello. world')).toBe('Hello. World'));
   it('capitalizes after exclamation', () => expect(toSentenceCase('hello! world')).toBe('Hello! World'));
   it('leaves already-capitalized strings alone', () => expect(toSentenceCase('Hello World')).toBe('Hello World'));
+  it('does not capitalize after ft. abbreviation', () => expect(toSentenceCase('move up to 10 ft. toward a creature')).toBe('Move up to 10 ft. toward a creature'));
+  it('does not capitalize after dr. abbreviation', () => expect(toSentenceCase('consult dr. smith for details')).toBe('Consult dr. smith for details'));
+  it('still capitalizes after a real sentence boundary', () => expect(toSentenceCase('it falls prone. the creature takes damage')).toBe('It falls prone. The creature takes damage'));
 });
 
 // ---------------------------------------------------------------------------

@@ -283,6 +283,31 @@ export function generateTrait(
     newTrait.damageDieSize = damageDieSize;
   }
 
+  if (baseTrait.scalesSpellcasting) {
+    // Find the benchmark CR where spellcastingLevel is defined, then apply a linear offset.
+    // offset = benchmarkLevel - benchmarkCR; scaledLevel = round(targetCR + offset), clamped [1, 20].
+    const levelKey = `traits__${traitName}__spellcastingLevel`;
+    const benchmarkLevel = findNearestLowerBenchmark(levelKey, targetCR, sourceStats) as number | undefined;
+    if (benchmarkLevel !== undefined) {
+      // Find the CR of that benchmark to compute the offset
+      let benchmarkCR = 0;
+      for (const cr in sourceStats) {
+        const numCR = Number(cr);
+        if (numCR <= Number(targetCR)) {
+          const traitData = (sourceStats[numCR] as Record<string, Record<string, unknown>>)?.traits?.[traitName];
+          if ((traitData as Record<string, unknown>)?.spellcastingLevel !== undefined) benchmarkCR = numCR;
+        }
+      }
+      const offset = benchmarkLevel - benchmarkCR;
+      newTrait.spellcastingLevel = Math.max(1, Math.min(20, Math.round(Number(targetCR) + offset)));
+    }
+
+    // classSpells: use nearest lower benchmark so variants can override by CR
+    if (!newTrait.classSpells) {
+      newTrait.classSpells = findNearestLowerBenchmark(`traits__${traitName}__classSpells`, targetCR, sourceStats) as string[] | undefined;
+    }
+  }
+
   return newTrait;
 }
 

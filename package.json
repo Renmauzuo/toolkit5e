@@ -8,9 +8,11 @@
   "scripts": {
     "build": "tsc --build",
     "watch": "tsc --build --watch",
-    "test": "vitest --run"
+    "test": "vitest --run",
+    "format": "prettier --write \"packages/*/src/**/*.ts\""
   },
   "devDependencies": {
+    "prettier": "^3.5.3",
     "typescript": "^6.0.2",
     "vitest": "^0.34.6"
   }
