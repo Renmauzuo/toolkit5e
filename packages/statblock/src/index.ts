@@ -1,7 +1,7 @@
 import {
   sizes, abilities, skills, averageStats, armorTypes, senses, pronouns, spells, fullCasterSlots,
   abilityScoreModifier, averageRoll, damageString, stringForCR, toSentenceCase, getOrdinal,
-  armorTypeLight, armorTypeMedium,
+  armorClasses,
 } from '@toolkit5e/base';
 import type { Statblock, Trait, Attack, ChallengeRating } from '@toolkit5e/base';
 
@@ -197,9 +197,9 @@ export function renderStatblock(sourceStats: Statblock, target: HTMLElement): vo
     const armor = armorTypes[stats.armor as string];
     armorDescription = armor.name ?? toSentenceCase(stats.armor as string);
     acTotal = armor.ac;
-    if (armor.type === armorTypeLight) {
+    if (armor.type === armorClasses.light) {
       acTotal += (stats.abilityModifiers as Record<string, number>).dex;
-    } else if (armor.type === armorTypeMedium) {
+    } else if (armor.type === armorClasses.medium) {
       acTotal += Math.min((stats.abilityModifiers as Record<string, number>).dex, 2);
     }
   } else {

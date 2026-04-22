@@ -1,7 +1,7 @@
 import {
   averageStats, traits, procs, actions, sizes, abilities, races,
   abilityScoreModifier, mergeObjects, flattenObject, averageRoll, stepForCR,
-  typeHumanoid, raceAny, senses,
+  creatureTypes, raceKeys, senses,
 } from '@toolkit5e/base';
 import type { Statblock, Trait, Attack, ChallengeRating } from '@toolkit5e/base';
 import type { MonsterTemplate, MonsterVariant, ScaleMonsterOptions, Benchmarks } from './types.js';
@@ -434,8 +434,8 @@ export function scaleMonster(
   const type = (selectedVariant?.type ?? selectedMonster.type) as string;
   let currentRace: (typeof races)[number] | undefined;
 
-  if (type === typeHumanoid) {
-    if (selectedMonster.race === raceAny) {
+  if (type === creatureTypes.humanoid) {
+    if (selectedMonster.race === raceKeys.any) {
       currentRace = races[options.race ?? 0];
       derivedStats.type = `${type} (${currentRace.name})`;
       if (currentRace !== races[0]) {
@@ -636,7 +636,7 @@ export function scaleMonster(
   }
 
   // Racial bonuses (applied last so they don't affect other calculations)
-  if (type === typeHumanoid && selectedMonster.race === raceAny && currentRace && currentRace !== races[0]) {
+  if (type === creatureTypes.humanoid && selectedMonster.race === raceKeys.any && currentRace && currentRace !== races[0]) {
     const abilityMods = derivedStats.abilityModifiers as Record<string, number>;
     for (const stat in currentRace.bonusStats) {
       (derivedStats[stat] as number) += (currentRace.bonusStats as Record<string, number>)[stat];

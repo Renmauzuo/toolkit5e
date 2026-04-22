@@ -1,18 +1,7 @@
 import {
   sizeTiny, sizeSmall, sizeMedium, sizeLarge, sizeHuge, sizeGargantuan,
-  damageTypePiercing, damageTypeBludgeoning, damageTypeSlashing,
-  damageTypeMundanePhysical, damageTypeMundanePiercingSlashing,
-  damageTypeAcid, damageTypeCold, damageTypeFire, damageTypeLightning,
-  damageTypeNecrotic, damageTypePoison, damageTypePsychic, damageTypeRadiant, damageTypeThunder,
-  conditionExhaustion, conditionGrappled, conditionParalyzed, conditionPetrified,
-  conditionPoisoned, conditionProne, conditionRestrained, conditionUnconscious,
-  conditionCharmed, conditionFrightened, conditionBlinded,
-  languageCreator, languageIgnan, languageAnyOne, languageCommon, languageDwarfish, languageElvish, languageSylvan,
-  skillRankProficient, skillRankExpert,
-  raceAny, raceDwarf, raceHuman,
-  armorNatural, armorTypeLight, armorTypeMedium, armorTypeHeavy,
-  alignmentMaskAnyLawfulGood,
-  genderFemale, genderNeutral,
+  damageTypes, conditions, languages, skillRanks, raceKeys, armorMaterials, armorClasses,
+  alignmentMasks, genders,
 } from './constants.js';
 import type { ChallengeRating, Trait } from './types.js';
 
@@ -195,17 +184,17 @@ export const actions: Record<string, Trait> = {
 };
 
 export const armorTypes: Record<string, { ac: number; type: number; name?: string }> = {
-  padded:         { ac: 11, type: armorTypeLight },
-  leather:        { ac: 11, type: armorTypeLight },
-  studdedLeather: { ac: 12, name: 'Studded Leather', type: armorTypeLight },
-  chainShirt:     { ac: 13, name: 'Chain Shirt',     type: armorTypeMedium },
-  scaleMail:      { ac: 14, name: 'Scale Mail',      type: armorTypeMedium },
-  breastplate:    { ac: 14,                           type: armorTypeMedium },
-  halfPlate:      { ac: 15, name: 'Half Plate',      type: armorTypeMedium },
-  ringMail:       { ac: 14, name: 'Ring Mail',       type: armorTypeHeavy },
-  chainMail:      { ac: 16, name: 'Chain Mail',      type: armorTypeHeavy },
-  split:          { ac: 17,                           type: armorTypeHeavy },
-  plate:          { ac: 18,                           type: armorTypeHeavy },
+  padded:         { ac: 11, type: armorClasses.light },
+  leather:        { ac: 11, type: armorClasses.light },
+  studdedLeather: { ac: 12, name: 'Studded Leather', type: armorClasses.light },
+  chainShirt:     { ac: 13, name: 'Chain Shirt',     type: armorClasses.medium },
+  scaleMail:      { ac: 14, name: 'Scale Mail',      type: armorClasses.medium },
+  breastplate:    { ac: 14,                           type: armorClasses.medium },
+  halfPlate:      { ac: 15, name: 'Half Plate',      type: armorClasses.medium },
+  ringMail:       { ac: 14, name: 'Ring Mail',       type: armorClasses.heavy },
+  chainMail:      { ac: 16, name: 'Chain Mail',      type: armorClasses.heavy },
+  split:          { ac: 17,                           type: armorClasses.heavy },
+  plate:          { ac: 18,                           type: armorClasses.heavy },
 };
 
 /**
@@ -424,25 +413,25 @@ export interface RaceData {
 }
 
 export const races: RaceData[] = [
-  { name: raceAny },
+  { name: raceKeys.any },
   {
-    name: raceDwarf,
+    name: raceKeys.dwarf,
     stats: {
       size: sizeMedium,
-      languages: [languageCommon, languageDwarfish],
-      alignment: alignmentMaskAnyLawfulGood,
+      languages: [languages.common, languages.dwarfish],
+      alignment: alignmentMasks.anyLawfulGood,
       speed: 25,
       darkvision: 60,
-      resistances: [damageTypePoison],
+      resistances: [damageTypes.poison],
     },
     traits: ['dwarvenTraining', 'dwarvenResilience', 'dwarvenToughness', 'toolProficiency', 'stoneCunning'],
     bonusStats: { con: 2, wis: 1 },
   },
   {
-    name: raceHuman,
+    name: raceKeys.human,
     stats: {
       size: sizeMedium,
-      languages: [languageCommon],
+      languages: [languages.common],
       speed: 30,
     },
     bonusStats: { str: 1, con: 1, dex: 1, int: 1, wis: 1, cha: 1 },
