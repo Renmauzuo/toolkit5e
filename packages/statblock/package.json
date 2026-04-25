@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "style": "dist/statblock.css",
   "files": ["dist", "README.md"],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node -e \"require('fs').copyFileSync('src/statblock.css', 'dist/statblock.css')\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["dnd", "dungeons-and-dragons", "5e", "statblock"],

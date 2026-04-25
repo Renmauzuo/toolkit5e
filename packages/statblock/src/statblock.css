@@ -1,0 +1,99 @@
+.stat-block {
+    background: #FDF1DC;
+    padding: 0 10px;
+    box-shadow: 0 0 1.5em #867453;
+    margin: 50px auto;
+    display: inline-block;
+    text-align: left;
+    font-family: sans-serif;
+    font-size: 16px;
+    line-height: 1.2;
+    max-width: 440px;
+}
+
+.stat-block:before,
+.stat-block:after {
+    content: '';
+    display: block;
+    background: #E69A28;
+    border: 1px solid #000;
+    height: 5px;
+    padding: 0 10px 0;
+    margin: 0 -10px;
+}
+
+.stat-block .tapered-rule {
+    display: block;
+    width: 100%;
+    height: 5px;
+    border: none;
+    color: #922610;
+    fill: #922610;
+    stroke: #922610;
+    margin-bottom: 10px;
+}
+
+.stat-block h2 {
+    font-family: serif;
+    color: #922610;
+    font-size: 23px;
+    line-height: 1.2em;
+    margin: 10px 0 0;
+    letter-spacing: 1px;
+    font-variant: small-caps;
+    font-weight: bold;
+}
+
+.stat-block h3 {
+    color: #922610;
+    font-variant: small-caps;
+    border-bottom: 1px solid #922610;
+    font-size: 20px;
+    font-weight: normal;
+    margin: 0 0 10px;
+}
+
+.stat-block p {
+    margin: 0 0 10px;
+}
+
+.stat-block p.monster-type {
+    font-weight: normal;
+    font-style: italic;
+    margin: 0 0 10px;
+}
+
+.stat-block p.property {
+    margin: 0;
+    color: #922610;
+    font-weight: bold;
+}
+
+.stat-block p.property span {
+    font-weight: normal;
+}
+
+.stat-block .trait-spacer {
+    display: block;
+    height: 10px;
+}
+
+.stat-block .spacer {
+    height: 10px;
+}
+
+.stat-block .ability-scores {
+    display: flex;
+    margin-bottom: 10px;
+    justify-content: space-around;
+}
+
+.stat-block .ability-scores p {
+    text-align: center;
+    margin: 0 8px;
+    color: #922610;
+}
+
+.stat-block .ability-scores p:first-child {
+    font-weight: bold;
+}

@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "tsc --build",
+    "build": "tsc --build && node -e \"require('fs').copyFileSync('packages/statblock/src/statblock.css', 'packages/statblock/dist/statblock.css')\"",
     "watch": "tsc --build --watch",
     "test": "vitest --run",
     "format": "prettier --write \"packages/*/src/**/*.ts\""
