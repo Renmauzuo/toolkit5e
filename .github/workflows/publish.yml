@@ -36,6 +36,12 @@ jobs:
         run: npm version ${{ github.ref_name }} --no-git-tag-version
         working-directory: packages/statblock
 
+      - name: Sync @toolkit5e/base dependency version
+        run: |
+          VERSION=${{ github.ref_name }}
+          cd packages/monster-scaler && npm pkg set "dependencies.@toolkit5e/base=^$VERSION" && cd ../..
+          cd packages/statblock && npm pkg set "dependencies.@toolkit5e/base=^$VERSION" && cd ../..
+
       - run: npm publish --provenance --access public
         working-directory: packages/base
 
