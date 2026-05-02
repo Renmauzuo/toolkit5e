@@ -46,8 +46,8 @@ The root `package.json` is `"private": true` to prevent accidentally publishing 
 ### @toolkit5e/base
 
 - `types.ts` — Core interfaces: `Statblock`, `Trait`, `Attack`, `Multiattack`, `ChallengeRating`, `AbilityKey`, `SkillRank`
-- `constants.ts` — String constants use `as const` for literal types (creature types, damage types, conditions, alignments, etc.). Numeric constants do not need `as const` as TypeScript infers literal types for them already.
-- `data.ts` — Reference data: `sizes`, `abilities`, `skills`, `averageStats`, `traits`, `procs`, `actions`, `armorTypes`, `spells`, `fullCasterSlots`, `pronouns`, `races`
+- `constants.ts` — String constants use `as const` for literal types (creature types, damage types, conditions, alignments, languages, raceKeys, etc.). Numeric constants do not need `as const` as TypeScript infers literal types for them already.
+- `data.ts` — Reference data: `sizes`, `abilities`, `skills`, `averageStats`, `traits`, `procs`, `actions`, `armorTypes`, `spells`, `fullCasterSlots`, `pronouns`, `races` (9 SRD races with ability bonuses, traits, size, speed, darkvision, languages). `RaceData` supports optional `subraces` array for future use (e.g. dragonborn colors).
 - `utils.ts` — Pure utility functions: `abilityScoreModifier`, `averageRoll`, `damageString`, `stringForCR`, `stepForCR`, `toSentenceCase`, `toTitleCase`, `getOrdinal`, `flattenObject`, `mergeObjects`, `mergeArrays`
 
 ### @toolkit5e/monster-scaler
@@ -140,3 +140,15 @@ renderStatblock(statblock, document.getElementById('statblock'));
 - `Trait.spellList` (`Record<string, { uses? }>`) is for innate spellcasting, rendered via `{{trait:spellListInnate}}`, grouped by uses/day.
 - `Trait.scalesSpellcasting: true` on a trait definition tells `generateTrait` to compute `spellcastingLevel` using a linear offset from the benchmark CR: `offset = benchmarkLevel - benchmarkCR`, then `round(targetCR + offset)`, clamped to `[1, 20]`. Set `spellcastingLevel` in the per-CR `traits` benchmark data (not `lockedStats`) so the scaler can find the benchmark CR.
 - `{{trait:ordinalLevel}}` resolves `trait.spellcastingLevel ?? trait.level ?? statblock.level` — prefer `spellcastingLevel` for NPC spellcasters so it doesn't collide with the sidekick `level` field.
+
+### CR-gated actions
+
+Actions can appear at specific CRs using `crActions: ['actionName']` in per-CR stat entries. The scaler collects all `crActions` arrays from CRs at or below the target CR and merges them with the template-level `actions` list. This means an action defined at CR 16 will appear on all statblocks at CR 16+, but not at CR 15 or below. Used for Frightful Presence on adult+ dragons.
+
+### Nearest-lower-benchmark keys
+
+`Trait.nearestLowerBenchmarkKeys` is a `string[]` of field names that `generateTrait` resolves via `findNearestLowerBenchmark`. This is a generic mechanism for any trait field that should step up at discrete CRs rather than interpolate. Used by `breathWeapon` for `breathRange`, `breathShape`, `breathType`, and `breathSave`.
+
+### Bonus damage on all attacks
+
+`Trait.bonusDamageAllAttacks` is a damage type string (e.g. `'radiant'`, `'poison'`). When set on a trait with `dealsDamage: true`, `scaleMonster` applies the trait's scaled damage dice as a `damageRider` to every attack that doesn't already have a `damageRiderType`. Used for Angelic Weapons (radiant) and Hellish Weapons (poison). This ensures custom attacks added to the creature also get the bonus damage.

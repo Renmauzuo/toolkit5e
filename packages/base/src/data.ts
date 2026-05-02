@@ -125,23 +125,37 @@ export const pronouns = [
 export const traits: Record<string, Trait> = {
   amorphous:            { name: 'Amorphous',             description: '{{description}} can move through a space as narrow as 1 inch wide without squeezing.' },
   amphibious:           { name: 'Amphibious',            description: '{{description}} can breathe air and water.' },
+  angelicWeapons:       { name: 'Angelic Weapons', description: "{{description}}'s weapon attacks are magical. When {{description}} hits with any weapon, the weapon deals an extra {{trait:damage}} radiant damage (included in the attack).", dealsDamage: true, bonusDamageAllAttacks: 'radiant' },
+  airForm:              { name: 'Air Form',              description: "{{description}} can enter a hostile creature's space and stop there. {{pronoun:subject}} can move through a space as narrow as 1 inch wide without squeezing." },
+  barbedHide:           { name: 'Barbed Hide', description: "At the start of each of {{pronoun:possessiveAdj}} turns, {{description}} deals {{trait:damage}} piercing damage to any creature grappling {{pronoun:object}}.", dealsDamage: true },
   bloodyFrenzy:         { name: 'Bloody Frenzy',         description: "{{description}} has advantage on melee attack rolls against any creature that doesn't have all its hit points." },
   dwarvenResilience:    { name: 'Dwarven Resilience',    description: '{{description}} has advantage on saving throws against poison.' },
   dwarvenToughness:     { name: 'Dwarven Toughness',      description: '{{description}} has one extra hit point per hit die.', hitPointsPerHitDie: 1 },
   dwarvenTraining:      { name: 'Dwarven Combat Training',description: '{{description}} has proficiency with the battleaxe, handaxe, light hammer, and warhammer.' },
+  deathThroes:          { name: 'Death Throes', description: "When {{description}} dies, {{pronoun:subject}} explodes, and each creature within 30 feet of {{pronoun:object}} must make a DC {{trait:DC}} Dexterity saving throw, taking {{trait:damage}} fire damage on a failed save, or half as much damage on a successful one. The explosion ignites flammable objects in that area that aren't being worn or carried.", dealsDamage: true, allowsSave: true, dcStat: 'con' },
+  devilsSight:          { name: "Devil's Sight", description: "Magical darkness doesn't impede {{description}}'s darkvision." },
+  divineAwareness:      { name: 'Divine Awareness', description: '{{description}} knows if it hears a lie.' },
   echolocation:         { name: 'Echolocation',          description: "{{description}} can't use {{pronoun:possessiveAdj}} blindsight while deafened." },
+  earthGlide:           { name: 'Earth Glide',           description: '{{description}} can burrow through nonmagical, unworked earth and stone. While doing so, {{description}} doesn\'t disturb the material {{pronoun:subject}} moves through.' },
   empoweredSpells:      { name: 'Empowered Spells',      description: 'Whenever {{description}} casts a spell of the {{trait:school}} school by expending a spell slot, {{description}} can add {{pronoun:possessiveAdj}} spellcasting ability modifier ({{castingModifier}}) to the spell\'s damage roll or healing roll, if any.' },
   falseAppearance:      { name: 'False Appearance',      description: 'While {{description}} remains motionless, {{pronoun:subject}} is indistinguishable from a normal {{appearance}}.' },
+  fearAura:             { name: 'Fear Aura', description: "Any creature hostile to {{description}} that starts its turn within 20 feet of {{pronoun:object}} must make a DC {{trait:DC}} Wisdom saving throw, unless {{description}} is incapacitated. On a failed save, the creature is frightened until the start of its next turn. On a successful save, the creature is immune to {{description}}'s Fear Aura for the next 24 hours.", allowsSave: true, dcStat: 'cha' },
   fireForm:             { name: 'Fire Form',             description: '{{description}} can move through a space as narrow as 1 inch wide without squeezing. A creature that touches {{description}} or hits {{pronoun:object}} with a melee attack while within 5 ft. of {{pronoun:object}} takes {{trait:damage}} fire damage. In addition, {{description}} can enter a hostile creature\'s space and stop there. The first time {{pronoun:subject}} enters a creature\'s space on a turn, that creature takes {{trait:damage}} fire damage and catches fire; until someone takes an action to douse the fire, the creature takes {{trait:damage}} fire damage at the start of each of its turns.', dealsDamage: true },
+  fireAura:             { name: 'Fire Aura', description: "At the start of each of {{description}}'s turns, each creature within 5 feet of {{pronoun:object}} takes {{trait:damage}} fire damage, and flammable objects in the aura that aren't being worn or carried ignite. A creature that touches {{description}} or hits {{pronoun:object}} with a melee attack while within 5 feet of {{pronoun:object}} takes {{trait:damage}} fire damage.", dealsDamage: true },
   flyby:                { name: 'Flyby',                 description: "{{description}} doesn't provoke an opportunity attack when it flies out of an enemy's reach." },
+  freeze:               { name: 'Freeze',                description: "If {{description}} takes cold damage, {{pronoun:possessiveAdj}} speed is reduced by 20 feet until the end of {{pronoun:possessiveAdj}} next turn." },
+  freedomOfMovement:    { name: 'Freedom of Movement',   description: "{{description}} ignores difficult terrain, and magical effects can't reduce {{pronoun:possessiveAdj}} speed or cause {{pronoun:object}} to be restrained. {{pronoun:subject}} can spend 5 feet of movement to escape from nonmagical restraints or being grappled." },
   holdBreath:           { name: 'Hold Breath',           description: '{{description}} can hold {{pronoun:possessiveAdj}} breath for {{trait:duration}} minutes.', hasDuration: true },
+  hellishWeapons:       { name: 'Hellish Weapons', description: "{{description}}'s weapon attacks are magical. When {{description}} hits with any weapon, the weapon deals an extra {{trait:damage}} poison damage (included in the attack).", dealsDamage: true, bonusDamageAllAttacks: 'poison' },
+  incorporealMovement:  { name: 'Incorporeal Movement', description: "{{description}} can move through other creatures and objects as if they were difficult terrain. {{pronoun:subject}} takes 5 (1d10) force damage if {{pronoun:subject}} ends {{pronoun:possessiveAdj}} turn inside an object." },
   illumination:         { name: 'Illumination',          description: '{{description}} sheds bright light in a 30-foot radius and dim light in an additional 30 ft.' },
   innateSpellcasting:   { name: 'Innate Spellcasting',   description: "{{description}}'s spellcasting ability is Charisma (spell save DC {{trait:DC}}). {{pronoun:subject}} can innately cast the following spells, requiring no material components: {{trait:spellListInnate}}", allowsSave: true, dcStat: 'cha' },
   invisibleInWater:     { name: 'Invisible in Water',    description: '{{description}} is invisible while fully immersed in water.' },
-  keenHearing:          { name: 'Keen Hearing',          description: '{{description}} has advantage on Wisdom (Perception) checks that rely on hearing.' },
-  keenHearingSmell:     { name: 'Keen Hearing and Smell',description: '{{description}} has advantage on Wisdom (Perception) checks that rely on hearing or smell.' },
-  keenSight:            { name: 'Keen Sight',            description: '{{description}} has advantage on Wisdom (Perception) checks that rely on sight.' },
-  keenSmell:            { name: 'Keen Smell',            description: '{{description}} has advantage on Wisdom (Perception) checks that rely on smell.' },
+  keenHearing:          { name: 'Keen Hearing',              description: '{{description}} has advantage on Wisdom (Perception) checks that rely on hearing.' },
+  keenHearingSight:     { name: 'Keen Hearing and Sight',  description: '{{description}} has advantage on Wisdom (Perception) checks that rely on hearing or sight.' },
+  keenHearingSmell:     { name: 'Keen Hearing and Smell',  description: '{{description}} has advantage on Wisdom (Perception) checks that rely on hearing or smell.' },
+  keenSight:            { name: 'Keen Sight',              description: '{{description}} has advantage on Wisdom (Perception) checks that rely on sight.' },
+  keenSmell:            { name: 'Keen Smell',              description: '{{description}} has advantage on Wisdom (Perception) checks that rely on smell.' },
   legendaryResistance:  { name: 'Legendary Resistance', description: 'If {{description}} fails a saving throw, {{pronoun:subject}} can choose to succeed instead.', recharge: 'long' },
   packTactics:          { name: 'Pack Tactics',          description: "{{description}} has advantage on an attack roll against a creature if at least one of {{description}}'s allies is within 5 ft. of the creature and the ally isn't incapacitated." },
   magicAttacks:         { name: 'Magic Weapons',         description: "{{description}}'s weapon attacks are magical." },
@@ -150,18 +164,27 @@ export const traits: Record<string, Trait> = {
   pounce:               { name: 'Pounce',                description: 'If {{description}} moves at least 20 feet straight toward a creature and then hits it with a claw attack on the same turn, that target must succeed on a DC {{trait:DC}} Strength saving throw or be knocked prone. If the target is prone, {{description}} can make one bite attack against it as a bonus action.', allowsSave: true, dcStat: 'str' },
   relentless:           { name: 'Relentless (Recharges after a Short or Long Rest)', description: 'If {{description}} takes {{trait:damage}} damage or less that would reduce {{pronoun:object}} to 0 hit points, {{pronoun:subject}} is reduced to 1 hit point instead.', dealsDamage: true },
   shadowStealth:        { name: 'Shadow Stealth',        description: 'While in dim light or darkness, {{description}} can take the Hide action as a bonus action. {{pronoun:possessive}} stealth bonus is also improved to {{abilityBonus:dex:2}}.' },
+  siegeMonster:         { name: 'Siege Monster',         description: '{{description}} deals double damage to objects and structures.' },
   speakWithBeastsAndPlants: { name: 'Speak with Beasts and Plants', description: '{{description}} can communicate with beasts and plants as if they shared a language.' },
   spellcasting:         { name: 'Spellcasting', scalesSpellcasting: true,  description: '{{description}} is a {{trait:ordinalLevel}}-level spellcaster. {{pronoun:object}} spellcasting ability is {{castingStatName}} (spell save DC {{spellSaveDC}}, {{spellAttackModifier}} to hit with spell attacks). {{description}} has the following {{trait:castingClass}} spells prepared:{{trait:spellListClass}}' },
+  standingLeap:         { name: 'Standing Leap',         description: "{{description}}'s long jump is up to 20 feet and its high jump is up to 10 feet, with or without a running start." },
+  stench:               { name: 'Stench', description: "Any creature that starts its turn within 10 feet of {{description}} must succeed on a DC {{trait:DC}} Constitution saving throw or be poisoned until the start of the creature's next turn. On a successful saving throw, the creature is immune to {{description}}'s stench for 24 hours.", allowsSave: true, dcStat: 'con' },
   stoneCunning:         { name: 'Stonecunning',          description: 'Whenever {{description}} makes an Intelligence (History) check related to the origin of stonework, {{pronoun:subject}} is considered proficient in the History skill and add double {{pronoun:possessiveAdj}} proficiency bonus to the check, instead of {{pronoun:possessiveAdj}} normal proficiency bonus.' },
+  sureFooted:           { name: 'Sure-Footed',           description: '{{description}} has advantage on Strength and Dexterity saving throws made against effects that would knock {{pronoun:object}} prone.' },
+  sunlightSensitivity:  { name: 'Sunlight Sensitivity', description: 'While in sunlight, {{description}} has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight.' },
   sunlightWeakness:     { name: 'Sunlight Weakness',     description: 'While in sunlight, {{description}} has disadvantage on attack rolls, ability checks, and saving throws.' },
   treeStride:           { name: 'Tree Stride',           description: 'Once on {{pronoun:object}} turn, {{description}} can use 10 feet of {{pronoun:object}} movement to step magically into one living tree within {{pronoun:object}} reach and emerge from a second living tree within 60 feet of the first tree, appearing in an unoccupied space within 5 feet of the second tree. Both trees must be large or bigger.' },
   toolProficiency:      { name: 'Tool Proficiency',      description: "{{description}} has proficiency with one type of artisan\u2019s tools: smith\u2019s tools, brewer\u2019s supplies, or mason\u2019s tools." },
   tramplingCharge:      { name: 'Trampling Charge',      description: 'If {{description}} moves at least 20 ft. straight toward a creature and then hits it with a {{trait:chargeAttack}} attack on the same turn, that target must succeed on a DC {{trait:DC}} Strength saving throw or be knocked prone. If the target is prone, {{description}} can make one {{trait:knockdownAttack}} attack against it as a bonus action.', allowsSave: true, dcStat: 'str', chargeAttack: 'gore', knockdownAttack: 'stomp' },
+  underwaterCamouflage: { name: 'Underwater Camouflage', description: '{{description}} has advantage on Dexterity (Stealth) checks made while underwater.' },
+  undeadFortitude:      { name: 'Undead Fortitude', description: "If damage reduces {{description}} to 0 hit points, {{pronoun:subject}} must make a Constitution saving throw with a DC of 5 + the damage taken, unless the damage is radiant or from a critical hit. On a success, {{description}} drops to 1 hit point instead." },
   spiderClimb:          { name: 'Spider Climb',          description: '{{description}} can climb difficult surfaces, including upside down on ceilings, without needing to make an ability check.' },
   webSense:             { name: 'Web Sense',             description: 'While in contact with a web, {{description}} knows the exact location of any other creature in contact with the same web.' },
   webWalker:            { name: 'Web Walker',            description: '{{description}} ignores movement restrictions caused by webbing.' },
   waterBreathing:       { name: 'Water Breathing',       description: '{{description}} can breathe only underwater.' },
+  waterForm:            { name: 'Water Form',            description: "{{description}} can enter a hostile creature's space and stop there. {{pronoun:subject}} can move through a space as narrow as 1 inch wide without squeezing." },
   waterSusceptibility:  { name: 'Water Susceptibility', description: 'For every 5 ft. {{description}} moves in water, or for every gallon of water splashed on {{pronoun:object}}, {{pronoun:subject}} takes {{trait:damage}} cold damage.', dealsDamage: true },
+  nimbleEscape:         { name: 'Nimble Escape',         description: '{{description}} can take the Disengage or Hide action as a bonus action on each of {{pronoun:possessiveAdj}} turns.' },
 };
 
 export const procs: Record<string, Trait> = {
@@ -173,13 +196,34 @@ export const procs: Record<string, Trait> = {
   strengthDrain:             { name: 'Strength Drain',     description: "the target's Strength score is reduced by 1d4. The target dies if this reduces its Strength to 0. Otherwise, the reduction lasts until the target finishes a short or long rest. If a non-evil humanoid dies from this attack, a new {{slug}} rises from the corpse 1d4 hours later." },
   takeDown:                  { name: 'Takedown',           description: 'If the target is a creature, it must succeed on a DC {{trait:DC}} Strength saving throw or be knocked prone', allowsSave: true, dcStat: 'str' },
   poisonBite:                { name: 'Poison',             description: 'The target must make a DC {{trait:DC}} Constitution saving throw, taking {{trait:damage}} poison damage on a failed save, or half as much on a success. If the poison damage reduces the target to 0 hit points, the target is stable but poisoned for 1 hour, even after regaining hit points, and is paralyzed while poisoned in this way.', allowsSave: true, dcStat: 'con', dealsDamage: true },
+  lifeDrain:   { name: 'Life Drain', description: "The target must succeed on a DC {{trait:DC}} Constitution saving throw or its hit point maximum is reduced by an amount equal to the damage taken. This reduction lasts until the target finishes a long rest. The target dies if this effect reduces its hit point maximum to 0.", allowsSave: true, dcStat: 'con' },
+  ghoulClaws:  { name: 'Paralysis', description: "If the target is a creature other than an elf or undead, it must succeed on a DC {{trait:DC}} Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.", allowsSave: true, dcStat: 'con' },
 };
 
 export const actions: Record<string, Trait> = {
+  breathWeapon:    { name: 'Breath Weapon (Recharge 5\u20136)', description: '{{description}} exhales {{trait:breathType}} in a {{trait:breathRange}}-foot {{trait:breathShape}}. Each creature in that area must make a DC {{trait:DC}} {{trait:breathSave}} saving throw, taking {{trait:damage}} {{trait:breathType}} damage on a failed save, or half as much damage on a successful one.', dealsDamage: true, allowsSave: true, dcStat: 'con', nearestLowerBenchmarkKeys: ['breathRange', 'breathShape', 'breathType', 'breathSave'] },
+  weakenBreath:    { name: 'Weakening Breath', description: '{{description}} exhales gas in a {{trait:breathRange}}-foot cone. Each creature in that area must succeed on a DC {{trait:DC}} Strength saving throw or have disadvantage on Strength-based attack rolls, Strength checks, and Strength saving throws for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.', allowsSave: true, dcStat: 'con', nearestLowerBenchmarkKeys: ['breathRange'] },
+  paralyzeBreath:  { name: 'Paralyzing Breath', description: '{{description}} exhales paralyzing gas in a {{trait:breathRange}}-foot cone. Each creature in that area must succeed on a DC {{trait:DC}} Constitution saving throw or be paralyzed for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.', allowsSave: true, dcStat: 'con', nearestLowerBenchmarkKeys: ['breathRange'] },
+  repulseBreath:   { name: 'Repulsion Breath', description: '{{description}} exhales repulsion energy in a 30-foot cone. Each creature in that area must succeed on a DC {{trait:DC}} Strength saving throw or be pushed {{trait:pushDistance}} feet away from {{description}}.', allowsSave: true, dcStat: 'con', nearestLowerBenchmarkKeys: ['pushDistance'] },
+  sleepBreath:     { name: 'Sleep Breath', description: '{{description}} exhales sleep gas in a {{trait:breathRange}}-foot cone. Each creature in that area must succeed on a DC {{trait:DC}} Constitution saving throw or fall unconscious for {{trait:duration}} minutes. This effect ends for a creature if the creature takes damage or someone uses an action to wake it.', allowsSave: true, dcStat: 'con', hasDuration: true, nearestLowerBenchmarkKeys: ['breathRange'] },
+  slowBreath:      { name: 'Slowing Breath', description: "{{description}} exhales gas in a {{trait:breathRange}}-foot cone. Each creature in that area must succeed on a DC {{trait:DC}} Constitution saving throw. On a failed save, the creature can't use reactions, its speed is halved, and it can't make more than one attack on its turn. In addition, the creature can use either an action or a bonus action on its turn, but not both. These effects last for 1 minute. The creature can repeat the saving throw at the end of each of its turns, ending the effect on itself with a successful save.", allowsSave: true, dcStat: 'con', nearestLowerBenchmarkKeys: ['breathRange'] },
   delightfulLight: { name: 'Delightful Light (Recharge 5\u20136)', description: '{{description}} magically emanates light in a 10-foot radius for a moment. {{description}} and each creature of {{pronoun:possessiveAdj}} choice in that light gain {{trait:damage}} temporary hit points.', dealsDamage: true },
+  fetidCloud:      { name: 'Fetid Cloud (1/Day)', description: "A 10-foot radius of disgusting green gas extends out from {{description}}. The gas spreads around corners, and its area is lightly obscured. It lasts for 1 minute or until a strong wind disperses it. Any creature that starts its turn in that area must succeed on a DC {{trait:DC}} Constitution saving throw or be poisoned until the start of its next turn. While poisoned in this way, the target can take either an action or a bonus action on its turn, not both, and can't take reactions.", allowsSave: true, dcStat: 'con' },
   feyCharm:        { name: 'Fey Charm',  description: "{{description}} targets one humanoid or beast that {{pronoun:subject}} can see within 30 feet of {{pronoun:object}}. If the target can see {{description}}, it must succeed on a DC {{trait:DC}} Wisdom saving throw or be magically charmed. The charmed creature regards {{description}} as a trusted friend to be heeded and protected. Although the target isn't under {{description}}'s control, it takes {{description}}'s requests or actions in the most favorable way it can.<span class='trait-spacer'></span>Each time {{description}} or {{pronoun:possessiveAdj}} allies do anything harmful to the target, it can repeat the saving throw, ending the effect on itself on a success. Otherwise, the effect lasts 24 hours or until {{description}} dies, is on a different plane of existence from the target, or ends the effect as a bonus action. If a target's saving throw is successful, the target is immune to {{description}}'s Fey Charm for the next 24 hours.<span class='trait-spacer'></span>{{description}} can have no more than one humanoid and up to three beasts charmed at a time.", allowsSave: true, dcStat: 'cha', recharge: 'long' },
   feyLeap:         { name: 'Fey Leap',   description: '{{description}} teleports up to 30 feet to an unoccupied space {{pronoun:subject}} can see. Immediately before teleporting, {{description}} can choose one creature within 5 feet of {{pronoun:object}}. That creature can teleport with {{description}}, appearing in an unoccupied space within 5 feet of {{description}}\'s destination space.' },
+  frightfulPresence: { name: 'Frightful Presence', description: "Each creature of {{description}}'s choice that is within 120 feet of {{description}} and aware of {{pronoun:object}} must succeed on a DC {{trait:DC}} Wisdom saving throw or become frightened for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success. If a creature's saving throw is successful or the effect ends for it, the creature is immune to {{description}}'s Frightful Presence for the next 24 hours.", allowsSave: true, dcStat: 'cha' },
   helpful:         { name: 'Helpful',    description: '{{description}} takes the Help action.' },
+  healingTouch:    { name: 'Healing Touch', description: '{{description}} touches another creature. The target magically regains {{trait:damage}} hit points and is freed from any curse, disease, poison, blindness, or deafness.', dealsDamage: true, recharge: 'long' },
+  hurlFlame:       { name: 'Hurl Flame', description: '{{description}} hurls a magical ball of fire at a point {{pronoun:subject}} can see within 150 feet of {{pronoun:object}}. Each creature in a 5-foot-radius sphere centered on that point must make a DC {{trait:DC}} Dexterity saving throw, taking {{trait:damage}} fire damage on a failed save, or half as much damage on a successful one.', dealsDamage: true, allowsSave: true, dcStat: 'cha' },
+  horrorNimbus:    { name: 'Horror Nimbus (Recharge 5\u20136)', description: '{{description}} magically emits scintillating, multicolored light. Each creature within 15 feet of {{description}} that can see the light must succeed on a DC {{trait:DC}} Wisdom saving throw or be frightened for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.', allowsSave: true, dcStat: 'cha' },
+  inkCloud:        { name: 'Ink Cloud (Recharges after a Short or Long Rest)', description: 'A 20-foot-radius cloud of ink extends all around {{description}} if {{pronoun:subject}} is underwater. The area is heavily obscured for 1 minute, although a significant current can disperse the ink. After releasing the ink, {{description}} can use the Dash action as a bonus action.' },
+  invisibility:    { name: 'Invisibility', description: "{{description}} magically turns invisible until {{pronoun:subject}} attacks or until {{pronoun:possessiveAdj}} concentration ends (as if concentrating on a spell). Any equipment {{description}} wears or carries is invisible with {{pronoun:object}}." },
+  lightningStorm:  { name: 'Lightning Storm', description: '{{description}} magically creates three bolts of lightning, each of which can strike a target {{description}} can see within 120 feet of {{pronoun:object}}. A target must make a DC {{trait:DC}} Dexterity saving throw, taking {{trait:damage}} lightning damage on a failed save, or half as much damage on a successful one.', dealsDamage: true, allowsSave: true, dcStat: 'con' },
+  spores:          { name: 'Spores (Recharge 6)', description: 'A 15-foot-radius cloud of toxic spores extends out from {{description}}. The spores spread around corners. Each creature in that area must succeed on a DC {{trait:DC}} Constitution saving throw or become poisoned. While poisoned in this way, a target takes {{trait:damage}} poison damage at the start of each of its turns. A target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.', dealsDamage: true, allowsSave: true, dcStat: 'con' },
+  stunningScreech: { name: 'Stunning Screech (1/Day)', description: '{{description}} emits a horrific screech. Each creature within 20 feet of {{pronoun:object}} that can hear {{pronoun:object}} and that isn\'t a demon must succeed on a DC {{trait:DC}} Constitution saving throw or be stunned until the end of {{description}}\'s next turn.', allowsSave: true, dcStat: 'con' },
+  teleport:        { name: 'Teleport', description: '{{description}} magically teleports, along with any equipment {{pronoun:subject}} is wearing or carrying, up to 120 feet to an unoccupied space {{pronoun:subject}} can see.' },
+  scare:           { name: 'Scare (1/Day)', description: "One creature of {{description}}'s choice within 20 feet of {{pronoun:object}} must succeed on a DC {{trait:DC}} Wisdom saving throw or be frightened for 1 minute. The target can repeat the saving throw at the end of each of its turns, with disadvantage if {{description}} is within line of sight, ending the effect on itself on a success.", allowsSave: true, dcStat: 'cha' },
+  swallow:         { name: 'Swallow',    description: "{{description}} makes one bite attack against a {{trait:size}} or smaller target it is grappling. If the attack hits, the target is swallowed, and the grapple ends. The swallowed target is blinded and restrained, it has total cover against attacks and other effects outside {{description}}, and it takes {{trait:damage}} acid damage at the start of each of {{description}}'s turns. {{description}} can have only one target swallowed at a time.<span class='trait-spacer'></span>If {{description}} dies, a swallowed creature is no longer restrained by it and can escape from the corpse using 5 feet of movement, exiting prone.", dealsDamage: true, sizeRestricted: true },
   web:             { name: 'Web (Recharge 5\u20136)', description: '<em>Ranged Weapon Attack:</em> +5 to hit, range 30/60 ft., one creature. <em>Hit:</em> The target is restrained by webbing. As an action, the restrained target can make a DC 12 Strength check, bursting the webbing on a success. The webbing can also be attacked and destroyed (AC 10; hp 5; vulnerability to fire damage; immunity to bludgeoning, poison, and psychic damage).' },
 };
 
@@ -397,6 +441,13 @@ export const classes: Record<string, ClassData> = {
   },
 };
 
+export interface SubraceData {
+  name: string;
+  bonusStats?: Record<string, number>;
+  traits?: string[];
+  stats?: Record<string, unknown>;
+}
+
 export interface RaceData {
   name: string;
   stats?: {
@@ -410,10 +461,20 @@ export interface RaceData {
   };
   traits?: string[];
   bonusStats?: Record<string, number>;
+  subraces?: SubraceData[];
 }
 
 export const races: RaceData[] = [
   { name: raceKeys.any },
+  {
+    name: raceKeys.dragonborn,
+    stats: {
+      size: sizeMedium,
+      languages: [languages.common, languages.draconic],
+      speed: 30,
+    },
+    bonusStats: { str: 2, cha: 1 },
+  },
   {
     name: raceKeys.dwarf,
     stats: {
@@ -428,6 +489,57 @@ export const races: RaceData[] = [
     bonusStats: { con: 2, wis: 1 },
   },
   {
+    name: raceKeys.elf,
+    stats: {
+      size: sizeMedium,
+      languages: [languages.common, languages.elvish],
+      speed: 30,
+      darkvision: 60,
+    },
+    traits: ['keenSight'],
+    bonusStats: { dex: 2, int: 1 },
+  },
+  {
+    name: raceKeys.gnome,
+    stats: {
+      size: sizeSmall,
+      languages: [languages.common],
+      speed: 25,
+      darkvision: 60,
+    },
+    bonusStats: { int: 2, con: 1 },
+  },
+  {
+    name: raceKeys.halfElf,
+    stats: {
+      size: sizeMedium,
+      languages: [languages.common, languages.elvish],
+      speed: 30,
+      darkvision: 60,
+    },
+    bonusStats: { cha: 2, dex: 1, con: 1 },
+  },
+  {
+    name: raceKeys.halfOrc,
+    stats: {
+      size: sizeMedium,
+      languages: [languages.common],
+      speed: 30,
+      darkvision: 60,
+    },
+    traits: ['relentless'],
+    bonusStats: { str: 2, con: 1 },
+  },
+  {
+    name: raceKeys.halfling,
+    stats: {
+      size: sizeSmall,
+      languages: [languages.common],
+      speed: 25,
+    },
+    bonusStats: { dex: 2, cha: 1 },
+  },
+  {
     name: raceKeys.human,
     stats: {
       size: sizeMedium,
@@ -435,5 +547,16 @@ export const races: RaceData[] = [
       speed: 30,
     },
     bonusStats: { str: 1, con: 1, dex: 1, int: 1, wis: 1, cha: 1 },
+  },
+  {
+    name: raceKeys.tiefling,
+    stats: {
+      size: sizeMedium,
+      languages: [languages.common, languages.infernal],
+      speed: 30,
+      darkvision: 60,
+      resistances: [damageTypes.fire],
+    },
+    bonusStats: { cha: 2, int: 1 },
   },
 ];

@@ -18,8 +18,13 @@ export const reachVeryLong = 5;
 /** Creature types. */
 export const creatureTypes = {
   beast: 'beast',
+  celestial: 'celestial',
+  dragon: 'dragon',
   elemental: 'elemental',
+  fiend: 'fiend',
+  giant: 'giant',
   humanoid: 'humanoid',
+  monstrosity: 'monstrosity',
   plant: 'plant',
   fey: 'fey',
   undead: 'undead',
@@ -33,6 +38,9 @@ export const alignments = {
   chaoticNeutral: 'chaotic neutral',
   chaoticGood: 'chaotic good',
   chaoticEvil: 'chaotic evil',
+  lawfulEvil: 'lawful evil',
+  lawfulGood: 'lawful good',
+  neutralEvil: 'neutral evil',
   neutralGood: 'neutral good',
 } as const;
 
@@ -74,6 +82,7 @@ export const damageTypes = {
   acid: 'acid',
   cold: 'cold',
   fire: 'fire',
+  force: 'force',
   lightning: 'lightning',
   necrotic: 'necrotic',
   poison: 'poison',
@@ -100,11 +109,19 @@ export const conditions = {
 /** Language strings. */
 export const languages = {
   creator: 'One Language Known By Its Creator',
+  abyssal: 'Abyssal',
+  aquan: 'Aquan',
+  auran: 'Auran',
   ignan: 'Ignan',
+  infernal: 'Infernal',
+  terran: 'Terran',
   anyOne: 'Any One Language',
   common: 'Common',
+  draconic: 'Draconic',
   dwarfish: 'Dwarfish',
   elvish: 'Elvish',
+  giant: 'Giant',
+  goblin: 'Goblin',
   sylvan: 'Sylvan',
 } as const;
 
@@ -118,8 +135,15 @@ export const skillRanks = {
 /** Race strings. */
 export const raceKeys = {
   any: 'any race',
+  dragonborn: 'dragonborn',
   dwarf: 'dwarf',
+  elf: 'elf',
+  gnome: 'gnome',
+  halfElf: 'half-elf',
+  halfOrc: 'half-orc',
+  halfling: 'halfling',
   human: 'human',
+  tiefling: 'tiefling',
 } as const;
 
 /** Armor material types. */

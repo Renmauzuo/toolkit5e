@@ -1,11 +1,43 @@
 import {
-    sizeTiny, sizeSmall, sizeMedium, sizeLarge, sizeHuge,
-    reachShort, reachMediumShort, reachMedium,
+    sizeTiny, sizeSmall, sizeMedium, sizeLarge, sizeHuge, sizeGargantuan,
+    reachShort, reachMediumShort, reachMedium, reachVeryLong,
     creatureTypes, alignments, damageTypes, conditions, languages, skillRanks, raceKeys, armorMaterials, genders,
 } from '@toolkit5e/base';
 import type { MonsterTemplate } from './types.js';
 
 export const monsterList: Record<string, MonsterTemplate> = {
+    airElemental: {
+        name: 'Air Elemental',
+        type: creatureTypes.elemental,
+        alignment: alignments.neutral,
+        lockedStats: { darkvision: 60, languages: [languages.auran], resistances: [damageTypes.lightning, damageTypes.thunder, damageTypes.mundanePhysical], immunities: [damageTypes.poison], conditionImmunities: [conditions.exhaustion, conditions.grappled, conditions.paralyzed, conditions.petrified, conditions.poisoned, conditions.prone, conditions.restrained, conditions.unconscious], attacks: { slam: { reach: reachMediumShort, damageType: damageTypes.bludgeoning, name: 'Slam', finesse: true } }, slug: 'elemental', multiattack: { attacks: { slam: 2 } } },
+        traits: ['airForm'],
+        stats: { 5: { name: 'Air Elemental', hitDice: 12, speed: 0, fly: 90, size: sizeLarge, str: 14, dex: 20, con: 14, int: 6, wis: 10, cha: 6, attacks: { slam: { damageDice: 2, damageDieSize: 8 } } } },
+    },
+    angel: {
+        name: 'Angel',
+        type: creatureTypes.celestial,
+        alignment: alignments.lawfulGood,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                mace: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Mace' },
+            },
+            resistances: [damageTypes.radiant, damageTypes.mundanePhysical],
+            conditionImmunities: [conditions.charmed, conditions.exhaustion, conditions.frightened],
+            saves: ['wis', 'cha'],
+            skills: { perception: skillRanks.expert },
+            slug: 'angel',
+            multiattack: { attacks: { mace: 2 } },
+        },
+        traits: ['angelicWeapons', 'divineAwareness', 'magicResistance'],
+        actions: ['healingTouch'],
+        stats: {
+            10: { name: 'Deva', bonusArmor: 7, hitDice: 16, speed: 30, fly: 90, darkvision: 120, size: sizeMedium, str: 18, dex: 18, con: 18, int: 17, wis: 20, cha: 20, attacks: { mace: { damageDice: 1, damageDieSize: 6 } }, traits: { angelicWeapons: { damageDice: 4, damageDieSize: 8 }, healingTouch: { damageDice: 4, damageDieSize: 8 } } },
+            16: { name: 'Planetar', bonusArmor: 9, hitDice: 16, speed: 40, fly: 120, size: sizeLarge, str: 24, dex: 20, con: 24, int: 19, wis: 22, cha: 25, saves: ['con', 'wis', 'cha'], attacks: { mace: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Greatsword', damageDice: 4, damageDieSize: 6 } }, traits: { angelicWeapons: { damageDice: 5, damageDieSize: 8 }, healingTouch: { damageDice: 6, damageDieSize: 8 }, divineAwareness: {} } },
+            21: { name: 'Solar', bonusArmor: 11, hitDice: 18, speed: 50, fly: 150, size: sizeLarge, str: 26, dex: 22, con: 26, int: 25, wis: 25, cha: 30, saves: ['int', 'wis', 'cha'], immunities: [damageTypes.necrotic, damageTypes.poison], conditionImmunities: [conditions.charmed, conditions.exhaustion, conditions.frightened, conditions.poisoned], attacks: { mace: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Greatsword', damageDice: 4, damageDieSize: 6 }, longbow: { damageType: damageTypes.piercing, name: 'Slaying Longbow', ranged: true, damageDice: 2, damageDieSize: 8 } }, traits: { angelicWeapons: { damageDice: 6, damageDieSize: 8 }, healingTouch: { damageDice: 8, damageDieSize: 8 }, divineAwareness: {} } },
+        },
+    },
     ape: {
         type: creatureTypes.beast,
         alignment: alignments.unaligned,
@@ -69,6 +101,57 @@ export const monsterList: Record<string, MonsterTemplate> = {
             0.25: { name: 'Giant Badger', hitDice: 12, speed: 30, burrow: 10, size: sizeMedium, str: 13, dex: 10, con: 15, wis: 12, cha: 5, multiattack: { attacks: { bite: 1, claws: 1 } }, attacks: { bite: { damageDice: 1, damageDieSize: 6 }, claws: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Claws', damageDice: 2, damageDieSize: 4 } } },
         },
     },
+    balor: {
+        name: 'Balor',
+        type: creatureTypes.fiend,
+        subtype: 'demon',
+        alignment: alignments.chaoticEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                longsword: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Longsword', damageRiderType: damageTypes.lightning },
+                whip: { reach: reachVeryLong, damageType: damageTypes.slashing, name: 'Whip', damageRiderType: damageTypes.fire },
+            },
+            multiattack: { attacks: { longsword: 1, whip: 1 } },
+            resistances: [damageTypes.cold, damageTypes.lightning, damageTypes.mundanePhysical],
+            immunities: [damageTypes.fire, damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            darkvision: 120,
+            saves: ['str', 'con', 'wis', 'cha'],
+            slug: 'balor',
+        },
+        traits: ['deathThroes', 'fireAura', 'magicResistance', 'magicAttacks'],
+        actions: ['teleport'],
+        stats: {
+            19: { name: 'Balor', bonusArmor: 9, hitDice: 21, speed: 40, fly: 80, size: sizeHuge, str: 26, dex: 15, con: 22, int: 20, wis: 16, cha: 22, attacks: { longsword: { damageDice: 3, damageDieSize: 8, damageRiderDice: 3, damageRiderDieSize: 8 }, whip: { damageDice: 2, damageDieSize: 6, damageRiderDice: 3, damageRiderDieSize: 6 } }, traits: { deathThroes: { damageDice: 20, damageDieSize: 6, dcAdjustment: 0 }, fireAura: { damageDice: 3, damageDieSize: 6 } } },
+        },
+    },
+    barbedDevil: {
+        name: 'Barbed Devil',
+        type: creatureTypes.fiend,
+        subtype: 'devil',
+        alignment: alignments.lawfulEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                claw: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Claw' },
+                tail: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Tail' },
+            },
+            multiattack: { attacks: { tail: 1, claw: 2 } },
+            resistances: [damageTypes.cold, damageTypes.mundanePhysical],
+            immunities: [damageTypes.fire, damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            darkvision: 120,
+            saves: ['str', 'con', 'wis', 'cha'],
+            skills: { deception: skillRanks.proficient, insight: skillRanks.proficient, perception: skillRanks.expert },
+            slug: 'barbedDevil',
+        },
+        traits: ['barbedHide', 'devilsSight', 'magicResistance'],
+        actions: ['hurlFlame'],
+        stats: {
+            5: { name: 'Barbed Devil', bonusArmor: 5, hitDice: 13, speed: 30, size: sizeMedium, str: 16, dex: 17, con: 18, int: 12, wis: 14, cha: 14, attacks: { claw: { damageDice: 1, damageDieSize: 6 }, tail: { damageDice: 2, damageDieSize: 6 } }, traits: { barbedHide: { damageDice: 1, damageDieSize: 10 }, hurlFlame: { damageDice: 3, damageDieSize: 6 } } },
+        },
+    },
     bat: {
         type: creatureTypes.beast,
         alignment: alignments.unaligned,
@@ -100,6 +183,32 @@ export const monsterList: Record<string, MonsterTemplate> = {
             0: { name: 'Piglet' },
             0.25: { name: 'Boar', hitDice: 2, speed: 40, size: sizeMedium, str: 13, dex: 11, con: 12, wis: 9, cha: 5, attacks: { tusk: { damageDice: 1, damageDieSize: 6 } }, traits: { relentless: { damageDice: 7, damageDieSize: 1 }, tramplingCharge: { chargeAttack: 'tusk', knockdownAttack: 'tusk', dcAdjustment: -4 } } },
             2: { name: 'Giant Boar', hitDice: 5, speed: 40, size: sizeLarge, str: 17, dex: 10, con: 16, wis: 9, cha: 5, attacks: { tusk: { damageDice: 2, damageDieSize: 6 } }, traits: { relentless: { damageDice: 10, damageDieSize: 1 }, tramplingCharge: { chargeAttack: 'tusk', knockdownAttack: 'tusk', dcAdjustment: -2 } } },
+            8: { name: 'Dire Boar', slug: 'direBoar' },
+        },
+    },
+    boneDevil: {
+        name: 'Bone Devil',
+        type: creatureTypes.fiend,
+        subtype: 'devil',
+        alignment: alignments.lawfulEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                claw: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Claw' },
+                sting: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Sting', proc: 'poisonBite' },
+            },
+            multiattack: { attacks: { claw: 2, sting: 1 } },
+            resistances: [damageTypes.cold, damageTypes.mundanePhysical],
+            immunities: [damageTypes.fire, damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            darkvision: 120,
+            saves: ['int', 'wis', 'cha'],
+            skills: { deception: skillRanks.proficient, insight: skillRanks.proficient },
+            slug: 'boneDevil',
+        },
+        traits: ['devilsSight', 'magicResistance'],
+        stats: {
+            9: { name: 'Bone Devil', bonusArmor: 9, hitDice: 15, speed: 40, fly: 40, size: sizeLarge, str: 18, dex: 16, con: 18, int: 13, wis: 14, cha: 16, attacks: { claw: { damageDice: 1, damageDieSize: 8 }, sting: { damageDice: 2, damageDieSize: 8 } }, traits: { poisonBite: { damageDice: 5, damageDieSize: 6 } } },
         },
     },
     bear: {
@@ -123,6 +232,30 @@ export const monsterList: Record<string, MonsterTemplate> = {
             0.5: { name: 'Black Bear', hitDice: 3, bonusArmor: 1, size: sizeMedium, str: 15, con: 14, climb: 30, attacks: { bite: { damageDice: 1, damageDieSize: 6 }, claws: { damageDice: 2, damageDieSize: 4 } } },
             1: { name: 'Brown Bear', hitDice: 4, bonusArmor: 1, size: sizeLarge, str: 19, con: 16, climb: 30, attacks: { bite: { damageDice: 1, damageDieSize: 8 }, claws: { damageDice: 2, damageDieSize: 6 } } },
             2: { name: 'Polar Bear', hitDice: 5, bonusArmor: 2, size: sizeLarge, str: 20, con: 16, swim: 30, attacks: { bite: { damageDice: 1, damageDieSize: 8 }, claws: { damageDice: 2, damageDieSize: 6 } } },
+        },
+    },
+    beardedDevil: {
+        name: 'Bearded Devil',
+        type: creatureTypes.fiend,
+        subtype: 'devil',
+        alignment: alignments.lawfulEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                beard: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Beard', proc: 'poisonBite' },
+                glaive: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Glaive' },
+            },
+            multiattack: { attacks: { beard: 1, glaive: 1 } },
+            resistances: [damageTypes.cold, damageTypes.mundanePhysical],
+            immunities: [damageTypes.fire, damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            darkvision: 120,
+            saves: ['str', 'con', 'wis'],
+            slug: 'beardedDevil',
+        },
+        traits: ['devilsSight', 'magicResistance'],
+        stats: {
+            3: { name: 'Bearded Devil', bonusArmor: 3, hitDice: 8, speed: 30, size: sizeMedium, str: 16, dex: 15, con: 15, int: 9, wis: 11, cha: 11, attacks: { beard: { damageDice: 1, damageDieSize: 8 }, glaive: { damageDice: 1, damageDieSize: 10 } }, traits: { poisonBite: { damageDice: 1, damageDieSize: 1 } } },
         },
     },
     commoner: {
@@ -154,6 +287,232 @@ export const monsterList: Record<string, MonsterTemplate> = {
             3: { name: 'Dolphin Delighter', bonusArmor: 3, blindsight: 60, hitDice: 5, speed: 0, swim: 60, size: sizeMedium, str: 14, dex: 13, con: 13, int: 11, wis: 12, cha: 16, attacks: { dazzlingSlam: { damageDice: 1, damageDieSize: 6, damageRiderDice: 2, damageRiderDieSize: 6 } }, traits: { conditionNoSave: { condition: 'blinded' }, delightfulLight: { damageDice: 2, damageDieSize: 10 }, holdBreath: { duration: 20 } } },
         },
     },
+    dretch: {
+        name: 'Dretch',
+        type: creatureTypes.fiend,
+        subtype: 'demon',
+        alignment: alignments.chaoticEvil,
+        lockedStats: {
+            attacks: {
+                bite: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Bite' },
+                claws: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Claws' },
+            },
+            multiattack: { attacks: { bite: 1, claws: 1 } },
+            resistances: [damageTypes.cold, damageTypes.fire, damageTypes.lightning],
+            immunities: [damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            darkvision: 60,
+            slug: 'dretch',
+        },
+        actions: ['fetidCloud'],
+        stats: {
+            0.25: { name: 'Dretch', bonusArmor: 1, hitDice: 4, speed: 20, size: sizeSmall, str: 11, dex: 11, con: 12, int: 5, wis: 8, cha: 3, attacks: { bite: { damageDice: 1, damageDieSize: 6 }, claws: { damageDice: 2, damageDieSize: 4 } } },
+        },
+    },
+    imp: {
+        name: 'Imp',
+        type: creatureTypes.fiend,
+        subtype: 'devil',
+        alignment: alignments.lawfulEvil,
+        lockedStats: {
+            attacks: {
+                sting: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Sting', finesse: true, proc: 'poisonBite' },
+            },
+            resistances: [damageTypes.cold, damageTypes.mundanePhysical],
+            immunities: [damageTypes.fire, damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            darkvision: 120,
+            skills: { deception: skillRanks.proficient, insight: skillRanks.proficient, persuasion: skillRanks.proficient, stealth: skillRanks.proficient },
+            slug: 'imp',
+        },
+        traits: ['devilsSight', 'magicResistance'],
+        actions: ['invisibility'],
+        stats: {
+            1: { name: 'Imp', hitDice: 3, speed: 20, fly: 40, size: sizeTiny, str: 6, dex: 17, con: 13, int: 11, wis: 12, cha: 14, attacks: { sting: { damageDice: 1, damageDieSize: 4 } }, traits: { poisonBite: { damageDice: 3, damageDieSize: 6 } } },
+        },
+    },
+    iceDevil: {
+        name: 'Ice Devil',
+        type: creatureTypes.fiend,
+        subtype: 'devil',
+        alignment: alignments.lawfulEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                bite: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Bite', damageRiderType: damageTypes.cold },
+                claws: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Claws', damageRiderType: damageTypes.cold },
+                tail: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Tail', damageRiderType: damageTypes.cold },
+            },
+            multiattack: { attacks: { bite: 1, claws: 1, tail: 1 } },
+            resistances: [damageTypes.mundanePhysical],
+            immunities: [damageTypes.cold, damageTypes.fire, damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            blindsight: 60,
+            darkvision: 120,
+            saves: ['dex', 'con', 'wis', 'cha'],
+            slug: 'iceDevil',
+        },
+        traits: ['devilsSight', 'magicResistance'],
+        stats: {
+            14: { name: 'Ice Devil', bonusArmor: 8, hitDice: 19, speed: 40, size: sizeLarge, str: 21, dex: 14, con: 18, int: 18, wis: 15, cha: 18, attacks: { bite: { damageDice: 2, damageDieSize: 6, damageRiderDice: 3, damageRiderDieSize: 6 }, claws: { damageDice: 2, damageDieSize: 4, damageRiderDice: 3, damageRiderDieSize: 6 }, tail: { damageDice: 2, damageDieSize: 6, damageRiderDice: 3, damageRiderDieSize: 6 } } },
+        },
+    },
+    quasit: {
+        name: 'Quasit',
+        type: creatureTypes.fiend,
+        subtype: 'demon',
+        alignment: alignments.chaoticEvil,
+        lockedStats: {
+            attacks: {
+                claws: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Claws', finesse: true, proc: 'poisonBite' },
+            },
+            resistances: [damageTypes.cold, damageTypes.fire, damageTypes.lightning, damageTypes.mundanePhysical],
+            immunities: [damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            darkvision: 120,
+            skills: { stealth: skillRanks.proficient },
+            slug: 'quasit',
+        },
+        traits: ['magicResistance'],
+        actions: ['scare', 'invisibility'],
+        stats: {
+            1: { name: 'Quasit', hitDice: 3, speed: 40, size: sizeTiny, str: 5, dex: 17, con: 10, int: 7, wis: 10, cha: 10, attacks: { claws: { damageDice: 1, damageDieSize: 4 } }, traits: { poisonBite: { damageDice: 2, damageDieSize: 4 } } },
+        },
+    },
+    dragon: {
+        name: 'Dragon',
+        type: creatureTypes.dragon,
+        alignment: alignments.chaoticEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                bite: { reach: reachShort, damageType: damageTypes.piercing, name: 'Bite' },
+                claw: { reach: reachShort, damageType: damageTypes.slashing, name: 'Claw' },
+            },
+            languages: [languages.draconic],
+            saves: ['dex', 'con', 'wis', 'cha'],
+            skills: { perception: skillRanks.expert, stealth: skillRanks.proficient },
+        },
+        actions: ['breathWeapon'],
+        variants: {
+            red: {
+                name: 'Red Dragon',
+                lockedStats: { slug: 'dragon', immunities: [damageTypes.fire] },
+                stats: {
+                    4: { name: 'Red Dragon Wyrmling', traits: { breathWeapon: { breathRange: 15, breathShape: 'cone', breathType: 'fire', breathSave: 'Dexterity', damageDice: 7, damageDieSize: 6, dcAdjustment: -4 } } },
+                    10: { name: 'Young Red Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 30, breathShape: 'cone', breathType: 'fire', breathSave: 'Dexterity', damageDice: 16, damageDieSize: 6, dcAdjustment: -2 } } },
+                    17: { name: 'Adult Red Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 60, breathShape: 'cone', breathType: 'fire', breathSave: 'Dexterity', damageDice: 18, damageDieSize: 6, dcAdjustment: -2 } } },
+                    24: { name: 'Ancient Red Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 90, breathShape: 'cone', breathType: 'fire', breathSave: 'Dexterity', damageDice: 26, damageDieSize: 6, dcAdjustment: -1 } } },
+                },
+            },
+            black: {
+                name: 'Black Dragon',
+                traits: ['amphibious'],
+                lockedStats: { slug: 'dragon', immunities: [damageTypes.acid] },
+                stats: {
+                    2: { name: 'Black Dragon Wyrmling', traits: { breathWeapon: { breathRange: 15, breathShape: 'line that is 5 feet wide', breathType: 'acid', breathSave: 'Dexterity', damageDice: 5, damageDieSize: 8, dcAdjustment: -4 } } },
+                    7: { name: 'Young Black Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 30, breathShape: 'line that is 5 feet wide', breathType: 'acid', breathSave: 'Dexterity', damageDice: 11, damageDieSize: 8, dcAdjustment: -2 } } },
+                    14: { name: 'Adult Black Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 60, breathShape: 'line that is 5 feet wide', breathType: 'acid', breathSave: 'Dexterity', damageDice: 13, damageDieSize: 8, dcAdjustment: -2 } } },
+                    21: { name: 'Ancient Black Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 90, breathShape: 'line that is 5 feet wide', breathType: 'acid', breathSave: 'Dexterity', damageDice: 15, damageDieSize: 8, dcAdjustment: -1 } } },
+                },
+            },
+            blue: {
+                name: 'Blue Dragon',
+                lockedStats: { slug: 'dragon', immunities: [damageTypes.lightning] },
+                stats: {
+                    3: { name: 'Blue Dragon Wyrmling', traits: { breathWeapon: { breathRange: 30, breathShape: 'line that is 5 feet wide', breathType: 'lightning', breathSave: 'Dexterity', damageDice: 4, damageDieSize: 10, dcAdjustment: -4 } } },
+                    9: { name: 'Young Blue Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 60, breathShape: 'line that is 5 feet wide', breathType: 'lightning', breathSave: 'Dexterity', damageDice: 10, damageDieSize: 10, dcAdjustment: -2 } } },
+                    16: { name: 'Adult Blue Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 90, breathShape: 'line that is 5 feet wide', breathType: 'lightning', breathSave: 'Dexterity', damageDice: 12, damageDieSize: 10, dcAdjustment: -2 } } },
+                    23: { name: 'Ancient Blue Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 120, breathShape: 'line that is 5 feet wide', breathType: 'lightning', breathSave: 'Dexterity', damageDice: 13, damageDieSize: 10, dcAdjustment: -1 } } },
+                },
+            },
+            green: {
+                name: 'Green Dragon',
+                traits: ['amphibious'],
+                lockedStats: { slug: 'dragon', immunities: [damageTypes.poison] },
+                stats: {
+                    2: { name: 'Green Dragon Wyrmling', traits: { breathWeapon: { breathRange: 15, breathShape: 'cone', breathType: 'poison', breathSave: 'Constitution', damageDice: 6, damageDieSize: 6, dcAdjustment: -4 } } },
+                    8: { name: 'Young Green Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 30, breathShape: 'cone', breathType: 'poison', breathSave: 'Constitution', damageDice: 12, damageDieSize: 6, dcAdjustment: -2 } } },
+                    15: { name: 'Adult Green Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 60, breathShape: 'cone', breathType: 'poison', breathSave: 'Constitution', damageDice: 16, damageDieSize: 6, dcAdjustment: -2 } } },
+                    22: { name: 'Ancient Green Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 90, breathShape: 'cone', breathType: 'poison', breathSave: 'Constitution', damageDice: 22, damageDieSize: 6, dcAdjustment: -1 } } },
+                },
+            },
+            white: {
+                name: 'White Dragon',
+                lockedStats: { slug: 'dragon', immunities: [damageTypes.cold] },
+                stats: {
+                    2: { name: 'White Dragon Wyrmling', traits: { breathWeapon: { breathRange: 15, breathShape: 'cone', breathType: 'cold', breathSave: 'Constitution', damageDice: 5, damageDieSize: 8, dcAdjustment: -4 } } },
+                    6: { name: 'Young White Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 30, breathShape: 'cone', breathType: 'cold', breathSave: 'Constitution', damageDice: 10, damageDieSize: 8, dcAdjustment: -2 } } },
+                    13: { name: 'Adult White Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 60, breathShape: 'cone', breathType: 'cold', breathSave: 'Constitution', damageDice: 12, damageDieSize: 8, dcAdjustment: -2 } } },
+                    20: { name: 'Ancient White Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 90, breathShape: 'cone', breathType: 'cold', breathSave: 'Constitution', damageDice: 16, damageDieSize: 8, dcAdjustment: -1 } } },
+                },
+            },
+            // Metallic dragons
+            gold: {
+                name: 'Gold Dragon',
+                traits: ['amphibious'],
+                lockedStats: { slug: 'dragon', immunities: [damageTypes.fire] },
+                stats: {
+                    3: { name: 'Gold Dragon Wyrmling', swim: 30, crActions: ['weakenBreath'], traits: { breathWeapon: { breathRange: 15, breathShape: 'cone', breathType: 'fire', breathSave: 'Dexterity', damageDice: 4, damageDieSize: 10, dcAdjustment: -4 }, weakenBreath: { breathRange: 15, dcAdjustment: -4 } } },
+                    10: { name: 'Young Gold Dragon', swim: 40, languages: [languages.common], traits: { breathWeapon: { breathRange: 30, breathShape: 'cone', breathType: 'fire', breathSave: 'Dexterity', damageDice: 10, damageDieSize: 10, dcAdjustment: -2 }, weakenBreath: { breathRange: 30, dcAdjustment: -2 } } },
+                    17: { name: 'Adult Gold Dragon', swim: 40, languages: [languages.common], traits: { breathWeapon: { breathRange: 60, breathShape: 'cone', breathType: 'fire', breathSave: 'Dexterity', damageDice: 12, damageDieSize: 10, dcAdjustment: -2 }, weakenBreath: { breathRange: 60, dcAdjustment: -2 } } },
+                    24: { name: 'Ancient Gold Dragon', swim: 40, languages: [languages.common], traits: { breathWeapon: { breathRange: 90, breathShape: 'cone', breathType: 'fire', breathSave: 'Dexterity', damageDice: 13, damageDieSize: 10, dcAdjustment: -1 }, weakenBreath: { breathRange: 90, dcAdjustment: -1 } } },
+                },
+            },
+            silver: {
+                name: 'Silver Dragon',
+                lockedStats: { slug: 'dragon', immunities: [damageTypes.cold] },
+                stats: {
+                    2: { name: 'Silver Dragon Wyrmling', crActions: ['paralyzeBreath'], traits: { breathWeapon: { breathRange: 15, breathShape: 'cone', breathType: 'cold', breathSave: 'Constitution', damageDice: 4, damageDieSize: 8, dcAdjustment: -4 }, paralyzeBreath: { breathRange: 15, dcAdjustment: -4 } } },
+                    9: { name: 'Young Silver Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 30, breathShape: 'cone', breathType: 'cold', breathSave: 'Constitution', damageDice: 12, damageDieSize: 8, dcAdjustment: -2 }, paralyzeBreath: { breathRange: 30, dcAdjustment: -2 } } },
+                    16: { name: 'Adult Silver Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 60, breathShape: 'cone', breathType: 'cold', breathSave: 'Constitution', damageDice: 13, damageDieSize: 8, dcAdjustment: -2 }, paralyzeBreath: { breathRange: 60, dcAdjustment: -2 } } },
+                    23: { name: 'Ancient Silver Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 90, breathShape: 'cone', breathType: 'cold', breathSave: 'Constitution', damageDice: 15, damageDieSize: 8, dcAdjustment: -1 }, paralyzeBreath: { breathRange: 90, dcAdjustment: -1 } } },
+                },
+            },
+            bronze: {
+                name: 'Bronze Dragon',
+                traits: ['amphibious'],
+                lockedStats: { slug: 'dragon', immunities: [damageTypes.lightning] },
+                stats: {
+                    2: { name: 'Bronze Dragon Wyrmling', swim: 30, crActions: ['repulseBreath'], traits: { breathWeapon: { breathRange: 40, breathShape: 'line that is 5 feet wide', breathType: 'lightning', breathSave: 'Dexterity', damageDice: 3, damageDieSize: 10, dcAdjustment: -4 }, repulseBreath: { pushDistance: 30, dcAdjustment: -4 } } },
+                    8: { name: 'Young Bronze Dragon', swim: 40, languages: [languages.common], traits: { breathWeapon: { breathRange: 60, breathShape: 'line that is 5 feet wide', breathType: 'lightning', breathSave: 'Dexterity', damageDice: 10, damageDieSize: 10, dcAdjustment: -2 }, repulseBreath: { pushDistance: 40, dcAdjustment: -2 } } },
+                    15: { name: 'Adult Bronze Dragon', swim: 40, languages: [languages.common], traits: { breathWeapon: { breathRange: 90, breathShape: 'line that is 5 feet wide', breathType: 'lightning', breathSave: 'Dexterity', damageDice: 12, damageDieSize: 10, dcAdjustment: -2 }, repulseBreath: { pushDistance: 60, dcAdjustment: -2 } } },
+                    22: { name: 'Ancient Bronze Dragon', swim: 40, languages: [languages.common], traits: { breathWeapon: { breathRange: 120, breathShape: 'line that is 10 feet wide', breathType: 'lightning', breathSave: 'Dexterity', damageDice: 16, damageDieSize: 10, dcAdjustment: -1 }, repulseBreath: { pushDistance: 60, dcAdjustment: -1 } } },
+                },
+            },
+            brass: {
+                name: 'Brass Dragon',
+                lockedStats: { slug: 'dragon', immunities: [damageTypes.fire] },
+                stats: {
+                    1: { name: 'Brass Dragon Wyrmling', crActions: ['sleepBreath'], traits: { breathWeapon: { breathRange: 20, breathShape: 'line that is 5 feet wide', breathType: 'fire', breathSave: 'Dexterity', damageDice: 4, damageDieSize: 6, dcAdjustment: -4 }, sleepBreath: { breathRange: 15, duration: 1, dcAdjustment: -4 } } },
+                    6: { name: 'Young Brass Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 40, breathShape: 'line that is 5 feet wide', breathType: 'fire', breathSave: 'Dexterity', damageDice: 12, damageDieSize: 6, dcAdjustment: -2 }, sleepBreath: { breathRange: 30, duration: 5, dcAdjustment: -2 } } },
+                    13: { name: 'Adult Brass Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 60, breathShape: 'line that is 5 feet wide', breathType: 'fire', breathSave: 'Dexterity', damageDice: 13, damageDieSize: 6, dcAdjustment: -2 }, sleepBreath: { breathRange: 60, duration: 10, dcAdjustment: -2 } } },
+                    20: { name: 'Ancient Brass Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 90, breathShape: 'line that is 10 feet wide', breathType: 'fire', breathSave: 'Dexterity', damageDice: 16, damageDieSize: 6, dcAdjustment: -1 }, sleepBreath: { breathRange: 90, duration: 10, dcAdjustment: -1 } } },
+                },
+            },
+            copper: {
+                name: 'Copper Dragon',
+                lockedStats: { slug: 'dragon', immunities: [damageTypes.acid] },
+                stats: {
+                    1: { name: 'Copper Dragon Wyrmling', crActions: ['slowBreath'], traits: { breathWeapon: { breathRange: 20, breathShape: 'line that is 5 feet wide', breathType: 'acid', breathSave: 'Dexterity', damageDice: 4, damageDieSize: 8, dcAdjustment: -4 }, slowBreath: { breathRange: 15, dcAdjustment: -4 } } },
+                    7: { name: 'Young Copper Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 40, breathShape: 'line that is 5 feet wide', breathType: 'acid', breathSave: 'Dexterity', damageDice: 9, damageDieSize: 8, dcAdjustment: -2 }, slowBreath: { breathRange: 30, dcAdjustment: -2 } } },
+                    14: { name: 'Adult Copper Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 60, breathShape: 'line that is 5 feet wide', breathType: 'acid', breathSave: 'Dexterity', damageDice: 12, damageDieSize: 8, dcAdjustment: -2 }, slowBreath: { breathRange: 60, dcAdjustment: -2 } } },
+                    21: { name: 'Ancient Copper Dragon', languages: [languages.common], traits: { breathWeapon: { breathRange: 90, breathShape: 'line that is 10 feet wide', breathType: 'acid', breathSave: 'Dexterity', damageDice: 14, damageDieSize: 8, dcAdjustment: -1 }, slowBreath: { breathRange: 90, dcAdjustment: -1 } } },
+                },
+            },
+        },
+        stats: {
+            // Red wyrmling (CR 4) — baseline for low-CR dragons
+            2: { bonusArmor: 7, hitDice: 5, speed: 30, fly: 60, size: sizeMedium, str: 15, dex: 10, con: 15, int: 10, wis: 11, cha: 13, blindsight: 10, darkvision: 60, attacks: { bite: { damageDice: 1, damageDieSize: 10 } } },
+            4: { bonusArmor: 7, hitDice: 10, speed: 30, climb: 30, fly: 60, size: sizeMedium, str: 19, dex: 10, con: 17, int: 12, wis: 11, cha: 15, blindsight: 10, darkvision: 60, attacks: { bite: { damageDice: 1, damageDieSize: 10, damageRiderDice: 1, damageRiderDieSize: 6 } } },
+            // Young (CR ~8) — gains multiattack, claws, grows to Large
+            8: { bonusArmor: 8, hitDice: 15, speed: 40, climb: 40, fly: 80, size: sizeLarge, str: 21, dex: 10, con: 19, int: 14, wis: 11, cha: 17, blindsight: 30, darkvision: 120, multiattack: { attacks: { bite: 1, claw: 2 } }, attacks: { bite: { damageDice: 2, damageDieSize: 10, damageRiderDice: 1, damageRiderDieSize: 8 }, claw: { damageDice: 2, damageDieSize: 6 } } },
+            // Adult (CR ~16) — gains tail, grows to Huge
+            16: { bonusArmor: 9, hitDice: 19, speed: 40, climb: 40, fly: 80, size: sizeHuge, str: 27, dex: 10, con: 25, int: 16, wis: 13, cha: 21, blindsight: 60, darkvision: 120, crActions: ['frightfulPresence'], multiattack: { attacks: { bite: 1, claw: 2 } }, attacks: { bite: { damageDice: 2, damageDieSize: 10, damageRiderDice: 2, damageRiderDieSize: 6 }, claw: { damageDice: 2, damageDieSize: 6 }, tail: { reach: reachMediumShort, damageType: damageTypes.bludgeoning, name: 'Tail', damageDice: 2, damageDieSize: 8 } } },
+            // Ancient (CR ~22) — grows to Gargantuan
+            22: { bonusArmor: 12, hitDice: 28, speed: 40, climb: 40, fly: 80, size: sizeGargantuan, str: 30, dex: 10, con: 29, int: 18, wis: 15, cha: 23, blindsight: 60, darkvision: 120, crActions: ['frightfulPresence'], multiattack: { attacks: { bite: 1, claw: 2 } }, attacks: { bite: { damageDice: 2, damageDieSize: 10, damageRiderDice: 4, damageRiderDieSize: 6 }, claw: { damageDice: 2, damageDieSize: 6 }, tail: { reach: reachMediumShort, damageType: damageTypes.bludgeoning, name: 'Tail', damageDice: 2, damageDieSize: 8 } } },
+        },
+    },
     dryad: {
         type: creatureTypes.fey,
         alignment: alignments.neutral,
@@ -171,6 +530,23 @@ export const monsterList: Record<string, MonsterTemplate> = {
         traits: ['innateSpellcasting', 'magicResistance', 'speakWithBeastsAndPlants', 'treeStride'],
         stats: { 1: { name: 'Dryad', hitDice: 5, speed: 30, str: 10, dex: 12, con: 11, int: 14, wis: 15, cha: 18, attacks: { club: { damageDice: 1, damageDieSize: 4 } } } },
     },
+    constrictorSnake: {
+        type: creatureTypes.beast,
+        alignment: alignments.unaligned,
+        lockedStats: {
+            attacks: {
+                bite: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Bite' },
+                constrict: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Constrict', proc: 'grappleBite' },
+            },
+            int: 1,
+            blindsight: 10,
+            slug: 'snake',
+        },
+        stats: {
+            0.25: { name: 'Constrictor Snake', hitDice: 2, speed: 30, swim: 30, size: sizeLarge, str: 15, dex: 14, con: 12, wis: 10, cha: 3, attacks: { bite: { damageDice: 1, damageDieSize: 6 }, constrict: { damageDice: 1, damageDieSize: 8 } } },
+            2: { name: 'Giant Constrictor Snake', hitDice: 8, speed: 30, swim: 30, size: sizeHuge, str: 19, dex: 14, con: 12, wis: 10, cha: 3, multiattack: { attacks: { bite: 1, constrict: 1 } }, attacks: { bite: { damageDice: 2, damageDieSize: 6 }, constrict: { damageDice: 2, damageDieSize: 8 } } },
+        },
+    },
     eagle: {
         type: creatureTypes.beast,
         alignment: alignments.neutralGood,
@@ -187,7 +563,16 @@ export const monsterList: Record<string, MonsterTemplate> = {
             0: { name: 'Eaglet' },
             0.125: { name: 'Eagle', hitDice: 1, speed: 10, fly: 60, size: sizeSmall, str: 6, dex: 15, con: 10, int: 2, wis: 14, cha: 7, attacks: { talons: { damageDice: 1, damageDieSize: 4 } } },
             1: { name: 'Giant Eagle', hitDice: 4, speed: 10, fly: 80, size: sizeLarge, str: 16, dex: 17, con: 13, int: 8, wis: 14, cha: 10, multiattack: { attacks: { beak: 1, talons: 1 } }, attacks: { beak: { damageDice: 1, damageDieSize: 6 }, talons: { damageDice: 2, damageDieSize: 6 } }, languages: ['Giant Eagle'] },
+            8: { name: 'Thunderbird', slug: 'thunderbird' },
         },
+    },
+    earthElemental: {
+        name: 'Earth Elemental',
+        type: creatureTypes.elemental,
+        alignment: alignments.neutral,
+        lockedStats: { armorDescription: armorMaterials.natural, darkvision: 60, languages: [languages.terran], resistances: [damageTypes.mundanePhysical], immunities: [damageTypes.poison], vulnerabilities: [damageTypes.thunder], conditionImmunities: [conditions.exhaustion, conditions.paralyzed, conditions.petrified, conditions.poisoned, conditions.unconscious], attacks: { slam: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Slam' } }, slug: 'elemental', multiattack: { attacks: { slam: 2 } } },
+        traits: ['earthGlide', 'siegeMonster'],
+        stats: { 5: { name: 'Earth Elemental', bonusArmor: 7, hitDice: 12, speed: 30, burrow: 30, size: sizeLarge, str: 20, dex: 8, con: 20, int: 5, wis: 10, cha: 5, attacks: { slam: { damageDice: 2, damageDieSize: 8 } } } },
     },
     elephant: {
         type: creatureTypes.beast,
@@ -213,6 +598,47 @@ export const monsterList: Record<string, MonsterTemplate> = {
         },
     },
 
+    elk: {
+        type: creatureTypes.beast,
+        alignment: alignments.unaligned,
+        lockedStats: {
+            attacks: {
+                ram: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Ram' },
+                hooves: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Hooves', proneOnly: true },
+            },
+            int: 2,
+            slug: 'elk',
+        },
+        traits: ['tramplingCharge'],
+        stats: {
+            0: { name: 'Elk Calf' },
+            0.25: { name: 'Elk', hitDice: 2, speed: 50, size: sizeLarge, str: 16, dex: 10, con: 12, wis: 10, cha: 6, attacks: { ram: { damageDice: 1, damageDieSize: 6 }, hooves: { damageDice: 2, damageDieSize: 4 } }, traits: { tramplingCharge: { chargeAttack: 'ram', knockdownAttack: 'hooves', dcAdjustment: -4 } } },
+            2: { name: 'Giant Elk', hitDice: 7, speed: 60, size: sizeHuge, str: 19, dex: 16, con: 14, int: 7, wis: 14, cha: 10, multiattack: { attacks: { ram: 1, hooves: 1 } }, attacks: { ram: { damageDice: 2, damageDieSize: 6 }, hooves: { damageDice: 2, damageDieSize: 8 } }, traits: { tramplingCharge: { chargeAttack: 'ram', knockdownAttack: 'hooves', dcAdjustment: -2 } }, languages: ['Giant Elk'] },
+        },
+    },
+    erinyes: {
+        name: 'Erinyes',
+        type: creatureTypes.fiend,
+        subtype: 'devil',
+        alignment: alignments.lawfulEvil,
+        lockedStats: {
+            attacks: {
+                longsword: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Longsword' },
+                longbow: { damageType: damageTypes.piercing, name: 'Longbow', ranged: true },
+            },
+            multiattack: { attacks: { longsword: 3 } },
+            resistances: [damageTypes.cold, damageTypes.mundanePhysical],
+            immunities: [damageTypes.fire, damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            armor: 'plate',
+            saves: ['dex', 'con', 'wis', 'cha'],
+            slug: 'erinyes',
+        },
+        traits: ['hellishWeapons', 'magicResistance'],
+        stats: {
+            12: { name: 'Erinyes', hitDice: 18, speed: 30, fly: 60, size: sizeMedium, str: 18, dex: 16, con: 18, int: 14, wis: 14, cha: 18, attacks: { longsword: { damageDice: 1, damageDieSize: 8 }, longbow: { range: 150, longRange: 600, damageDice: 1, damageDieSize: 8 } }, traits: { hellishWeapons: { damageDice: 3, damageDieSize: 8 } } },
+        },
+    },
     fireElemental: {
         name: 'Fire Elemental',
         type: creatureTypes.elemental,
@@ -220,6 +646,164 @@ export const monsterList: Record<string, MonsterTemplate> = {
         lockedStats: { darkvision: 60, languages: [languages.ignan], resistances: [damageTypes.mundanePhysical], immunities: [damageTypes.fire, damageTypes.poison], conditionImmunities: [conditions.exhaustion, conditions.grappled, conditions.paralyzed, conditions.petrified, conditions.poisoned, conditions.prone, conditions.restrained, conditions.unconscious], attacks: { touch: { reach: reachMediumShort, damageType: damageTypes.fire, name: 'Touch', proc: 'ignite' } }, slug: 'elemental', multiattack: { attacks: { touch: 2 } } },
         traits: ['fireForm', 'illumination', 'waterSusceptibility'],
         stats: { 5: { name: 'Fire Elemental', hitDice: 12, speed: 50, size: sizeLarge, str: 10, dex: 17, con: 16, int: 6, wis: 10, cha: 7, attacks: { touch: { damageDice: 2, damageDieSize: 6, finesse: true } }, traits: { ignite: { damageDice: 1, damageDieSize: 10 }, fireForm: { damageDice: 1, damageDieSize: 10 }, waterSusceptibility: { damageDice: 1, damageDieSize: 1 } } } },
+    },
+    giantScorpion: {
+        name: 'Giant Scorpion',
+        type: creatureTypes.beast,
+        alignment: alignments.unaligned,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                claw: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Claw', proc: 'grappleBite' },
+                sting: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Sting', proc: 'poisonBite' },
+            },
+            multiattack: { attacks: { claw: 2, sting: 1 } },
+            int: 1,
+            blindsight: 60,
+            slug: 'scorpion',
+        },
+        stats: {
+            3: { name: 'Giant Scorpion', bonusArmor: 5, hitDice: 7, speed: 40, size: sizeLarge, str: 15, dex: 13, con: 15, wis: 9, cha: 3, attacks: { claw: { damageDice: 1, damageDieSize: 8 }, sting: { damageDice: 1, damageDieSize: 10 } }, traits: { poisonBite: { damageDice: 4, damageDieSize: 10 } } },
+        },
+    },
+    giantToad: {
+        name: 'Giant Toad',
+        type: creatureTypes.beast,
+        alignment: alignments.unaligned,
+        lockedStats: {
+            attacks: {
+                bite: { reach: reachShort, damageType: damageTypes.piercing, damageRiderType: damageTypes.poison, name: 'Bite', proc: 'grappleBiteSizeRestricted' },
+            },
+            int: 2,
+            darkvision: 30,
+            slug: 'toad',
+        },
+        traits: ['amphibious', 'standingLeap'],
+        actions: ['swallow'],
+        stats: {
+            1: { name: 'Giant Toad', hitDice: 6, speed: 20, swim: 40, size: sizeLarge, str: 15, dex: 13, con: 13, wis: 10, cha: 3, attacks: { bite: { damageDice: 1, damageDieSize: 10, damageRiderDice: 1, damageRiderDieSize: 10 } }, traits: { grappleBiteSizeRestricted: { dcAdjustment: -2, sizeAdjustment: -1 }, swallow: { damageDice: 3, damageDieSize: 6, sizeAdjustment: -1 } } },
+        },
+    },
+    giantWasp: {
+        name: 'Giant Wasp',
+        type: creatureTypes.beast,
+        alignment: alignments.unaligned,
+        lockedStats: {
+            attacks: {
+                sting: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Sting', proc: 'poisonBite' },
+            },
+            int: 1,
+            slug: 'wasp',
+        },
+        stats: {
+            0.5: { name: 'Giant Wasp', hitDice: 3, speed: 10, fly: 50, size: sizeMedium, str: 10, dex: 14, con: 10, wis: 10, cha: 3, attacks: { sting: { damageDice: 1, damageDieSize: 6 } }, traits: { poisonBite: { damageDice: 3, damageDieSize: 6 } } },
+        },
+    },
+    goblin: {
+        name: 'Goblin',
+        type: creatureTypes.humanoid,
+        subtype: 'goblinoid',
+        alignment: alignments.neutralEvil,
+        lockedStats: {
+            darkvision: 60,
+            languages: [languages.common, languages.goblin],
+            attacks: {
+                scimitar: { reach: reachMediumShort, damageType: damageTypes.slashing, name: 'Scimitar', finesse: true },
+                shortbow: { damageType: damageTypes.piercing, name: 'Shortbow', ranged: true },
+            },
+            skills: { stealth: skillRanks.proficient },
+            slug: 'goblin',
+        },
+        traits: ['nimbleEscape'],
+        variants: {
+            goblin: {
+                name: 'Goblin',
+                stats: {
+                    0.25: { name: 'Goblin' },
+                },
+            },
+            hobgoblin: {
+                name: 'Hobgoblin',
+                lockedStats: { slug: 'hobgoblin', alignment: alignments.lawfulEvil, attacks: { scimitar: { damageType: damageTypes.slashing, name: 'Longsword', finesse: false }, longbow: { damageType: damageTypes.piercing, name: 'Longbow', ranged: true } } },
+                stats: {
+                    0.5: { name: 'Hobgoblin' },
+                },
+            },
+            bugbear: {
+                name: 'Bugbear',
+                lockedStats: { slug: 'bugbear', attacks: { scimitar: { damageType: damageTypes.piercing, name: 'Morningstar', finesse: false } } },
+                stats: {
+                    1: { name: 'Bugbear' },
+                },
+            },
+        },
+        stats: {
+            0.25: { name: 'Goblin', bonusArmor: 2, hitDice: 2, speed: 30, size: sizeSmall, str: 8, dex: 14, con: 10, int: 10, wis: 8, cha: 8, attacks: { scimitar: { damageDice: 1, damageDieSize: 6 }, shortbow: { damageDice: 1, damageDieSize: 6 } } },
+            0.5: { name: 'Hobgoblin', bonusArmor: 5, hitDice: 2, speed: 30, size: sizeMedium, str: 13, dex: 12, con: 12, int: 10, wis: 10, cha: 9, attacks: { scimitar: { damageDice: 1, damageDieSize: 8 }, shortbow: { damageDice: 1, damageDieSize: 8 } } },
+            1: { name: 'Bugbear', bonusArmor: 3, hitDice: 5, speed: 30, darkvision: 60, size: sizeMedium, str: 15, dex: 14, con: 13, int: 8, wis: 11, cha: 9, skills: { stealth: skillRanks.proficient }, attacks: { scimitar: { damageDice: 2, damageDieSize: 8 }, shortbow: { damageDice: 1, damageDieSize: 6 } } },
+        },
+    },
+    giant: {
+        name: 'Frost Giant',
+        type: creatureTypes.giant,
+        alignment: alignments.neutralEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            darkvision: 60,
+            languages: [languages.giant],
+            immunities: [damageTypes.cold],
+            attacks: {
+                greataxe: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Greataxe' },
+                rock: { damageType: damageTypes.bludgeoning, name: 'Rock', ranged: true },
+            },
+            saves: ['con', 'wis', 'cha'],
+            skills: { athletics: skillRanks.proficient, perception: skillRanks.proficient },
+            slug: 'frost giant',
+            multiattack: { attacks: { greataxe: 2 } },
+        },
+        stats: {
+            8: { name: 'Frost Giant', bonusArmor: 4, hitDice: 12, speed: 40, size: sizeHuge, str: 23, dex: 9, con: 21, int: 9, wis: 10, cha: 12, attacks: { greataxe: { damageDice: 3, damageDieSize: 12 }, rock: { damageDice: 4, damageDieSize: 10 } } },
+        },
+    },
+    ogre: {
+        name: 'Ogre',
+        type: creatureTypes.giant,
+        alignment: alignments.chaoticEvil,
+        lockedStats: {
+            darkvision: 60,
+            languages: [languages.common, languages.giant],
+            attacks: {
+                greatclub: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Greatclub' },
+                javelin: { damageType: damageTypes.piercing, name: 'Javelin', ranged: true },
+            },
+            slug: 'ogre',
+        },
+        stats: {
+            2: { name: 'Ogre', bonusArmor: 1, hitDice: 7, speed: 40, size: sizeLarge, str: 19, dex: 8, con: 16, int: 5, wis: 7, cha: 7, attacks: { greatclub: { damageDice: 2, damageDieSize: 8 }, javelin: { damageDice: 2, damageDieSize: 6 } } },
+        },
+    },
+    glabrezu: {
+        name: 'Glabrezu',
+        type: creatureTypes.fiend,
+        subtype: 'demon',
+        alignment: alignments.chaoticEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                pincer: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Pincer', proc: 'grappleBiteSizeRestricted' },
+                fist: { reach: reachMediumShort, damageType: damageTypes.bludgeoning, name: 'Fist' },
+            },
+            multiattack: { attacks: { pincer: 2, fist: 2 } },
+            resistances: [damageTypes.cold, damageTypes.fire, damageTypes.lightning, damageTypes.mundanePhysical],
+            immunities: [damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            saves: ['str', 'con', 'wis', 'cha'],
+            slug: 'glabrezu',
+        },
+        traits: ['magicResistance'],
+        stats: {
+            9: { name: 'Glabrezu', bonusArmor: 7, hitDice: 15, speed: 40, size: sizeLarge, str: 20, dex: 15, con: 21, int: 19, wis: 17, cha: 16, attacks: { pincer: { damageDice: 2, damageDieSize: 10 }, fist: { damageDice: 2, damageDieSize: 4 } }, traits: { grappleBiteSizeRestricted: { dcAdjustment: -4, sizeAdjustment: -1 } } },
+        },
     },
     giantSpider: {
         name: 'Giant Spider',
@@ -240,6 +824,117 @@ export const monsterList: Record<string, MonsterTemplate> = {
         actions: ['web'],
         stats: {
             1: { name: 'Giant Spider', hitDice: 4, bonusArmor: 4, speed: 30, climb: 30, size: sizeLarge, str: 14, dex: 16, con: 12, wis: 11, cha: 4, attacks: { bite: { damageDice: 1, damageDieSize: 8 } } },
+            8: { name: 'Broodmother', slug: 'broodmother' },
+        },
+    },
+    goat: {
+        type: creatureTypes.beast,
+        alignment: alignments.unaligned,
+        lockedStats: {
+            attacks: { ram: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Ram' } },
+            int: 2,
+            slug: 'goat',
+        },
+        traits: ['tramplingCharge', 'sureFooted'],
+        stats: {
+            0: { name: 'Goat', hitDice: 1, speed: 40, size: sizeMedium, str: 12, dex: 10, con: 11, wis: 10, cha: 5, attacks: { ram: { damageDice: 1, damageDieSize: 4 } }, traits: { tramplingCharge: { chargeAttack: 'ram', knockdownAttack: 'ram', dcAdjustment: -6 }, sureFooted: {} } },
+            0.5: { name: 'Giant Goat', hitDice: 3, speed: 40, size: sizeLarge, str: 17, dex: 11, con: 12, wis: 10, cha: 6, attacks: { ram: { damageDice: 2, damageDieSize: 4 } }, traits: { tramplingCharge: { chargeAttack: 'ram', knockdownAttack: 'ram', dcAdjustment: -4 }, sureFooted: {} } },
+        },
+    },
+    ghoul: {
+        type: creatureTypes.undead,
+        alignment: alignments.chaoticEvil,
+        lockedStats: {
+            attacks: {
+                bite: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Bite' },
+                claws: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Claws', finesse: true, proc: 'ghoulClaws' },
+            },
+            immunities: [damageTypes.poison],
+            conditionImmunities: [conditions.charmed, conditions.exhaustion, conditions.poisoned],
+            darkvision: 60,
+            languages: [languages.common],
+            slug: 'ghoul',
+        },
+        stats: {
+            1: { name: 'Ghoul', hitDice: 5, speed: 30, size: sizeMedium, str: 13, dex: 15, con: 10, int: 7, wis: 10, cha: 6, attacks: { bite: { damageDice: 2, damageDieSize: 6 }, claws: { damageDice: 2, damageDieSize: 4 } } },
+            3: { name: 'Ghast', slug: 'ghast' },
+            6: { name: 'Crypt Ghoul', slug: 'cryptGhoul' },
+        },
+    },
+    hawk: {
+        type: creatureTypes.beast,
+        alignment: alignments.unaligned,
+        lockedStats: {
+            attacks: { talons: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Talons' } },
+            int: 2,
+            slug: 'hawk',
+            skills: { perception: skillRanks.proficient },
+        },
+        traits: ['keenSight'],
+        variants: {
+            hawk: {
+                name: 'Hawk',
+                stats: { 0: { name: 'Hawk' } },
+            },
+            bloodHawk: {
+                name: 'Blood Hawk',
+                traits: ['packTactics'],
+                lockedStats: { slug: 'bloodHawk' },
+                stats: { 0.125: { name: 'Blood Hawk' } },
+            },
+        },
+        stats: {
+            0: { hitDice: 1, speed: 10, fly: 60, size: sizeTiny, str: 5, dex: 16, con: 8, wis: 14, cha: 6, attacks: { talons: { damageDice: 1, damageDieSize: 1 } } },
+            0.125: { hitDice: 1, speed: 10, fly: 60, size: sizeSmall, str: 6, dex: 14, con: 10, wis: 14, cha: 6, attacks: { talons: { damageDice: 1, damageDieSize: 4 } } },
+        },
+    },
+    hezrou: {
+        name: 'Hezrou',
+        type: creatureTypes.fiend,
+        subtype: 'demon',
+        alignment: alignments.chaoticEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                bite: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Bite' },
+                claw: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Claw' },
+            },
+            multiattack: { attacks: { bite: 1, claw: 2 } },
+            resistances: [damageTypes.cold, damageTypes.fire, damageTypes.lightning, damageTypes.mundanePhysical],
+            immunities: [damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            darkvision: 120,
+            saves: ['str', 'con', 'wis'],
+            slug: 'hezrou',
+        },
+        traits: ['magicResistance', 'stench'],
+        stats: {
+            8: { name: 'Hezrou', bonusArmor: 6, hitDice: 13, speed: 30, size: sizeLarge, str: 19, dex: 17, con: 20, int: 5, wis: 12, cha: 13, attacks: { bite: { damageDice: 2, damageDieSize: 10 }, claw: { damageDice: 2, damageDieSize: 6 } }, traits: { stench: { dcAdjustment: -4 } } },
+        },
+    },
+    hornedDevil: {
+        name: 'Horned Devil',
+        type: creatureTypes.fiend,
+        subtype: 'devil',
+        alignment: alignments.lawfulEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                fork: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Fork' },
+                tail: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Tail' },
+            },
+            multiattack: { attacks: { fork: 2, tail: 1 } },
+            resistances: [damageTypes.cold, damageTypes.mundanePhysical],
+            immunities: [damageTypes.fire, damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            darkvision: 120,
+            saves: ['str', 'dex', 'wis', 'cha'],
+            slug: 'hornedDevil',
+        },
+        traits: ['devilsSight', 'magicResistance'],
+        actions: ['hurlFlame'],
+        stats: {
+            11: { name: 'Horned Devil', bonusArmor: 8, hitDice: 17, speed: 20, fly: 60, size: sizeLarge, str: 22, dex: 17, con: 21, int: 12, wis: 16, cha: 17, attacks: { fork: { damageDice: 2, damageDieSize: 8 }, tail: { damageDice: 1, damageDieSize: 8 } }, traits: { hurlFlame: { damageDice: 4, damageDieSize: 6 } } },
         },
     },
     horse: {
@@ -276,6 +971,22 @@ export const monsterList: Record<string, MonsterTemplate> = {
                     4: { name: 'Destrier' },
                 },
             },
+            pony: {
+                name: 'Pony',
+                lockedStats: { slug: 'pony' },
+                stats: {
+                    0: { name: 'Foal' },
+                    0.125: { name: 'Pony', hitDice: 2, speed: 40, str: 15, attacks: { hooves: { damageDice: 2, damageDieSize: 4 } } },
+                },
+            },
+            mule: {
+                name: 'Mule',
+                lockedStats: { slug: 'mule' },
+                stats: {
+                    0: { name: 'Foal' },
+                    0.125: { name: 'Mule', hitDice: 2, speed: 40, str: 14, attacks: { hooves: { damageDice: 1, damageDieSize: 4 } } },
+                },
+            },
         },
         stats: {
             0.25: { hitDice: 2, speed: 60, str: 16, dex: 10, con: 12, wis: 11, cha: 7, attacks: { hooves: { damageDice: 2, damageDieSize: 4 } } },
@@ -289,6 +1000,80 @@ export const monsterList: Record<string, MonsterTemplate> = {
         lockedStats: { armorDescription: armorMaterials.natural, attacks: { bite: { reach: reachShort, damageType: damageTypes.piercing, name: 'Bite' } }, int: 3, skills: { perception: skillRanks.proficient }, slug: 'whale' },
         traits: ['echolocation', 'holdBreath', 'keenHearing'],
         stats: { 3: { name: 'Killer Whale', bonusArmor: 2, blindsight: 120, hitDice: 12, speed: 0, swim: 60, size: sizeHuge, str: 19, dex: 10, con: 13, wis: 12, cha: 7, attacks: { bite: { damageDice: 5, damageDieSize: 6 } }, traits: { holdBreath: { duration: 30 } } } },
+    },
+    kraken: {
+        name: 'Kraken',
+        type: creatureTypes.monstrosity,
+        subtype: 'titan',
+        alignment: alignments.chaoticEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                bite: { reach: reachShort, damageType: damageTypes.piercing, name: 'Bite' },
+                tentacle: { reach: reachVeryLong, damageType: damageTypes.bludgeoning, name: 'Tentacle', proc: 'grappleBite' },
+            },
+            multiattack: { attacks: { tentacle: 3 } },
+            immunities: [damageTypes.lightning, damageTypes.mundanePhysical],
+            conditionImmunities: [conditions.frightened, conditions.paralyzed],
+            saves: ['str', 'dex', 'con', 'int', 'wis'],
+            slug: 'kraken',
+        },
+        traits: ['amphibious', 'freedomOfMovement', 'siegeMonster'],
+        actions: ['swallow', 'lightningStorm'],
+        stats: {
+            23: { name: 'Kraken', bonusArmor: 8, hitDice: 27, speed: 20, swim: 60, size: sizeGargantuan, str: 30, dex: 11, con: 25, int: 22, wis: 18, cha: 20, attacks: { bite: { damageDice: 3, damageDieSize: 8 }, tentacle: { damageDice: 3, damageDieSize: 6 } }, traits: { swallow: { damageDice: 12, damageDieSize: 6, sizeAdjustment: -2 }, lightningStorm: { damageDice: 4, damageDieSize: 10 } } },
+        },
+    },
+    lemure: {
+        name: 'Lemure',
+        type: creatureTypes.fiend,
+        subtype: 'devil',
+        alignment: alignments.lawfulEvil,
+        lockedStats: {
+            attacks: { fist: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Fist' } },
+            resistances: [damageTypes.cold],
+            immunities: [damageTypes.fire, damageTypes.poison],
+            conditionImmunities: [conditions.charmed, conditions.frightened, conditions.poisoned],
+            darkvision: 120,
+            slug: 'lemure',
+        },
+        traits: ['devilsSight'],
+        stats: {
+            0: { name: 'Lemure', hitDice: 3, speed: 15, size: sizeMedium, str: 10, dex: 5, con: 11, int: 1, wis: 11, cha: 3, attacks: { fist: { damageDice: 1, damageDieSize: 4 } } },
+        },
+    },
+    mastiff: {
+        type: creatureTypes.beast,
+        alignment: alignments.unaligned,
+        lockedStats: { attacks: { bite: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Bite', proc: 'takeDown' } }, int: 3, slug: 'mastiff', skills: { perception: skillRanks.proficient } },
+        traits: ['keenHearingSmell'],
+        stats: {
+            0.125: { name: 'Mastiff', hitDice: 1, speed: 40, size: sizeMedium, str: 13, dex: 14, con: 12, wis: 12, cha: 7, attacks: { bite: { damageDice: 1, damageDieSize: 6 } } },
+        },
+    },
+    marilith: {
+        name: 'Marilith',
+        type: creatureTypes.fiend,
+        subtype: 'demon',
+        alignment: alignments.chaoticEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                longsword: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Longsword' },
+                tail: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Tail', proc: 'grappleBiteSizeRestricted' },
+            },
+            multiattack: { attacks: { longsword: 6, tail: 1 } },
+            resistances: [damageTypes.cold, damageTypes.fire, damageTypes.lightning, damageTypes.mundanePhysical],
+            immunities: [damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            saves: ['str', 'con', 'wis', 'cha'],
+            slug: 'marilith',
+        },
+        traits: ['magicResistance', 'magicAttacks'],
+        actions: ['teleport'],
+        stats: {
+            16: { name: 'Marilith', bonusArmor: 8, hitDice: 18, speed: 40, size: sizeLarge, str: 18, dex: 20, con: 20, int: 18, wis: 16, cha: 20, attacks: { longsword: { damageDice: 2, damageDieSize: 8 }, tail: { damageDice: 2, damageDieSize: 10 } }, traits: { grappleBiteSizeRestricted: { dcAdjustment: 0, sizeAdjustment: -1 } } },
+        },
     },
     naiad: {
         type: creatureTypes.fey,
@@ -309,6 +1094,106 @@ export const monsterList: Record<string, MonsterTemplate> = {
         },
         traits: ['amphibious', 'invisibleInWater', 'innateSpellcasting', 'magicResistance'],
         stats: { 2: { name: 'Naiad', bonusArmor: 2, hitDice: 7, speed: 30, swim: 30, str: 10, dex: 16, con: 11, int: 15, wis: 10, cha: 18, attacks: { psychicTouch: { damageDice: 1, damageDieSize: 10 } } } },
+    },
+    nalfeshnee: {
+        name: 'Nalfeshnee',
+        type: creatureTypes.fiend,
+        subtype: 'demon',
+        alignment: alignments.chaoticEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                bite: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Bite' },
+                claw: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Claw' },
+            },
+            multiattack: { attacks: { bite: 1, claw: 2 } },
+            resistances: [damageTypes.cold, damageTypes.fire, damageTypes.lightning, damageTypes.mundanePhysical],
+            immunities: [damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            saves: ['con', 'int', 'wis', 'cha'],
+            slug: 'nalfeshnee',
+        },
+        traits: ['magicResistance'],
+        actions: ['horrorNimbus', 'teleport'],
+        stats: {
+            13: { name: 'Nalfeshnee', bonusArmor: 8, hitDice: 16, speed: 20, fly: 30, size: sizeLarge, str: 21, dex: 10, con: 22, int: 19, wis: 12, cha: 15, attacks: { bite: { damageDice: 5, damageDieSize: 10 }, claw: { damageDice: 3, damageDieSize: 6 } } },
+        },
+    },
+    cephalopod: {
+        name: 'Cephalopod',
+        type: creatureTypes.beast,
+        alignment: alignments.unaligned,
+        lockedStats: {
+            attacks: {
+                tentacles: { reach: reachShort, damageType: damageTypes.bludgeoning, name: 'Tentacles', proc: 'grappleBite', finesse: true },
+            },
+            int: 3,
+            slug: 'octopus',
+            skills: { perception: skillRanks.proficient, stealth: skillRanks.expert },
+        },
+        traits: ['holdBreath', 'waterBreathing'],
+        actions: ['inkCloud'],
+        variants: {
+            octopus: {
+                name: 'Octopus',
+                traits: ['underwaterCamouflage'],
+                stats: {
+                    0: { name: 'Octopus', slug: 'octopus' },
+                    1: { name: 'Giant Octopus', slug: 'octopus' },
+                },
+            },
+            squid: {
+                name: 'Squid',
+                lockedStats: { slug: 'squid' },
+                stats: {
+                    0: { name: 'Squid', swim: 40 },
+                    1: { name: 'Giant Squid', swim: 80 },
+                },
+            },
+        },
+        stats: {
+            0: { hitDice: 1, speed: 5, swim: 30, darkvision: 30, size: sizeSmall, str: 4, dex: 15, con: 11, wis: 10, cha: 4, attacks: { tentacles: { damageDice: 1, damageDieSize: 1 } }, traits: { holdBreath: { duration: 30 } } },
+            1: { hitDice: 8, speed: 10, swim: 60, darkvision: 60, size: sizeLarge, str: 17, dex: 13, con: 13, wis: 10, cha: 4, attacks: { tentacles: { damageDice: 2, damageDieSize: 6 } }, traits: { holdBreath: { duration: 60 } } },
+        },
+    },
+    chainDevil: {
+        name: 'Chain Devil',
+        type: creatureTypes.fiend,
+        subtype: 'devil',
+        alignment: alignments.lawfulEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                chain: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Chain', proc: 'grappleBite' },
+            },
+            multiattack: { attacks: { chain: 2 } },
+            resistances: [damageTypes.cold, damageTypes.mundanePhysical],
+            immunities: [damageTypes.fire, damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            darkvision: 120,
+            saves: ['con', 'wis', 'cha'],
+            slug: 'chainDevil',
+        },
+        traits: ['devilsSight', 'magicResistance'],
+        stats: {
+            8: { name: 'Chain Devil', bonusArmor: 6, hitDice: 10, speed: 30, size: sizeMedium, str: 18, dex: 15, con: 18, int: 11, wis: 12, cha: 14, attacks: { chain: { damageDice: 2, damageDieSize: 6 } } },
+        },
+    },
+    owl: {
+        type: creatureTypes.beast,
+        alignment: alignments.neutral,
+        lockedStats: {
+            attacks: { talons: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Talons' } },
+            darkvision: 120,
+            slug: 'owl',
+            skills: { perception: skillRanks.proficient, stealth: skillRanks.proficient },
+        },
+        traits: ['flyby', 'keenHearingSight'],
+        stats: {
+            0: { name: 'Owlet' },
+            0.125: { name: 'Owl', hitDice: 1, speed: 5, fly: 60, size: sizeTiny, str: 3, dex: 13, con: 8, int: 2, wis: 12, cha: 7, attacks: { talons: { damageDice: 1, damageDieSize: 1 } } },
+            0.25: { name: 'Giant Owl', hitDice: 3, speed: 5, fly: 60, size: sizeLarge, str: 13, dex: 15, con: 12, int: 8, wis: 13, cha: 10, attacks: { talons: { damageDice: 2, damageDieSize: 6 } }, languages: ['Giant Owl'] },
+        },
     },
     priest: {
         name: 'Priest',
@@ -353,6 +1238,63 @@ export const monsterList: Record<string, MonsterTemplate> = {
             2: { bonusArmor: 3, hitDice: 5, speed: 30, str: 10, dex: 10, con: 12, int: 13, wis: 16, cha: 13, saves: ['wis', 'cha'] },
         },
     },
+    poisonousSnake: {
+        type: creatureTypes.beast,
+        alignment: alignments.unaligned,
+        lockedStats: {
+            attacks: {
+                bite: { reach: reachShort, damageType: damageTypes.piercing, name: 'Bite', proc: 'poisonBite', finesse: true },
+            },
+            int: 2,
+            blindsight: 10,
+            slug: 'snake',
+        },
+        stats: {
+            0.125: { name: 'Poisonous Snake', hitDice: 1, speed: 30, swim: 30, size: sizeTiny, str: 2, dex: 16, con: 11, wis: 10, cha: 3, attacks: { bite: { damageDice: 1, damageDieSize: 1 } }, traits: { poisonBite: { damageDice: 2, damageDieSize: 4 } } },
+            0.25: { name: 'Giant Poisonous Snake', hitDice: 2, speed: 30, swim: 30, size: sizeMedium, str: 10, dex: 18, con: 13, wis: 10, cha: 3, attacks: { bite: { damageDice: 1, damageDieSize: 4 } }, traits: { poisonBite: { damageDice: 3, damageDieSize: 6 } } },
+        },
+    },
+    pitFiend: {
+        name: 'Pit Fiend',
+        type: creatureTypes.fiend,
+        subtype: 'devil',
+        alignment: alignments.lawfulEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                bite: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Bite', proc: 'poisonBite' },
+                claw: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Claw' },
+                mace: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Mace', damageRiderType: damageTypes.fire },
+                tail: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Tail' },
+            },
+            multiattack: { attacks: { bite: 1, claw: 1, mace: 1, tail: 1 } },
+            resistances: [damageTypes.cold, damageTypes.mundanePhysical],
+            immunities: [damageTypes.fire, damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            saves: ['dex', 'con', 'wis'],
+            slug: 'pitFiend',
+        },
+        traits: ['fearAura', 'magicResistance', 'magicAttacks'],
+        stats: {
+            20: { name: 'Pit Fiend', bonusArmor: 9, hitDice: 24, speed: 30, fly: 60, size: sizeLarge, str: 26, dex: 14, con: 24, int: 22, wis: 18, cha: 24, attacks: { bite: { damageDice: 4, damageDieSize: 6 }, claw: { damageDice: 2, damageDieSize: 8 }, mace: { damageDice: 2, damageDieSize: 6, damageRiderDice: 6, damageRiderDieSize: 6 }, tail: { damageDice: 3, damageDieSize: 10 } }, traits: { fearAura: { dcAdjustment: 0 }, poisonBite: { damageDice: 6, damageDieSize: 6 } } },
+        },
+    },
+    plesiosaurus: {
+        type: creatureTypes.beast,
+        subtype: 'dinosaur',
+        alignment: alignments.unaligned,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: { bite: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Bite' } },
+            int: 2,
+            skills: { perception: skillRanks.proficient, stealth: skillRanks.proficient },
+            slug: 'plesiosaurus',
+        },
+        traits: ['holdBreath'],
+        stats: {
+            2: { name: 'Plesiosaurus', bonusArmor: 3, hitDice: 8, speed: 20, swim: 40, size: sizeLarge, str: 18, dex: 15, con: 16, wis: 12, cha: 5, attacks: { bite: { damageDice: 3, damageDieSize: 6 } }, traits: { holdBreath: { duration: 60 } } },
+        },
+    },
     quetzalcoatlus: {
         type: creatureTypes.beast,
         subtype: 'dinosaur',
@@ -362,6 +1304,30 @@ export const monsterList: Record<string, MonsterTemplate> = {
         stats: {
             2: { name: 'Quetzalcoatlus', size: sizeHuge, hitDice: 4, str: 15, dex: 13, con: 13, wis: 10, cha: 5, slug: 'quetzalcoatlus', speed: 10, fly: 80, attacks: { bite: { damageDice: 3, damageDieSize: 6 } }, traits: { flyingCharge: { damageDice: 3, damageDieSize: 6 } } },
             8: { name: 'Hatzegopteryx', slug: 'hatzegopteryx' },
+        },
+    },
+    rat: {
+        type: creatureTypes.beast,
+        alignment: alignments.unaligned,
+        lockedStats: { attacks: { bite: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Bite', finesse: true } }, int: 2, darkvision: 30, slug: 'rat' },
+        traits: ['keenSmell'],
+        stats: {
+            0: { name: 'Rat', hitDice: 1, speed: 20, size: sizeTiny, str: 2, dex: 11, con: 9, wis: 10, cha: 4, attacks: { bite: { damageDice: 1, damageDieSize: 1 } } },
+            0.125: { name: 'Giant Rat', hitDice: 2, speed: 30, size: sizeSmall, str: 7, dex: 15, con: 11, wis: 10, cha: 4, attacks: { bite: { damageDice: 1, damageDieSize: 4 } } },
+        },
+    },
+    rhinoceros: {
+        type: creatureTypes.beast,
+        alignment: alignments.unaligned,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: { gore: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Gore' } },
+            int: 2,
+            slug: 'rhinoceros',
+        },
+        traits: ['tramplingCharge'],
+        stats: {
+            2: { name: 'Rhinoceros', bonusArmor: 1, hitDice: 6, speed: 40, size: sizeLarge, str: 21, dex: 8, con: 15, wis: 12, cha: 6, attacks: { gore: { damageDice: 2, damageDieSize: 8 } }, traits: { tramplingCharge: { chargeAttack: 'gore', knockdownAttack: 'gore', dcAdjustment: -2 } } },
         },
     },
     saberToothedTiger: {
@@ -384,6 +1350,26 @@ export const monsterList: Record<string, MonsterTemplate> = {
         },
         stats: { 2: { hitDice: 3, speed: 40, size: sizeMedium, str: 6, dex: 14, con: 13, int: 6, wis: 10, cha: 8, attacks: { strengthDrain: { damageDice: 2, damageDieSize: 6 } } } },
     },
+    skeleton: {
+        type: creatureTypes.undead,
+        alignment: alignments.lawfulEvil,
+        lockedStats: {
+            attacks: {
+                shortsword: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Shortsword', finesse: true },
+                shortbow: { damageType: damageTypes.piercing, name: 'Shortbow', ranged: true, finesse: true },
+            },
+            vulnerabilities: [damageTypes.bludgeoning],
+            immunities: [damageTypes.poison],
+            conditionImmunities: [conditions.exhaustion, conditions.poisoned],
+            darkvision: 60,
+            slug: 'skeleton',
+        },
+        stats: {
+            0.25: { name: 'Skeleton', bonusArmor: 3, hitDice: 2, speed: 30, size: sizeMedium, str: 10, dex: 14, con: 15, int: 6, wis: 8, cha: 5, attacks: { shortsword: { damageDice: 1, damageDieSize: 6 }, shortbow: { range: 80, longRange: 320, damageDice: 1, damageDieSize: 6 } } },
+            3: { name: 'Skeleton Warrior', slug: 'skeletonWarrior' },
+            6: { name: 'Bone Knight', slug: 'boneKnight' },
+        },
+    },
     shark: {
         name: 'Shark',
         type: creatureTypes.beast,
@@ -391,7 +1377,7 @@ export const monsterList: Record<string, MonsterTemplate> = {
         lockedStats: { armorDescription: armorMaterials.natural, attacks: { bite: { reach: reachShort, damageType: damageTypes.piercing, name: 'Bite' } }, int: 1, skills: { perception: skillRanks.proficient }, slug: 'shark' },
         traits: ['waterBreathing'],
         variants: {
-            frenzy: { name: 'Bloody Frenzy', traits: ['bloodyFrenzy'], stats: { 0.5: { name: 'Small Hunter Shark' }, 2: { name: 'Hunter Shark' } } },
+            frenzy: { name: 'Bloody Frenzy', traits: ['bloodyFrenzy'], stats: { 0.5: { name: 'Small Hunter Shark' }, 2: { name: 'Hunter Shark' }, 10: { name: 'Megalodon', slug: 'megalodon' } } },
             packHunter: { name: 'Pack Hunter', traits: ['packTactics'], stats: { 0.5: { name: 'Reef Shark' }, 2: { name: 'Large Reef Shark' } } },
         },
         stats: {
@@ -406,16 +1392,154 @@ export const monsterList: Record<string, MonsterTemplate> = {
         lockedStats: { armorDescription: armorMaterials.natural, attacks: { bite: { reach: reachMedium, proc: 'grappleBiteSizeRestricted', damageType: damageTypes.piercing, name: 'Bite' }, tail: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Tail' } }, int: 2, skills: { perception: skillRanks.proficient }, slug: 'tyrannosaurus', multiattack: { attacks: { bite: 1, tail: 1 }, requireDifferentTargets: true } },
         stats: { 8: { name: 'Tyrannosaurus Rex', bonusArmor: 3, hitDice: 13, speed: 50, size: sizeHuge, str: 25, dex: 10, con: 19, wis: 12, cha: 9, attacks: { bite: { damageDice: 4, damageDieSize: 12 }, tail: { damageDice: 3, damageDieSize: 8 } }, traits: { grappleBiteSizeRestricted: { dcAdjustment: -1, sizeAdjustment: -2 } } } },
     },
+    vulture: {
+        type: creatureTypes.beast,
+        alignment: alignments.neutralGood,
+        lockedStats: {
+            attacks: {
+                beak: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Beak' },
+            },
+            slug: 'vulture',
+            skills: { perception: skillRanks.proficient },
+        },
+        traits: ['keenSight', 'packTactics'],
+        stats: {
+            0: { name: 'Vulture', hitDice: 1, speed: 10, fly: 50, size: sizeMedium, str: 7, dex: 10, con: 13, int: 2, wis: 12, cha: 4, attacks: { beak: { damageDice: 1, damageDieSize: 4 } } },
+            1: { name: 'Giant Vulture', hitDice: 3, speed: 10, fly: 60, size: sizeLarge, str: 15, dex: 10, con: 15, int: 6, wis: 12, cha: 7, multiattack: { attacks: { beak: 1, talons: 1 } }, attacks: { beak: { damageDice: 2, damageDieSize: 4 }, talons: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Talons', damageDice: 2, damageDieSize: 6 } }, languages: ['Giant Vulture'] },
+        },
+    },
+    vrock: {
+        name: 'Vrock',
+        type: creatureTypes.fiend,
+        subtype: 'demon',
+        alignment: alignments.chaoticEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                beak: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Beak' },
+                talons: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Talons' },
+            },
+            multiattack: { attacks: { beak: 1, talons: 1 } },
+            resistances: [damageTypes.cold, damageTypes.fire, damageTypes.lightning, damageTypes.mundanePhysical],
+            immunities: [damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            darkvision: 120,
+            saves: ['dex', 'wis', 'cha'],
+            slug: 'vrock',
+        },
+        traits: ['magicResistance'],
+        actions: ['spores', 'stunningScreech'],
+        stats: {
+            6: { name: 'Vrock', bonusArmor: 5, hitDice: 11, speed: 40, fly: 60, size: sizeLarge, str: 17, dex: 15, con: 18, int: 8, wis: 13, cha: 8, attacks: { beak: { damageDice: 2, damageDieSize: 6 }, talons: { damageDice: 2, damageDieSize: 10 } }, traits: { spores: { damageDice: 1, damageDieSize: 10 } } },
+        },
+    },
+    waterElemental: {
+        name: 'Water Elemental',
+        type: creatureTypes.elemental,
+        alignment: alignments.neutral,
+        lockedStats: { armorDescription: armorMaterials.natural, darkvision: 60, languages: [languages.aquan], resistances: [damageTypes.acid, damageTypes.mundanePhysical], immunities: [damageTypes.poison], conditionImmunities: [conditions.exhaustion, conditions.grappled, conditions.paralyzed, conditions.petrified, conditions.poisoned, conditions.prone, conditions.restrained, conditions.unconscious], attacks: { slam: { reach: reachMediumShort, damageType: damageTypes.bludgeoning, name: 'Slam' } }, slug: 'elemental', multiattack: { attacks: { slam: 2 } } },
+        traits: ['waterForm', 'freeze'],
+        stats: { 5: { name: 'Water Elemental', bonusArmor: 4, hitDice: 12, speed: 30, swim: 90, size: sizeLarge, str: 18, dex: 14, con: 18, int: 5, wis: 10, cha: 8, attacks: { slam: { damageDice: 2, damageDieSize: 8 } } } },
+    },
     wolf: {
         type: creatureTypes.beast,
         alignment: alignments.unaligned,
         lockedStats: { armorDescription: armorMaterials.natural, attacks: { bite: { reach: reachShort, proc: 'takeDown', damageType: damageTypes.piercing, name: 'Bite', finesse: true } }, int: 3, skills: { perception: skillRanks.proficient, stealth: skillRanks.proficient }, slug: 'wolf' },
         traits: ['keenHearingSmell', 'packTactics'],
+        variants: {
+            wolf: {
+                name: 'Wolf',
+                stats: {
+                    0: { name: 'Wolf Pup' },
+                    0.25: { name: 'Wolf' },
+                    1: { name: 'Dire Wolf' },
+                    10: { name: 'Dread Wolf', slug: 'dreadWolf' },
+                },
+            },
+            worg: {
+                name: 'Worg',
+                lockedStats: { slug: 'worg', darkvision: 60, languages: ['Goblin', 'Worg'] },
+                stats: {
+                    0.5: { name: 'Worg' },
+                },
+            },
+        },
         stats: {
-            0: { name: 'Wolf Pup' },
-            0.25: { name: 'Wolf', bonusArmor: 1, hitDice: 2, speed: 40, size: sizeMedium, str: 12, dex: 15, con: 12, wis: 12, cha: 6, attacks: { bite: { damageDice: 2, damageDieSize: 4 } } },
-            1: { name: 'Dire Wolf', bonusArmor: 2, hitDice: 5, speed: 50, size: sizeLarge, str: 17, dex: 15, con: 15, wis: 12, cha: 7, attacks: { bite: { damageDice: 2, damageDieSize: 6 } } },
-            20: { name: 'Legendary Wolf' },
+            0: {},
+            0.25: { bonusArmor: 1, hitDice: 2, speed: 40, size: sizeMedium, str: 12, dex: 15, con: 12, wis: 12, cha: 6, attacks: { bite: { damageDice: 2, damageDieSize: 4 } } },
+            1: { bonusArmor: 2, hitDice: 5, speed: 50, size: sizeLarge, str: 17, dex: 15, con: 15, wis: 12, cha: 7, attacks: { bite: { damageDice: 2, damageDieSize: 6 } } },
+        },
+    },
+    weasel: {
+        type: creatureTypes.beast,
+        alignment: alignments.unaligned,
+        lockedStats: { attacks: { bite: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Bite', finesse: true } }, int: 2, slug: 'weasel' },
+        traits: ['keenHearingSmell'],
+        stats: {
+            0: { name: 'Weasel', hitDice: 1, speed: 30, size: sizeTiny, str: 3, dex: 16, con: 8, wis: 12, cha: 3, attacks: { bite: { damageDice: 1, damageDieSize: 1 } } },
+            0.125: { name: 'Giant Weasel', hitDice: 2, speed: 40, darkvision: 60, size: sizeMedium, str: 11, dex: 16, con: 10, wis: 12, cha: 5, attacks: { bite: { damageDice: 1, damageDieSize: 4 } } },
+        },
+    },
+    wight: {
+        type: creatureTypes.undead,
+        alignment: alignments.neutralEvil,
+        lockedStats: {
+            attacks: {
+                lifeDrain: { reach: reachMedium, damageType: damageTypes.necrotic, name: 'Life Drain', proc: 'lifeDrain' },
+                longsword: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Longsword' },
+                longbow: { damageType: damageTypes.piercing, name: 'Longbow', ranged: true },
+            },
+            multiattack: { attacks: { longsword: 2 } },
+            resistances: [damageTypes.necrotic, damageTypes.mundanePhysical],
+            immunities: [damageTypes.poison],
+            conditionImmunities: [conditions.exhaustion, conditions.poisoned],
+            darkvision: 60,
+            skills: { perception: skillRanks.proficient, stealth: skillRanks.proficient },
+            slug: 'wight',
+        },
+        traits: ['sunlightSensitivity'],
+        stats: {
+            3: { name: 'Wight', bonusArmor: 2, hitDice: 6, speed: 30, size: sizeMedium, str: 15, dex: 14, con: 16, int: 10, wis: 13, cha: 15, attacks: { lifeDrain: { damageDice: 1, damageDieSize: 6 }, longsword: { damageDice: 1, damageDieSize: 8 }, longbow: { range: 150, longRange: 600, damageDice: 1, damageDieSize: 8 } } },
+            8: { name: 'Crypt Lord', slug: 'cryptLord' },
+        },
+    },
+    wraith: {
+        type: creatureTypes.undead,
+        alignment: alignments.neutralEvil,
+        lockedStats: {
+            attacks: {
+                lifeDrain: { reach: reachMedium, damageType: damageTypes.necrotic, name: 'Life Drain', finesse: true, proc: 'lifeDrain' },
+            },
+            immunities: [damageTypes.necrotic, damageTypes.poison],
+            resistances: [damageTypes.acid, damageTypes.cold, damageTypes.fire, damageTypes.lightning, damageTypes.thunder, damageTypes.mundanePhysical],
+            conditionImmunities: [conditions.charmed, conditions.exhaustion, conditions.grappled, conditions.paralyzed, conditions.petrified, conditions.poisoned, conditions.prone, conditions.restrained, conditions.unconscious],
+            darkvision: 60,
+            slug: 'wraith',
+        },
+        traits: ['incorporealMovement', 'sunlightSensitivity'],
+        stats: {
+            1: { name: 'Specter', hitDice: 5, speed: 0, fly: 50, size: sizeMedium, str: 1, dex: 14, con: 11, int: 10, wis: 10, cha: 11, attacks: { lifeDrain: { damageDice: 3, damageDieSize: 6 } } },
+            5: { name: 'Wraith', hitDice: 9, speed: 0, fly: 60, size: sizeMedium, str: 6, dex: 16, con: 16, int: 12, wis: 14, cha: 15, attacks: { lifeDrain: { damageDice: 4, damageDieSize: 8 } } },
+            10: { name: 'Dread Wraith', slug: 'dreadWraith' },
+        },
+    },
+    zombie: {
+        type: creatureTypes.undead,
+        alignment: alignments.neutralEvil,
+        lockedStats: {
+            attacks: {
+                slam: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Slam' },
+            },
+            immunities: [damageTypes.poison],
+            conditionImmunities: [conditions.poisoned],
+            darkvision: 60,
+            slug: 'zombie',
+        },
+        traits: ['undeadFortitude'],
+        stats: {
+            0.25: { name: 'Zombie', hitDice: 3, speed: 20, size: sizeMedium, str: 13, dex: 6, con: 16, int: 3, wis: 6, cha: 5, attacks: { slam: { damageDice: 1, damageDieSize: 6 } } },
+            3: { name: 'Plague Zombie', slug: 'plagueZombie' },
+            6: { name: 'Abomination', slug: 'abomination' },
         },
     },
 };

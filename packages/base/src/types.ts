@@ -61,6 +61,10 @@ export interface Trait {
   spellcastingLevel?: number;
   /** If true, `spellcastingLevel` is scaled linearly by `scaleMonster` using the offset from the benchmark CR. */
   scalesSpellcasting?: boolean;
+  /** Field names on this trait that should be resolved via nearest-lower-benchmark lookup during scaling. */
+  nearestLowerBenchmarkKeys?: string[];
+  /** If set to a damage type string, applies this trait's scaled damage dice as a rider to all attacks that don't already have a rider. Used for Angelic Weapons. */
+  bonusDamageAllAttacks?: string;
   [key: string]: unknown;
 }
 
@@ -124,4 +128,6 @@ export interface Statblock {
   multiattackString?: string;
   legendaryActions?: Record<string, Partial<Trait> & { cost?: number }>;
   legendaryResistances?: number;
+  /** Action keys that become available at this CR and above. Used in per-CR stat entries, not on resolved statblocks. */
+  crActions?: string[];
 }

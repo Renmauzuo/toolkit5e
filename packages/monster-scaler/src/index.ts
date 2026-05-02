@@ -272,6 +272,16 @@ export function generateTrait(
     newTrait.condition = findNearestLowerBenchmark(`traits__${traitName}__condition`, targetCR, sourceStats) as string;
   }
 
+  // Resolve any fields that should use nearest-lower-benchmark lookup (e.g. breathRange, breathShape)
+  if (baseTrait.nearestLowerBenchmarkKeys) {
+    for (const key of baseTrait.nearestLowerBenchmarkKeys as string[]) {
+      if (!newTrait.hasOwnProperty(key)) {
+        const value = findNearestLowerBenchmark(`traits__${traitName}__${key}`, targetCR, sourceStats);
+        if (value !== undefined) newTrait[key] = value;
+      }
+    }
+  }
+
   if (baseTrait.dealsDamage) {
     const [damageDice, damageDieSize] = scaleDamageRoll(
       `traits__${traitName}__damageDice`,
@@ -482,9 +492,20 @@ export function scaleMonster(
   }
 
   // Actions
-  if (selectedMonster.actions) {
+  // Collect actions from the template-level list plus any per-CR crActions entries
+  const actionSet = new Set<string>(selectedMonster.actions ?? []);
+  for (const cr in sourceStats) {
+    const numCR = Number(cr);
+    if (numCR <= numTargetCR) {
+      const crActions = (sourceStats[numCR] as Record<string, unknown>).crActions;
+      if (Array.isArray(crActions)) {
+        for (const actionName of crActions as string[]) actionSet.add(actionName);
+      }
+    }
+  }
+  if (actionSet.size) {
     derivedStats.actions = {};
-    for (const actionName of selectedMonster.actions) {
+    for (const actionName of actionSet) {
       (derivedStats.actions as Record<string, Trait>)[actionName] = generateTrait(actionName, targetCR, sourceStats);
     }
   }
@@ -631,6 +652,24 @@ export function scaleMonster(
       if (numCR <= numTargetCR && numCR > highestCR && (sourceStats[numCR] as Record<string, unknown>).multiattack) {
         highestCR = numCR;
         derivedStats.multiattack = (sourceStats[numCR] as Record<string, unknown>).multiattack;
+      }
+    }
+  }
+
+  // Bonus damage on all attacks (e.g. Angelic Weapons adding radiant to every weapon hit)
+  if (derivedStats.traits) {
+    for (const traitName in derivedStats.traits as Record<string, Trait>) {
+      const trait = (derivedStats.traits as Record<string, Trait>)[traitName];
+      if (trait.bonusDamageAllAttacks && trait.damageDice && trait.damageDieSize && derivedStats.attacks) {
+        const riderType = trait.bonusDamageAllAttacks as string;
+        for (const attackKey in derivedStats.attacks as Record<string, Record<string, unknown>>) {
+          const atk = (derivedStats.attacks as Record<string, Record<string, unknown>>)[attackKey];
+          if (!atk.damageRiderType) {
+            atk.damageRiderType = riderType;
+            atk.damageRiderDice = trait.damageDice;
+            atk.damageRiderDieSize = trait.damageDieSize;
+          }
+        }
       }
     }
   }
