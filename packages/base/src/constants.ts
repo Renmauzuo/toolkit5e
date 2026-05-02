@@ -139,10 +139,12 @@ export const raceKeys = {
   dwarf: 'dwarf',
   elf: 'elf',
   gnome: 'gnome',
+  goliath: 'goliath',
   halfElf: 'half-elf',
   halfOrc: 'half-orc',
   halfling: 'halfling',
   human: 'human',
+  orc: 'orc',
   tiefling: 'tiefling',
 } as const;
 

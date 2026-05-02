@@ -185,6 +185,15 @@ export const traits: Record<string, Trait> = {
   waterForm:            { name: 'Water Form',            description: "{{description}} can enter a hostile creature's space and stop there. {{pronoun:subject}} can move through a space as narrow as 1 inch wide without squeezing." },
   waterSusceptibility:  { name: 'Water Susceptibility', description: 'For every 5 ft. {{description}} moves in water, or for every gallon of water splashed on {{pronoun:object}}, {{pronoun:subject}} takes {{trait:damage}} cold damage.', dealsDamage: true },
   nimbleEscape:         { name: 'Nimble Escape',         description: '{{description}} can take the Disengage or Hide action as a bonus action on each of {{pronoun:possessiveAdj}} turns.' },
+  // Racial lineage traits
+  dragonbornBreath:     { name: 'Breath Weapon', description: '{{description}} can replace one attack with an exhalation of magical energy in a 15-foot cone or a 30-foot line that is 5 feet wide. Each creature in that area must make a DC {{trait:DC}} Dexterity saving throw, taking {{trait:damage}} {{trait:breathType}} damage on a failed save, or half as much damage on a successful one.', dealsDamage: true, allowsSave: true, dcStat: 'con', breathType: 'fire', recharge: 'long' },
+  feyAncestry:          { name: 'Fey Ancestry',          description: "{{description}} has advantage on saving throws to avoid or end the charmed condition." },
+  gnomeCunning:         { name: 'Gnomish Cunning',       description: '{{description}} has advantage on Intelligence, Wisdom, and Charisma saving throws.' },
+  naturallyStealthy:    { name: 'Naturally Stealthy',    description: '{{description}} can take the Hide action even when obscured only by a creature that is at least one size larger than {{pronoun:object}}.' },
+  damageResistance:     { name: 'Damage Resistance',     description: '{{description}} has resistance to {{trait:damageType}} damage.' },
+  relentlessEndurance:  { name: 'Relentless Endurance',  description: 'When {{description}} is reduced to 0 hit points but not killed outright, {{pronoun:subject}} can drop to 1 hit point instead. Once used, this trait can\'t be used again until {{description}} finishes a long rest.' },
+  adrenalineRush:       { name: 'Adrenaline Rush',       description: '{{description}} can take the Dash action as a bonus action, gaining temporary hit points equal to {{pronoun:possessiveAdj}} proficiency bonus.' },
+  powerfulBuild:        { name: 'Powerful Build',        description: '{{description}} counts as one size larger when determining carrying capacity and the weight {{pronoun:subject}} can push, drag, or lift.' },
 };
 
 export const procs: Record<string, Trait> = {
@@ -270,22 +279,42 @@ export const fullCasterSlots: number[][] = [
   [4, 3, 3, 3, 3, 2, 2, 1, 1], // level 20
 ];
 
-export const spells: Record<string, { name: string; level?: number; classes?: string[] }> = {
+export const spells: Record<string, {
+  name: string;
+  level?: number;
+  classes?: string[];
+  /** For attack cantrips: damage type */
+  damageType?: string;
+  /** For attack cantrips: base damage die size (e.g. 10 for d10) */
+  damageDieSize?: number;
+  /** For attack cantrips: true if ranged spell attack, false/undefined if save-based */
+  isAttack?: boolean;
+  /** For save-based cantrips: the save ability (e.g. 'con', 'dex') */
+  saveAbility?: string;
+  /** For ranged attack cantrips: range in feet */
+  range?: number;
+}> = {
   barkskin:         { name: 'barkskin' },
   bless:            { name: 'bless',              level: 1 },
+  chillTouch:       { name: 'chill touch',        level: 0, damageType: damageTypes.necrotic,  damageDieSize: 8,  isAttack: true, range: 120 },
   cureWounds:       { name: 'cure wounds',        level: 1 },
+  dancingLights:    { name: 'dancing lights',     level: 0 },
   druidcraft:       { name: 'druidcraft',         level: 0 },
   entangle:         { name: 'entangle' },
+  fireBolt:         { name: 'fire bolt',          level: 0, damageType: damageTypes.fire,      damageDieSize: 10, isAttack: true, range: 120 },
   fly:              { name: 'fly' },
   goodberry:        { name: 'goodberry' },
   guidingBolt:      { name: 'guiding bolt',       level: 1 },
   hypnoticPattern:  { name: 'hypnotic pattern' },
   lesserRestoration:{ name: 'lesser restoration', level: 2 },
   light:            { name: 'light',              level: 0 },
-  minorIllusion:    { name: 'minor illusion' },
+  mending:          { name: 'mending',            level: 0 },
+  minorIllusion:    { name: 'minor illusion',     level: 0 },
   passWithoutTrace: { name: 'pass without trace' },
   phantasmalForce:  { name: 'phantasmal force' },
-  sacredFlame:      { name: 'sacred flame',       level: 0 },
+  poisonSpray:      { name: 'poison spray',       level: 0, damageType: damageTypes.poison,    damageDieSize: 12, saveAbility: 'con', range: 10 },
+  prestidigitation: { name: 'prestidigitation',   level: 0 },
+  sacredFlame:      { name: 'sacred flame',       level: 0, damageType: damageTypes.radiant,   damageDieSize: 8,  saveAbility: 'dex' },
   sanctuary:        { name: 'sanctuary',          level: 1 },
   shillelagh:       { name: 'shillelagh' },
   spiritualWeapon:  { name: 'spiritual weapon',   level: 2 },
@@ -441,11 +470,13 @@ export const classes: Record<string, ClassData> = {
   },
 };
 
-export interface SubraceData {
+export interface LineageData {
   name: string;
   bonusStats?: Record<string, number>;
   traits?: string[];
   stats?: Record<string, unknown>;
+  /** Cantrip spell keys granted by this lineage (keys into the `spells` registry). */
+  cantrips?: string[];
 }
 
 export interface RaceData {
@@ -461,34 +492,53 @@ export interface RaceData {
   };
   traits?: string[];
   bonusStats?: Record<string, number>;
-  subraces?: SubraceData[];
+  /** Cantrip spell keys granted by the base race (keys into the `spells` registry). */
+  cantrips?: string[];
+  lineages?: LineageData[];
 }
 
 export const races: RaceData[] = [
   { name: raceKeys.any },
   {
+    // 5.2: Breath weapon is always Dex save, player chooses cone or line each time. Darkvision added.
+    // Lineages determine damage type and resistance only.
     name: raceKeys.dragonborn,
     stats: {
       size: sizeMedium,
       languages: [languages.common, languages.draconic],
       speed: 30,
+      darkvision: 60,
     },
+    traits: ['dragonbornBreath'],
     bonusStats: { str: 2, cha: 1 },
+    lineages: [
+      { name: 'Black',  stats: { resistances: [damageTypes.acid],      traits: { dragonbornBreath: { breathType: 'acid' } } } },
+      { name: 'Blue',   stats: { resistances: [damageTypes.lightning],  traits: { dragonbornBreath: { breathType: 'lightning' } } } },
+      { name: 'Brass',  stats: { resistances: [damageTypes.fire],      traits: { dragonbornBreath: { breathType: 'fire' } } } },
+      { name: 'Bronze', stats: { resistances: [damageTypes.lightning],  traits: { dragonbornBreath: { breathType: 'lightning' } } } },
+      { name: 'Copper', stats: { resistances: [damageTypes.acid],      traits: { dragonbornBreath: { breathType: 'acid' } } } },
+      { name: 'Gold',   stats: { resistances: [damageTypes.fire],      traits: { dragonbornBreath: { breathType: 'fire' } } } },
+      { name: 'Green',  stats: { resistances: [damageTypes.poison],    traits: { dragonbornBreath: { breathType: 'poison' } } } },
+      { name: 'Red',    stats: { resistances: [damageTypes.fire],      traits: { dragonbornBreath: { breathType: 'fire' } } } },
+      { name: 'Silver', stats: { resistances: [damageTypes.cold],      traits: { dragonbornBreath: { breathType: 'cold' } } } },
+      { name: 'White',  stats: { resistances: [damageTypes.cold],      traits: { dragonbornBreath: { breathType: 'cold' } } } },
+    ],
   },
   {
+    // 5.2: Speed 30 (was 25), darkvision 120 (was 60). Dwarven Toughness is base race. No lineages.
     name: raceKeys.dwarf,
     stats: {
       size: sizeMedium,
       languages: [languages.common, languages.dwarfish],
-      alignment: alignmentMasks.anyLawfulGood,
-      speed: 25,
-      darkvision: 60,
+      speed: 30,
+      darkvision: 120,
       resistances: [damageTypes.poison],
     },
-    traits: ['dwarvenTraining', 'dwarvenResilience', 'dwarvenToughness', 'toolProficiency', 'stoneCunning'],
+    traits: ['dwarvenResilience', 'dwarvenToughness', 'stoneCunning'],
     bonusStats: { con: 2, wis: 1 },
   },
   {
+    // 5.2: Lineages are Drow (120ft darkvision), High Elf, Wood Elf (35ft speed).
     name: raceKeys.elf,
     stats: {
       size: sizeMedium,
@@ -496,20 +546,51 @@ export const races: RaceData[] = [
       speed: 30,
       darkvision: 60,
     },
-    traits: ['keenSight'],
-    bonusStats: { dex: 2, int: 1 },
+    traits: ['feyAncestry'],
+    bonusStats: { dex: 2 },
+    lineages: [
+      { name: 'Drow', stats: { darkvision: 120 }, cantrips: ['dancingLights'] },
+      { name: 'High Elf', bonusStats: { int: 1 }, cantrips: ['prestidigitation'] },
+      { name: 'Wood Elf', stats: { speed: 35 }, cantrips: ['druidcraft'] },
+    ],
   },
   {
+    // 5.2: Speed 30 (was 25). Lineages are Forest Gnome and Rock Gnome.
     name: raceKeys.gnome,
     stats: {
       size: sizeSmall,
       languages: [languages.common],
-      speed: 25,
+      speed: 30,
       darkvision: 60,
     },
-    bonusStats: { int: 2, con: 1 },
+    traits: ['gnomeCunning'],
+    bonusStats: { int: 2 },
+    lineages: [
+      { name: 'Forest Gnome', cantrips: ['minorIllusion'] },
+      { name: 'Rock Gnome', bonusStats: { con: 1 }, cantrips: ['mending', 'prestidigitation'] },
+    ],
   },
   {
+    // 5.2: New species. Giant Ancestry lineages.
+    name: raceKeys.goliath,
+    stats: {
+      size: sizeMedium,
+      languages: [languages.common, languages.giant],
+      speed: 35,
+    },
+    traits: ['powerfulBuild'],
+    bonusStats: { str: 2, con: 1 },
+    lineages: [
+      { name: 'Cloud Giant' },
+      { name: 'Fire Giant' },
+      { name: 'Frost Giant' },
+      { name: 'Hill Giant' },
+      { name: 'Stone Giant' },
+      { name: 'Storm Giant' },
+    ],
+  },
+  {
+    // Legacy (5.1): Kept for backward compatibility. Not in 5.2 SRD.
     name: raceKeys.halfElf,
     stats: {
       size: sizeMedium,
@@ -517,9 +598,11 @@ export const races: RaceData[] = [
       speed: 30,
       darkvision: 60,
     },
+    traits: ['feyAncestry'],
     bonusStats: { cha: 2, dex: 1, con: 1 },
   },
   {
+    // Legacy (5.1): Kept for backward compatibility. Not in 5.2 SRD.
     name: raceKeys.halfOrc,
     stats: {
       size: sizeMedium,
@@ -527,16 +610,18 @@ export const races: RaceData[] = [
       speed: 30,
       darkvision: 60,
     },
-    traits: ['relentless'],
+    traits: ['relentlessEndurance'],
     bonusStats: { str: 2, con: 1 },
   },
   {
+    // 5.2: Speed 30 (was 25). Naturally Stealthy is base race. No lineages.
     name: raceKeys.halfling,
     stats: {
       size: sizeSmall,
       languages: [languages.common],
-      speed: 25,
+      speed: 30,
     },
+    traits: ['naturallyStealthy'],
     bonusStats: { dex: 2, cha: 1 },
   },
   {
@@ -549,14 +634,32 @@ export const races: RaceData[] = [
     bonusStats: { str: 1, con: 1, dex: 1, int: 1, wis: 1, cha: 1 },
   },
   {
+    // 5.2: New species. Replaces half-orc mechanically.
+    name: raceKeys.orc,
+    stats: {
+      size: sizeMedium,
+      languages: [languages.common],
+      speed: 30,
+      darkvision: 120,
+    },
+    traits: ['adrenalineRush', 'relentlessEndurance'],
+    bonusStats: { str: 2, con: 1 },
+  },
+  {
+    // 5.2: Fiendish Legacy lineages determine resistance. Fire resistance moved from base to Infernal.
     name: raceKeys.tiefling,
     stats: {
       size: sizeMedium,
       languages: [languages.common, languages.infernal],
       speed: 30,
       darkvision: 60,
-      resistances: [damageTypes.fire],
     },
+    cantrips: ['thaumaturgy'],
     bonusStats: { cha: 2, int: 1 },
+    lineages: [
+      { name: 'Abyssal',  stats: { resistances: [damageTypes.poison] },   cantrips: ['poisonSpray'] },
+      { name: 'Chthonic', stats: { resistances: [damageTypes.necrotic] }, cantrips: ['chillTouch'] },
+      { name: 'Infernal', stats: { resistances: [damageTypes.fire] },     cantrips: ['fireBolt'] },
+    ],
   },
 ];

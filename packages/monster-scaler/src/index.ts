@@ -1,7 +1,7 @@
 import {
-  averageStats, traits, procs, actions, sizes, abilities, races,
+  averageStats, traits, procs, actions, sizes, abilities, races, spells,
   abilityScoreModifier, mergeObjects, flattenObject, averageRoll, stepForCR,
-  creatureTypes, raceKeys, senses,
+  creatureTypes, raceKeys, senses, damageTypes, toSentenceCase,
 } from '@toolkit5e/base';
 import type { Statblock, Trait, Attack, ChallengeRating } from '@toolkit5e/base';
 import type { MonsterTemplate, MonsterVariant, ScaleMonsterOptions, Benchmarks } from './types.js';
@@ -443,13 +443,24 @@ export function scaleMonster(
   // Determine type and handle humanoid races
   const type = (selectedVariant?.type ?? selectedMonster.type) as string;
   let currentRace: (typeof races)[number] | undefined;
+  let currentLineage: NonNullable<(typeof races)[number]['lineages']>[number] | undefined;
 
   if (type === creatureTypes.humanoid) {
     if (selectedMonster.race === raceKeys.any) {
       currentRace = races[options.race ?? 0];
-      derivedStats.type = `${type} (${currentRace.name})`;
+      // Resolve lineage if the race has lineages and one was selected
+      if (currentRace.lineages?.length && options.lineage !== undefined) {
+        currentLineage = currentRace.lineages[options.lineage];
+      }
+      const displayName = currentLineage
+        ? `${currentLineage.name} ${currentRace.name}`
+        : currentRace.name;
+      derivedStats.type = `${type} (${displayName})`;
       if (currentRace !== races[0]) {
         derivedStats = mergeObjects(derivedStats, currentRace.stats as Record<string, unknown>);
+        if (currentLineage?.stats) {
+          derivedStats = mergeObjects(derivedStats, currentLineage.stats as Record<string, unknown>);
+        }
         if (derivedStats.extraLanguages && currentRace.stats?.languages) {
           derivedStats.extraLanguages = Math.max(0, (derivedStats.extraLanguages as number) - (currentRace.stats.languages as unknown[]).length);
         }
@@ -483,6 +494,7 @@ export function scaleMonster(
     ...(selectedMonster.traits ?? []),
     ...(selectedVariant?.traits ?? []),
     ...(currentRace?.traits ?? []),
+    ...(currentLineage?.traits ?? []),
   ];
   for (const traitName of traitList) {
     (derivedStats.traits as Record<string, Trait>)[traitName] = generateTrait(traitName, targetCR, sourceStats);
@@ -680,6 +692,76 @@ export function scaleMonster(
     for (const stat in currentRace.bonusStats) {
       (derivedStats[stat] as number) += (currentRace.bonusStats as Record<string, number>)[stat];
       abilityMods[stat] = abilityScoreModifier(derivedStats[stat] as number);
+    }
+    // Apply lineage bonus stats on top of race bonus stats
+    if (currentLineage?.bonusStats) {
+      for (const stat in currentLineage.bonusStats) {
+        (derivedStats[stat] as number) += (currentLineage.bonusStats as Record<string, number>)[stat];
+        abilityMods[stat] = abilityScoreModifier(derivedStats[stat] as number);
+      }
+    }
+  }
+
+  // Racial cantrips — collect from base race and lineage, generate attacks for damage cantrips
+  if (currentRace && currentRace !== races[0]) {
+    const allCantrips: string[] = [
+      ...(currentRace.cantrips ?? []),
+      ...(currentLineage?.cantrips ?? []),
+    ];
+    if (allCantrips.length > 0) {
+      const abilityMods = derivedStats.abilityModifiers as Record<string, number>;
+      // Best mental stat for racial spellcasting
+      const bestMentalMod = Math.max(abilityMods.int ?? 0, abilityMods.wis ?? 0, abilityMods.cha ?? 0);
+      // Cantrip damage dice scale with CR (approximating character level tiers)
+      const cantripDice = numTargetCR < 5 ? 1 : numTargetCR < 11 ? 2 : numTargetCR < 17 ? 3 : 4;
+
+      const utilityCantrips: string[] = [];
+      for (const cantripKey of allCantrips) {
+        const spell = spells[cantripKey];
+        if (!spell) continue;
+
+        if (spell.isAttack && spell.damageDieSize && spell.damageType) {
+          // Ranged spell attack cantrip — generate an attack entry
+          if (!derivedStats.attacks) derivedStats.attacks = {};
+          (derivedStats.attacks as Record<string, Partial<Attack>>)[cantripKey] = {
+            name: toSentenceCase(spell.name),
+            spellAttack: true,
+            ranged: true,
+            range: spell.range ?? 120,
+            damageType: spell.damageType,
+            damageDice: cantripDice,
+            damageDieSize: spell.damageDieSize,
+            damageBonus: 0,
+          };
+          // Set castingStat to the best mental stat if not already set
+          if (!derivedStats.castingStat) {
+            if (abilityMods.cha === bestMentalMod) derivedStats.castingStat = 'cha';
+            else if (abilityMods.wis === bestMentalMod) derivedStats.castingStat = 'wis';
+            else derivedStats.castingStat = 'int';
+          }
+        } else if (spell.saveAbility && spell.damageDieSize && spell.damageType) {
+          // Save-based damage cantrip — generate an action entry
+          if (!derivedStats.actions) derivedStats.actions = {};
+          const saveDC = 8 + (derivedStats.proficiency as number) + bestMentalMod;
+          const avgDmg = averageRoll(cantripDice, spell.damageDieSize);
+          (derivedStats.actions as Record<string, Partial<Trait>>)[cantripKey] = {
+            name: toSentenceCase(spell.name),
+            description: `${spell.range && spell.range <= 10 ? 'One creature within ' + spell.range + ' feet' : 'One creature within 60 feet'} must succeed on a DC ${saveDC} ${toSentenceCase(spell.saveAbility === 'con' ? 'Constitution' : 'Dexterity')} saving throw or take ${avgDmg} (${cantripDice}d${spell.damageDieSize}) ${spell.damageType} damage.`,
+          };
+        } else {
+          utilityCantrips.push(spell.name);
+        }
+      }
+
+      // Add utility cantrips as a trait listing them
+      if (utilityCantrips.length > 0) {
+        if (!derivedStats.traits) derivedStats.traits = {};
+        const cantripList = utilityCantrips.join(', ');
+        (derivedStats.traits as Record<string, Partial<Trait>>).racialCantrips = {
+          name: 'Cantrips',
+          description: `{{description}} knows the ${cantripList} cantrip${utilityCantrips.length > 1 ? 's' : ''}.`,
+        };
+      }
     }
   }
 

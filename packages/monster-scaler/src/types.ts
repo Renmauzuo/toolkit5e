@@ -36,6 +36,8 @@ export interface ScaleMonsterOptions {
   variant?: string;
   /** Index into the races array if the creature is a humanoid of "any race" */
   race?: number;
+  /** Index into the selected race's lineages array, if it has lineages */
+  lineage?: number;
   /** Make this creature legendary, with 3 or 5 legendary resistances */
   legendary?: 3 | 5;
 }
