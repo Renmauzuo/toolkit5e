@@ -1195,6 +1195,132 @@ export const monsterList: Record<string, MonsterTemplate> = {
             0.25: { name: 'Giant Owl', hitDice: 3, speed: 5, fly: 60, size: sizeLarge, str: 13, dex: 15, con: 12, int: 8, wis: 13, cha: 10, attacks: { talons: { damageDice: 2, damageDieSize: 6 } }, languages: ['Giant Owl'] },
         },
     },
+    // ─── NPC Templates ───
+    bandit: {
+        name: 'Bandit',
+        type: creatureTypes.humanoid,
+        alignment: alignments.chaoticNeutral,
+        race: raceKeys.any,
+        lockedStats: {
+            armor: 'leather',
+            extraLanguages: 1,
+            size: sizeMedium,
+            slug: 'bandit',
+            attacks: {
+                scimitar: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Scimitar', finesse: true },
+                lightCrossbow: { damageType: damageTypes.piercing, name: 'Light Crossbow', ranged: true, range: 80, longRange: 320 },
+            },
+        },
+        stats: {
+            0.125: { name: 'Bandit', hitDice: 2, speed: 30, str: 11, dex: 12, con: 12, int: 10, wis: 10, cha: 10, attacks: { scimitar: { damageDice: 1, damageDieSize: 6 }, lightCrossbow: { damageDice: 1, damageDieSize: 8 } } },
+        },
+    },
+    banditCaptain: {
+        name: 'Bandit Captain',
+        type: creatureTypes.humanoid,
+        alignment: alignments.chaoticNeutral,
+        race: raceKeys.any,
+        lockedStats: {
+            armor: 'studdedLeather',
+            extraLanguages: 2,
+            size: sizeMedium,
+            slug: 'bandit captain',
+            saves: ['str', 'dex', 'wis'],
+            skills: { athletics: skillRanks.proficient, deception: skillRanks.proficient },
+            attacks: {
+                scimitar: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Scimitar', finesse: true },
+                dagger: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Dagger', finesse: true, range: 20, longRange: 60 },
+            },
+            multiattack: { attacks: { scimitar: 2, dagger: 1 } },
+        },
+        stats: {
+            2: { name: 'Bandit Captain', hitDice: 10, speed: 30, str: 15, dex: 16, con: 14, int: 14, wis: 11, cha: 14, attacks: { scimitar: { damageDice: 1, damageDieSize: 6 }, dagger: { damageDice: 1, damageDieSize: 4 } } },
+        },
+    },
+    guard: {
+        name: 'Guard',
+        type: creatureTypes.humanoid,
+        alignment: alignments.any,
+        race: raceKeys.any,
+        lockedStats: {
+            armor: 'chainShirt',
+            bonusArmor: 2,
+            armorDescription: 'Chain Shirt, Shield',
+            extraLanguages: 1,
+            size: sizeMedium,
+            slug: 'guard',
+            skills: { perception: skillRanks.proficient },
+            attacks: {
+                spear: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Spear', range: 20, longRange: 60 },
+            },
+        },
+        stats: {
+            0.125: { name: 'Guard', hitDice: 2, speed: 30, str: 13, dex: 12, con: 12, int: 10, wis: 11, cha: 10, attacks: { spear: { damageDice: 1, damageDieSize: 6 } } },
+        },
+    },
+    knight: {
+        name: 'Knight',
+        type: creatureTypes.humanoid,
+        alignment: alignments.any,
+        race: raceKeys.any,
+        lockedStats: {
+            armor: 'plate',
+            extraLanguages: 1,
+            size: sizeMedium,
+            slug: 'knight',
+            saves: ['con', 'wis'],
+            attacks: {
+                greatsword: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Greatsword' },
+                heavyCrossbow: { damageType: damageTypes.piercing, name: 'Heavy Crossbow', ranged: true, range: 100, longRange: 400 },
+            },
+            multiattack: { attacks: { greatsword: 2 } },
+        },
+        traits: ['brave'],
+        stats: {
+            3: { name: 'Knight', hitDice: 8, speed: 30, str: 16, dex: 11, con: 14, int: 11, wis: 11, cha: 15, attacks: { greatsword: { damageDice: 2, damageDieSize: 6 }, heavyCrossbow: { damageDice: 1, damageDieSize: 10 } } },
+        },
+    },
+    mage: {
+        name: 'Mage',
+        type: creatureTypes.humanoid,
+        alignment: alignments.any,
+        race: raceKeys.any,
+        lockedStats: {
+            extraLanguages: 4,
+            size: sizeMedium,
+            slug: 'mage',
+            castingStat: 'int',
+            castingClass: 'wizard',
+            saves: ['int', 'wis'],
+            skills: { arcana: skillRanks.proficient, history: skillRanks.proficient },
+            attacks: {
+                dagger: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Dagger', finesse: true, range: 20, longRange: 60 },
+            },
+        },
+        traits: ['spellcasting'],
+        stats: {
+            6: { name: 'Mage', hitDice: 9, speed: 30, str: 9, dex: 14, con: 11, int: 17, wis: 12, cha: 11, attacks: { dagger: { damageDice: 1, damageDieSize: 4 } }, traits: { spellcasting: { spellcastingLevel: 9, classSpells: ['fireBolt', 'light', 'prestidigitation', 'sacredFlame'] } } },
+        },
+    },
+    noble: {
+        name: 'Noble',
+        type: creatureTypes.humanoid,
+        alignment: alignments.any,
+        race: raceKeys.any,
+        lockedStats: {
+            armor: 'breastplate',
+            extraLanguages: 2,
+            size: sizeMedium,
+            slug: 'noble',
+            skills: { deception: skillRanks.proficient, insight: skillRanks.proficient, persuasion: skillRanks.proficient },
+            attacks: {
+                rapier: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Rapier', finesse: true },
+            },
+        },
+        stats: {
+            0.125: { name: 'Noble', hitDice: 2, speed: 30, str: 11, dex: 12, con: 11, int: 12, wis: 14, cha: 16, attacks: { rapier: { damageDice: 1, damageDieSize: 8 } } },
+        },
+    },
     priest: {
         name: 'Priest',
         type: creatureTypes.humanoid,
@@ -1236,6 +1362,72 @@ export const monsterList: Record<string, MonsterTemplate> = {
         stats: {
             0.25: { hitDice: 2, speed: 30, str: 10, dex: 10, con: 10, int: 10, wis: 14, cha: 11 },
             2: { bonusArmor: 3, hitDice: 5, speed: 30, str: 10, dex: 10, con: 12, int: 13, wis: 16, cha: 13, saves: ['wis', 'cha'] },
+        },
+    },
+    scout: {
+        name: 'Scout',
+        type: creatureTypes.humanoid,
+        alignment: alignments.any,
+        race: raceKeys.any,
+        lockedStats: {
+            armor: 'leather',
+            extraLanguages: 1,
+            size: sizeMedium,
+            slug: 'scout',
+            skills: { nature: skillRanks.proficient, perception: skillRanks.expert, stealth: skillRanks.expert, survival: skillRanks.proficient },
+            attacks: {
+                shortsword: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Shortsword', finesse: true },
+                longbow: { damageType: damageTypes.piercing, name: 'Longbow', ranged: true, range: 150, longRange: 600 },
+            },
+            multiattack: { attacks: { shortsword: 2 } },
+        },
+        traits: ['keenHearingSight'],
+        stats: {
+            0.5: { name: 'Scout', hitDice: 3, speed: 30, str: 11, dex: 14, con: 12, int: 11, wis: 13, cha: 11, attacks: { shortsword: { damageDice: 1, damageDieSize: 6 }, longbow: { damageDice: 1, damageDieSize: 8 } } },
+        },
+    },
+    thug: {
+        name: 'Thug',
+        type: creatureTypes.humanoid,
+        alignment: alignments.chaoticNeutral,
+        race: raceKeys.any,
+        lockedStats: {
+            armor: 'leather',
+            extraLanguages: 1,
+            size: sizeMedium,
+            slug: 'thug',
+            skills: { intimidation: skillRanks.proficient },
+            attacks: {
+                mace: { reach: reachMedium, damageType: damageTypes.bludgeoning, name: 'Mace' },
+                heavyCrossbow: { damageType: damageTypes.piercing, name: 'Heavy Crossbow', ranged: true, range: 100, longRange: 400 },
+            },
+            multiattack: { attacks: { mace: 2 } },
+        },
+        traits: ['packTactics'],
+        stats: {
+            0.5: { name: 'Thug', hitDice: 5, speed: 30, str: 15, dex: 11, con: 14, int: 10, wis: 10, cha: 11, attacks: { mace: { damageDice: 1, damageDieSize: 6 }, heavyCrossbow: { damageDice: 1, damageDieSize: 10 } } },
+        },
+    },
+    veteran: {
+        name: 'Veteran',
+        type: creatureTypes.humanoid,
+        alignment: alignments.any,
+        race: raceKeys.any,
+        lockedStats: {
+            armor: 'split',
+            extraLanguages: 1,
+            size: sizeMedium,
+            slug: 'veteran',
+            skills: { athletics: skillRanks.proficient, perception: skillRanks.proficient },
+            attacks: {
+                longsword: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Longsword' },
+                shortsword: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Shortsword', finesse: true },
+                heavyCrossbow: { damageType: damageTypes.piercing, name: 'Heavy Crossbow', ranged: true, range: 100, longRange: 400 },
+            },
+            multiattack: { attacks: { longsword: 2 } },
+        },
+        stats: {
+            3: { name: 'Veteran', hitDice: 9, speed: 30, str: 16, dex: 13, con: 14, int: 10, wis: 11, cha: 10, attacks: { longsword: { damageDice: 1, damageDieSize: 8 }, shortsword: { damageDice: 1, damageDieSize: 6 }, heavyCrossbow: { damageDice: 1, damageDieSize: 10 } } },
         },
     },
     poisonousSnake: {

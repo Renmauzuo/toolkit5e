@@ -129,6 +129,7 @@ export const traits: Record<string, Trait> = {
   airForm:              { name: 'Air Form',              description: "{{description}} can enter a hostile creature's space and stop there. {{pronoun:subject}} can move through a space as narrow as 1 inch wide without squeezing." },
   barbedHide:           { name: 'Barbed Hide', description: "At the start of each of {{pronoun:possessiveAdj}} turns, {{description}} deals {{trait:damage}} piercing damage to any creature grappling {{pronoun:object}}.", dealsDamage: true },
   bloodyFrenzy:         { name: 'Bloody Frenzy',         description: "{{description}} has advantage on melee attack rolls against any creature that doesn't have all its hit points." },
+  brave:                { name: 'Brave',                 description: '{{description}} has advantage on saving throws against being frightened.' },
   dwarvenResilience:    { name: 'Dwarven Resilience',    description: '{{description}} has advantage on saving throws against poison.' },
   dwarvenToughness:     { name: 'Dwarven Toughness',      description: '{{description}} has one extra hit point per hit die.', hitPointsPerHitDie: 1 },
   dwarvenTraining:      { name: 'Dwarven Combat Training',description: '{{description}} has proficiency with the battleaxe, handaxe, light hammer, and warhammer.' },
