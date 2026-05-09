@@ -531,6 +531,7 @@ export const monsterList: Record<string, MonsterTemplate> = {
         stats: { 1: { name: 'Dryad', hitDice: 5, speed: 30, str: 10, dex: 12, con: 11, int: 14, wis: 15, cha: 18, attacks: { club: { damageDice: 1, damageDieSize: 4 } } } },
     },
     constrictorSnake: {
+        name: "Snake, Constricter",
         type: creatureTypes.beast,
         alignment: alignments.unaligned,
         lockedStats: {
@@ -1431,6 +1432,7 @@ export const monsterList: Record<string, MonsterTemplate> = {
         },
     },
     poisonousSnake: {
+        name: "Snake, Poisonous",
         type: creatureTypes.beast,
         alignment: alignments.unaligned,
         lockedStats: {
