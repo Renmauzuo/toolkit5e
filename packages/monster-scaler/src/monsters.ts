@@ -162,6 +162,23 @@ export const monsterList: Record<string, MonsterTemplate> = {
             0.25: { name: 'Giant Bat', hitDice: 12, speed: 30, fly: 30, size: sizeMedium, str: 15, dex: 16, con: 11, wis: 12, cha: 6, attacks: { bite: { damageDice: 1, damageDieSize: 6 } } },
         },
     },
+    blinkDog: {
+        name: 'Blink Dog',
+        type: creatureTypes.fey,
+        alignment: alignments.lawfulGood,
+        lockedStats: {
+            attacks: { bite: { reach: reachShort, damageType: damageTypes.piercing, name: 'Bite', finesse: true } },
+            darkvision: 60,
+            languages: [languages.blinkDog, languages.elvish, languages.sylvan],
+            skills: { perception: skillRanks.expert, stealth: skillRanks.expert },
+            slug: 'blink dog',
+        },
+        traits: ['keenHearingSmell'],
+        bonusActions: ['blinkTeleport'],
+        stats: {
+            0.25: { name: 'Blink Dog', hitDice: 4, speed: 40, size: sizeMedium, str: 12, dex: 17, con: 12, int: 10, wis: 13, cha: 11, attacks: { bite: { damageDice: 1, damageDieSize: 4 } } },
+        },
+    },
     camel: {
         type: creatureTypes.beast,
         alignment: alignments.unaligned,
@@ -530,6 +547,30 @@ export const monsterList: Record<string, MonsterTemplate> = {
         traits: ['innateSpellcasting', 'magicResistance', 'speakWithBeastsAndPlants', 'treeStride'],
         stats: { 1: { name: 'Dryad', hitDice: 5, speed: 30, str: 10, dex: 12, con: 11, int: 14, wis: 15, cha: 18, attacks: { club: { damageDice: 1, damageDieSize: 4 } } } },
     },
+    centaur: {
+        name: 'Centaur',
+        type: creatureTypes.fey,
+        alignment: alignments.neutralGood,
+        lockedStats: {
+            armor: 'breastplate',
+            attacks: {
+                pike: { reach: reachMedium, damageType: damageTypes.piercing, name: 'Pike' },
+                longbow: { damageType: damageTypes.piercing, name: 'Longbow', ranged: true },
+            },
+            languages: [languages.elvish, languages.sylvan],
+            skills: { athletics: skillRanks.proficient, perception: skillRanks.proficient },
+            slug: 'centaur',
+            size: sizeLarge,
+            multiattack: { attacks: { pike: 2 } },
+        },
+        bonusActions: ['centaurCharge'],
+        stats: {
+            0.5: { name: 'Centaur Recruit' },
+            2: { name: 'Centaur Trooper', hitDice: 6, speed: 50, str: 18, dex: 14, con: 14, int: 9, wis: 13, cha: 11, attacks: { pike: { damageDice: 1, damageDieSize: 10 }, longbow: { range: 150, longRange: 600, damageDice: 1, damageDieSize: 8 } }, traits: { centaurCharge: { damageDice: 1, damageDieSize: 6 } } },
+            5: { name: 'Centaur Champion' },
+            8: { name: 'Centaur Warlord' },
+        },
+    },
     constrictorSnake: {
         name: "Snake, Constricter",
         type: creatureTypes.beast,
@@ -698,6 +739,47 @@ export const monsterList: Record<string, MonsterTemplate> = {
         },
         stats: {
             0.5: { name: 'Giant Wasp', hitDice: 3, speed: 10, fly: 50, size: sizeMedium, str: 10, dex: 14, con: 10, wis: 10, cha: 3, attacks: { sting: { damageDice: 1, damageDieSize: 6 } }, traits: { poisonBite: { damageDice: 3, damageDieSize: 6 } } },
+        },
+    },
+    greenHag: {
+        name: 'Green Hag',
+        type: creatureTypes.fey,
+        alignment: alignments.neutralEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                claws: { reach: reachMedium, damageType: damageTypes.slashing, name: 'Claws' },
+            },
+            darkvision: 60,
+            languages: [languages.common, languages.sylvan],
+            skills: { arcana: skillRanks.proficient, deception: skillRanks.proficient, perception: skillRanks.proficient, stealth: skillRanks.proficient },
+            slug: 'hag',
+            size: sizeMedium,
+        },
+        traits: ['amphibious', 'mimicry'],
+        bonusActions: ['invisibility'],
+        stats: {
+            3: { name: 'Green Hag', bonusArmor: 6, hitDice: 11, speed: 30, swim: 30, str: 18, dex: 12, con: 16, int: 13, wis: 14, cha: 14, attacks: { claws: { damageDice: 2, damageDieSize: 8 } } },
+        },
+    },
+    seaHag: {
+        name: 'Sea Hag',
+        type: creatureTypes.fey,
+        alignment: alignments.chaoticEvil,
+        lockedStats: {
+            armorDescription: armorMaterials.natural,
+            attacks: {
+                claws: { reach: reachShort, damageType: damageTypes.slashing, name: 'Claws' },
+            },
+            darkvision: 60,
+            languages: [languages.common, languages.giant, languages.aquan],
+            slug: 'hag',
+            size: sizeMedium,
+        },
+        traits: ['amphibious', 'covenMagic', 'vileAppearance'],
+        actions: ['deathGlare'],
+        stats: {
+            2: { name: 'Sea Hag', bonusArmor: 3, hitDice: 7, speed: 30, swim: 40, str: 16, dex: 13, con: 16, int: 12, wis: 12, cha: 13, attacks: { claws: { damageDice: 2, damageDieSize: 6 } }, traits: { deathGlare: { damageDice: 3, damageDieSize: 8 } } },
         },
     },
     goblin: {
@@ -1095,6 +1177,43 @@ export const monsterList: Record<string, MonsterTemplate> = {
         },
         traits: ['amphibious', 'invisibleInWater', 'innateSpellcasting', 'magicResistance'],
         stats: { 2: { name: 'Naiad', bonusArmor: 2, hitDice: 7, speed: 30, swim: 30, str: 10, dex: 16, con: 11, int: 15, wis: 10, cha: 18, attacks: { psychicTouch: { damageDice: 1, damageDieSize: 10 } } } },
+    },
+    sprite: {
+        name: 'Sprite',
+        type: creatureTypes.fey,
+        alignment: alignments.neutralGood,
+        lockedStats: {
+            languages: [languages.common, languages.elvish, languages.sylvan],
+            skills: { perception: skillRanks.proficient, stealth: skillRanks.expert },
+            slug: 'sprite',
+        },
+        bonusActions: ['invisibility'],
+        actions: ['heartSight'],
+        variants: {
+            poison: {
+                name: 'Sprite (Poison)',
+                lockedStats: {
+                    attacks: {
+                        longsword: { reach: reachShort, damageType: damageTypes.slashing, name: 'Longsword', finesse: true },
+                        shortbow: { damageType: damageTypes.piercing, name: 'Shortbow', ranged: true, finesse: true, proc: 'poisonBow' },
+                    },
+                },
+                stats: { 0.25: { name: 'Sprite' } },
+            },
+            enchanter: {
+                name: 'Sprite (Enchanter)',
+                lockedStats: {
+                    attacks: {
+                        needleSword: { reach: reachShort, damageType: damageTypes.piercing, name: 'Needle Sword', finesse: true },
+                        enchantingBow: { damageType: damageTypes.piercing, name: 'Enchanting Bow', ranged: true, finesse: true, proc: 'charmBow' },
+                    },
+                },
+                stats: { 0.25: { name: 'Sprite' } },
+            },
+        },
+        stats: {
+            0.25: { name: 'Sprite', bonusArmor: 2, hitDice: 1, speed: 10, fly: 40, size: sizeTiny, str: 3, dex: 18, con: 10, int: 14, wis: 13, cha: 11, attacks: { longsword: { damageDice: 1, damageDieSize: 4 }, shortbow: { range: 40, longRange: 160, damageDice: 1, damageDieSize: 4 }, needleSword: { damageDice: 1, damageDieSize: 4 }, enchantingBow: { range: 40, longRange: 160, damageDice: 1, damageDieSize: 1 } } },
+        },
     },
     nalfeshnee: {
         name: 'Nalfeshnee',
@@ -1531,6 +1650,28 @@ export const monsterList: Record<string, MonsterTemplate> = {
         lockedStats: { slug: 'tiger', int: 3, skills: { perception: skillRanks.proficient, stealth: skillRanks.expert }, attacks: { bite: { reach: reachShort, damageType: damageTypes.piercing, name: 'Bite' }, claw: { reach: reachShort, damageType: damageTypes.slashing, name: 'Claw' } } },
         traits: ['keenSmell', 'pounce'],
         stats: { 2: { name: 'Saber-Toothed Tiger', size: sizeLarge, hitDice: 7, str: 18, dex: 14, con: 15, wis: 12, cha: 8, speed: 40, attacks: { bite: { damageDice: 1, damageDieSize: 10 }, claw: { damageDice: 2, damageDieSize: 6 } } } },
+    },
+    satyr: {
+        name: 'Satyr',
+        type: creatureTypes.fey,
+        alignment: alignments.chaoticNeutral,
+        lockedStats: {
+            attacks: {
+                hooves: { reach: reachShort, damageType: damageTypes.bludgeoning, name: 'Hooves', finesse: true },
+            },
+            languages: [languages.common, languages.elvish, languages.sylvan],
+            skills: { perception: skillRanks.proficient, performance: skillRanks.expert, stealth: skillRanks.proficient },
+            slug: 'satyr',
+            size: sizeMedium,
+        },
+        traits: ['magicResistance'],
+        actions: ['mockery'],
+        stats: {
+            0.25: { name: 'Satyr Fawn' },
+            0.5: { name: 'Satyr', hitDice: 7, speed: 40, str: 12, dex: 16, con: 11, int: 12, wis: 10, cha: 14, attacks: { hooves: { damageDice: 1, damageDieSize: 4 } }, traits: { mockery: { damageDice: 1, damageDieSize: 6 } } },
+            3: { name: 'Satyr Reveler' },
+            6: { name: 'Satyr Piper' },
+        },
     },
     shadow: {
         alignment: alignments.chaoticEvil,

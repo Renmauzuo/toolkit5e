@@ -112,6 +112,7 @@ export const languages = {
   abyssal: 'Abyssal',
   aquan: 'Aquan',
   auran: 'Auran',
+  blinkDog: 'Blink Dog',
   ignan: 'Ignan',
   infernal: 'Infernal',
   terran: 'Terran',
