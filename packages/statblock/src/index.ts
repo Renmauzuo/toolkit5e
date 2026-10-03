@@ -214,13 +214,18 @@ export function renderStatblock(sourceStats: Statblock, target: HTMLElement): vo
   target.appendChild(mkProp('Armor Class', armorString, 'armor-class'));
 
   // Hit points
-  let bonusHP = (stats.abilityModifiers as Record<string, number>).con * stats.hitDice!;
-  for (const traitName in stats.traits) {
-    const t = stats.traits![traitName];
-    if (t.hitPointsPerHitDie) bonusHP += t.hitPointsPerHitDie * stats.hitDice!;
+  if (stats.flatHP !== undefined) {
+    // Fixed HP total (e.g. Tasha's summons) — render as a plain number.
+    target.appendChild(mkProp('Hit Points', String(stats.flatHP), 'hit-points'));
+  } else {
+    let bonusHP = (stats.abilityModifiers as Record<string, number>).con * stats.hitDice!;
+    for (const traitName in stats.traits) {
+      const t = stats.traits![traitName];
+      if (t.hitPointsPerHitDie) bonusHP += t.hitPointsPerHitDie * stats.hitDice!;
+    }
+    if (stats.bonusHP) bonusHP += stats.bonusHP;
+    target.appendChild(mkProp('Hit Points', damageString(stats.hitDice!, sizes[stats.size!].hitDie, bonusHP), 'hit-points'));
   }
-  if (stats.bonusHP) bonusHP += stats.bonusHP;
-  target.appendChild(mkProp('Hit Points', damageString(stats.hitDice!, sizes[stats.size!].hitDie, bonusHP), 'hit-points'));
 
   // Speed
   const speedParts: string[] = [];

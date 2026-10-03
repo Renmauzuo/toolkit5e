@@ -17,8 +17,10 @@ export const reachVeryLong = 5;
 
 /** Creature types. */
 export const creatureTypes = {
+  aberration: 'aberration',
   beast: 'beast',
   celestial: 'celestial',
+  construct: 'construct',
   dragon: 'dragon',
   elemental: 'elemental',
   fiend: 'fiend',
@@ -104,6 +106,7 @@ export const conditions = {
   charmed: 'charmed',
   frightened: 'frightened',
   blinded: 'blinded',
+  incapacitated: 'incapacitated',
 } as const;
 
 /** Language strings. */
@@ -124,6 +127,10 @@ export const languages = {
   giant: 'Giant',
   goblin: 'Goblin',
   sylvan: 'Sylvan',
+  deepSpeech: 'Deep Speech',
+  primordial: 'Primordial',
+  celestial: 'Celestial',
+  understandsCaster: 'understands the languages you speak',
 } as const;
 
 /** Skill proficiency ranks. */

@@ -41,7 +41,8 @@ export interface Trait {
   text?: string;
   recharge?: 'short' | 'long';
   allowsSave?: boolean;
-  dcStat?: AbilityKey;
+  /** Ability used for the save DC. Usually an `AbilityKey`; summons use `'summon'` to inject the caster's spell save DC. */
+  dcStat?: AbilityKey | 'summon';
   dcAdjustment?: number;
   dealsDamage?: boolean;
   damageDice?: number;
@@ -89,6 +90,8 @@ export interface Statblock {
   cha?: number;
   abilityModifiers?: Record<AbilityKey, number>;
   hitDice?: number;
+  /** A fixed hit point total that bypasses the hit-dice formula. Used by summons whose HP is a flat value. */
+  flatHP?: number;
   bonusArmor?: number;
   bonusHP?: number;
   armor?: string;
@@ -130,4 +133,117 @@ export interface Statblock {
   legendaryResistances?: number;
   /** Action keys that become available at this CR and above. Used in per-CR stat entries, not on resolved statblocks. */
   crActions?: string[];
+}
+
+// ---------------------------------------------------------------------------
+// Tasha's summon spirits (Summon Beast, Summon Fey, etc.)
+// ---------------------------------------------------------------------------
+
+/**
+ * A single option (subtype) within a summon spell — e.g. Air/Land/Water for a
+ * Bestial Spirit, or Demon/Devil/Yugoloth for a Fiendish Spirit. Each option
+ * overrides parts of the base spirit stat block and enables a specific set of
+ * attacks and traits.
+ */
+export interface SummonOption {
+  /** Display name of the option (e.g. `'Air'`, `'Demon'`). */
+  name: string;
+  /**
+   * Overrides the base hit points for this option. The per-level HP increment
+   * (`SummonSpirit.hitPointsPerLevel`) still applies on top of this value.
+   */
+  hitPoints?: number;
+  /** Extra flat bonus added to the spirit's armor class for this option (e.g. Defender celestial gets +2). */
+  bonusArmor?: number;
+  /** Walking speed in feet, if this option changes it from the base. */
+  speed?: number;
+  /** Swim speed in feet. */
+  swim?: number;
+  /** Climb speed in feet. */
+  climb?: number;
+  /** Burrow speed in feet. */
+  burrow?: number;
+  /** Fly speed in feet. */
+  fly?: number;
+  /** Keys (into `SummonSpirit.attacks`) of the attacks this option can make. */
+  attacks: string[];
+  /** Keys (into `SummonSpirit.traits`) of the traits this option gains, on top of the base traits. */
+  traits?: string[];
+  /** Additional damage resistances granted by this option. */
+  resistances?: string[];
+  /** Additional damage immunities granted by this option. */
+  immunities?: string[];
+  /** Additional condition immunities granted by this option. */
+  conditionImmunities?: string[];
+}
+
+/**
+ * A Tasha's-style summon spell whose statblock scales with the spell slot used
+ * and the caster's spell attack modifier / spell save DC, rather than by CR.
+ *
+ * The `summonSpirit` function in `@toolkit5e/monster-scaler` consumes this to
+ * produce a fully resolved `Statblock`.
+ */
+export interface SummonSpirit {
+  /** Display name of the spirit stat block (e.g. `'Bestial Spirit'`). */
+  name: string;
+  /** Display name of the summoning spell (e.g. `'Summon Beast'`). */
+  spellName: string;
+  /** Minimum spell level the spell can be cast at (its base slot level). */
+  minLevel: number;
+  /** Creature type (from `creatureTypes`). */
+  type: string;
+  /** Creature size (from the size constants). */
+  size: number;
+  /** Base armor class before adding the spell level (AC = `baseArmor` + spell level + option `bonusArmor`). */
+  baseArmor: number;
+  /** Base hit points at the minimum spell level, before per-level increments or option overrides. */
+  hitPoints: number;
+  /** Hit points added for each spell level above `minLevel`. */
+  hitPointsPerLevel: number;
+  /** Base walking speed in feet. */
+  speed?: number;
+  /** Base swim speed in feet. */
+  swim?: number;
+  /** Base climb speed in feet. */
+  climb?: number;
+  /** Base burrow speed in feet. */
+  burrow?: number;
+  /** Base fly speed in feet. */
+  fly?: number;
+  /** Darkvision range in feet. */
+  darkvision?: number;
+  /** Ability scores. All summons use fixed ability scores regardless of spell level. */
+  str: number;
+  dex: number;
+  con: number;
+  int: number;
+  wis: number;
+  cha: number;
+  /** Damage resistances shared by all options. */
+  resistances?: string[];
+  /** Damage immunities shared by all options. */
+  immunities?: string[];
+  /** Condition immunities shared by all options. */
+  conditionImmunities?: string[];
+  /** Languages line. */
+  languages?: string[];
+  /** Traits shared by all options, keyed by trait id. Values are trait definition keys or inline partial traits. */
+  traits?: Record<string, Partial<Trait>>;
+  /** Every attack the spirit can make, keyed by id. Options reference these by key. */
+  attacks: Record<string, Partial<Attack> & {
+    /** Flat damage bonus added on top of `+ the spell's level` (e.g. Maul is `+4 + level`, so `damageBonusBase: 4`). */
+    damageBonusBase: number;
+  }>;
+  /** Actions shared by all options (e.g. Healing Touch, Dreadful Scream), keyed by id. */
+  actions?: Record<string, Partial<Trait>>;
+  /** Bonus actions shared by all options, keyed by id. */
+  bonusActions?: Record<string, Partial<Trait>>;
+  /** The options (subtypes) a caster chooses between. Keyed by option id. */
+  options: Record<string, SummonOption>;
+  /**
+   * How the multiattack count scales. `'halfLevel'` = floor(spell level / 2)
+   * attacks (the standard Tasha's rule). If omitted, the spirit makes a single attack.
+   */
+  multiattack?: 'halfLevel';
 }

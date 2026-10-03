@@ -1,9 +1,9 @@
 import {
   sizeTiny, sizeSmall, sizeMedium, sizeLarge, sizeHuge, sizeGargantuan,
   damageTypes, conditions, languages, skillRanks, raceKeys, armorMaterials, armorClasses,
-  alignmentMasks, genders,
+  alignmentMasks, genders, creatureTypes, reachMediumShort,
 } from './constants.js';
-import type { ChallengeRating, Trait } from './types.js';
+import type { ChallengeRating, Trait, SummonSpirit } from './types.js';
 
 export interface SizeData {
   name: string;
@@ -674,3 +674,298 @@ export const races: RaceData[] = [
     ],
   },
 ];
+
+// ---------------------------------------------------------------------------
+// Tasha's summon spirits
+// ---------------------------------------------------------------------------
+
+/**
+ * The Tasha's Cauldron of Everything summon spells, keyed by a short id.
+ *
+ * These statblocks scale with the spell slot level and the caster's spell
+ * attack modifier / spell save DC rather than by CR. The `summonSpirit`
+ * function in `@toolkit5e/monster-scaler` resolves one of these into a
+ * `Statblock` for a given spell level and caster.
+ *
+ * Melee/ranged attack damage is expressed as dice + `damageBonusBase`; the
+ * spell's level is added to the flat bonus at resolution time (e.g. a Maul that
+ * deals `1d8 + 4 + the spell's level` has `damageDice: 1, damageDieSize: 8,
+ * damageBonusBase: 4`).
+ */
+export const summons: Record<string, SummonSpirit> = {
+  aberration: {
+    name: 'Aberrant Spirit',
+    spellName: 'Summon Aberration',
+    minLevel: 4,
+    type: creatureTypes.aberration,
+    size: sizeMedium,
+    baseArmor: 11,
+    hitPoints: 40,
+    hitPointsPerLevel: 10,
+    speed: 30,
+    darkvision: 60,
+    str: 16, dex: 10, con: 15, int: 16, wis: 10, cha: 6,
+    immunities: [damageTypes.psychic],
+    languages: [languages.deepSpeech, languages.understandsCaster],
+    multiattack: 'halfLevel',
+    traits: {
+      regeneration: { name: 'Regeneration', description: 'The aberration regains 5 hit points at the start of its turn if it has at least 1 hit point.' },
+      whisperingAura: { name: 'Whispering Aura', description: "At the start of each of the aberration's turns, each creature within 5 feet of it must succeed on a DC {{trait:DC}} Wisdom saving throw or take 2d6 psychic damage, provided the aberration isn't incapacitated.", allowsSave: true, dcStat: 'summon' },
+    },
+    attacks: {
+      claws: { name: 'Claws', reach: reachMediumShort, damageType: damageTypes.slashing, damageDice: 1, damageDieSize: 10, damageBonusBase: 3, text: "If the target is a creature, it can't regain hit points until the start of the aberration's next turn." },
+      eyeRay: { name: 'Eye Ray', ranged: true, spellAttack: true, range: 150, damageType: damageTypes.psychic, damageDice: 1, damageDieSize: 8, damageBonusBase: 3 },
+      psychicSlam: { name: 'Psychic Slam', reach: reachMediumShort, spellAttack: true, damageType: damageTypes.psychic, damageDice: 1, damageDieSize: 8, damageBonusBase: 3 },
+    },
+    options: {
+      beholderkin: { name: 'Beholderkin', fly: 30, attacks: ['eyeRay'] },
+      slaad: { name: 'Slaad', attacks: ['claws'], traits: ['regeneration'] },
+      starSpawn: { name: 'Star Spawn', attacks: ['psychicSlam'], traits: ['whisperingAura'] },
+    },
+  },
+  beast: {
+    name: 'Bestial Spirit',
+    spellName: 'Summon Beast',
+    minLevel: 2,
+    type: creatureTypes.beast,
+    size: sizeSmall,
+    baseArmor: 11,
+    hitPoints: 30,
+    hitPointsPerLevel: 5,
+    speed: 30,
+    darkvision: 60,
+    str: 18, dex: 11, con: 16, int: 4, wis: 14, cha: 5,
+    languages: [languages.understandsCaster],
+    multiattack: 'halfLevel',
+    traits: {
+      flyby: { name: 'Flyby', description: "The beast doesn't provoke opportunity attacks when it flies out of an enemy's reach." },
+      packTactics: { name: 'Pack Tactics', description: "The beast has advantage on an attack roll against a creature if at least one of the beast's allies is within 5 feet of the creature and the ally isn't incapacitated." },
+      waterBreathing: { name: 'Water Breathing', description: 'The beast can breathe only underwater.' },
+    },
+    attacks: {
+      maul: { name: 'Maul', reach: reachMediumShort, damageType: damageTypes.piercing, damageDice: 1, damageDieSize: 8, damageBonusBase: 4 },
+    },
+    options: {
+      air: { name: 'Air', hitPoints: 20, speed: 10, fly: 60, attacks: ['maul'], traits: ['flyby'] },
+      land: { name: 'Land', hitPoints: 30, speed: 30, climb: 30, attacks: ['maul'], traits: ['packTactics'] },
+      water: { name: 'Water', hitPoints: 30, speed: 30, swim: 30, attacks: ['maul'], traits: ['packTactics', 'waterBreathing'] },
+    },
+  },
+  celestial: {
+    name: 'Celestial Spirit',
+    spellName: 'Summon Celestial',
+    minLevel: 5,
+    type: creatureTypes.celestial,
+    size: sizeLarge,
+    baseArmor: 11,
+    hitPoints: 40,
+    hitPointsPerLevel: 10,
+    speed: 30,
+    fly: 40,
+    darkvision: 60,
+    str: 16, dex: 14, con: 16, int: 10, wis: 14, cha: 16,
+    resistances: [damageTypes.radiant],
+    conditionImmunities: [conditions.charmed, conditions.frightened],
+    languages: [languages.celestial, languages.understandsCaster],
+    multiattack: 'halfLevel',
+    attacks: {
+      radiantBow: { name: 'Radiant Bow', ranged: true, range: 150, longRange: 600, damageType: damageTypes.radiant, damageDice: 2, damageDieSize: 6, damageBonusBase: 2 },
+      radiantMace: { name: 'Radiant Mace', reach: reachMediumShort, damageType: damageTypes.radiant, damageDice: 1, damageDieSize: 10, damageBonusBase: 3, text: 'The celestial can choose itself or another creature it can see within 10 feet of the target. The chosen creature gains 1d10 temporary hit points.' },
+    },
+    actions: {
+      healingTouch: { name: 'Healing Touch (1/Day)', description: "The celestial touches another creature. The target magically regains hit points equal to 2d8 + the spell's level." },
+    },
+    options: {
+      avenger: { name: 'Avenger', attacks: ['radiantBow'] },
+      defender: { name: 'Defender', bonusArmor: 2, attacks: ['radiantMace'] },
+    },
+  },
+  construct: {
+    name: 'Construct Spirit',
+    spellName: 'Summon Construct',
+    minLevel: 4,
+    type: creatureTypes.construct,
+    size: sizeMedium,
+    baseArmor: 13,
+    hitPoints: 40,
+    hitPointsPerLevel: 15,
+    speed: 30,
+    darkvision: 60,
+    str: 18, dex: 10, con: 18, int: 14, wis: 11, cha: 5,
+    resistances: [damageTypes.poison],
+    conditionImmunities: [conditions.charmed, conditions.exhaustion, conditions.frightened, conditions.incapacitated, conditions.paralyzed, conditions.petrified, conditions.poisoned],
+    languages: [languages.understandsCaster],
+    multiattack: 'halfLevel',
+    traits: {
+      heatedBody: { name: 'Heated Body', description: 'A creature that touches the construct or hits it with a melee attack while within 5 feet of it takes 1d10 fire damage.' },
+      stonyLethargy: { name: 'Stony Lethargy', description: "When a creature the construct can see starts its turn within 10 feet of it, the construct can force it to make a DC {{trait:DC}} Wisdom saving throw. On a failed save, the target can't use reactions and its speed is halved until the start of its next turn.", allowsSave: true, dcStat: 'summon' },
+    },
+    attacks: {
+      slam: { name: 'Slam', reach: reachMediumShort, damageType: damageTypes.bludgeoning, damageDice: 1, damageDieSize: 8, damageBonusBase: 4 },
+    },
+    actions: {
+      berserkLashing: { name: 'Berserk Lashing', description: 'When the construct takes damage, it makes a slam attack against a random creature within 5 feet of it. If no creature is within reach, the construct moves up to half its speed toward an enemy it can see, without provoking opportunity attacks.' },
+    },
+    options: {
+      clay: { name: 'Clay', attacks: ['slam'] },
+      metal: { name: 'Metal', attacks: ['slam'], traits: ['heatedBody'] },
+      stone: { name: 'Stone', attacks: ['slam'], traits: ['stonyLethargy'] },
+    },
+  },
+  elemental: {
+    name: 'Elemental Spirit',
+    spellName: 'Summon Elemental',
+    minLevel: 4,
+    type: creatureTypes.elemental,
+    size: sizeMedium,
+    baseArmor: 11,
+    hitPoints: 50,
+    hitPointsPerLevel: 10,
+    speed: 40,
+    darkvision: 60,
+    str: 18, dex: 15, con: 17, int: 4, wis: 10, cha: 16,
+    immunities: [damageTypes.poison],
+    conditionImmunities: [conditions.exhaustion, conditions.frightened, conditions.paralyzed, conditions.petrified, conditions.poisoned, conditions.unconscious],
+    languages: [languages.primordial, languages.understandsCaster],
+    multiattack: 'halfLevel',
+    traits: {
+      amorphousForm: { name: 'Amorphous Form', description: 'The elemental can move through a space as narrow as 1 inch wide without squeezing.' },
+    },
+    attacks: {
+      slam: { name: 'Slam', reach: reachMediumShort, damageType: damageTypes.bludgeoning, damageDice: 1, damageDieSize: 10, damageBonusBase: 4 },
+      slamFire: { name: 'Slam', reach: reachMediumShort, damageType: damageTypes.fire, damageDice: 1, damageDieSize: 10, damageBonusBase: 4 },
+    },
+    options: {
+      air: { name: 'Air', fly: 40, attacks: ['slam'], traits: ['amorphousForm'], resistances: [damageTypes.lightning, damageTypes.thunder] },
+      earth: { name: 'Earth', burrow: 40, attacks: ['slam'], resistances: [damageTypes.mundanePiercingSlashing] },
+      fire: { name: 'Fire', attacks: ['slamFire'], traits: ['amorphousForm'], immunities: [damageTypes.fire] },
+      water: { name: 'Water', swim: 40, attacks: ['slam'], traits: ['amorphousForm'], resistances: [damageTypes.acid] },
+    },
+  },
+  fey: {
+    name: 'Fey Spirit',
+    spellName: 'Summon Fey',
+    minLevel: 3,
+    type: creatureTypes.fey,
+    size: sizeSmall,
+    baseArmor: 12,
+    hitPoints: 30,
+    hitPointsPerLevel: 10,
+    speed: 40,
+    darkvision: 60,
+    str: 13, dex: 16, con: 14, int: 14, wis: 11, cha: 16,
+    conditionImmunities: [conditions.charmed],
+    languages: [languages.sylvan, languages.understandsCaster],
+    multiattack: 'halfLevel',
+    attacks: {
+      shortsword: { name: 'Shortsword', reach: reachMediumShort, damageType: damageTypes.piercing, damageDice: 1, damageDieSize: 6, damageBonusBase: 3, damageRiderDice: 1, damageRiderDieSize: 6, damageRiderType: damageTypes.force },
+    },
+    bonusActions: {
+      feyStep: { name: 'Fey Step', description: 'The fey magically teleports up to 30 feet to an unoccupied space it can see. Then one of the following effects occurs, based on the chosen mood. Fuming: the fey has advantage on the next attack roll it makes before the end of this turn. Mirthful: the fey can force one creature it can see within 10 feet of it to make a DC {{trait:DC}} Wisdom saving throw; unless the save succeeds, the target is charmed for 1 minute or until it takes any damage. Tricksy: the fey fills a 5-foot cube within 5 feet of it with magical darkness, which lasts until the end of its next turn.', allowsSave: true, dcStat: 'summon' },
+    },
+    options: {
+      fuming: { name: 'Fuming', attacks: ['shortsword'] },
+      mirthful: { name: 'Mirthful', attacks: ['shortsword'] },
+      tricksy: { name: 'Tricksy', attacks: ['shortsword'] },
+    },
+  },
+  fiend: {
+    name: 'Fiendish Spirit',
+    spellName: 'Summon Fiend',
+    minLevel: 6,
+    type: creatureTypes.fiend,
+    size: sizeLarge,
+    baseArmor: 12,
+    hitPoints: 50,
+    hitPointsPerLevel: 15,
+    speed: 40,
+    darkvision: 60,
+    str: 13, dex: 16, con: 15, int: 10, wis: 10, cha: 16,
+    resistances: [damageTypes.fire],
+    immunities: [damageTypes.poison],
+    conditionImmunities: [conditions.poisoned],
+    languages: [languages.abyssal, languages.infernal],
+    multiattack: 'halfLevel',
+    traits: {
+      deathThroes: { name: 'Death Throes', description: 'When the fiend drops to 0 hit points or the spell ends, it explodes, and each creature within 10 feet of it must make a DC {{trait:DC}} Dexterity saving throw. A creature takes 2d10 + the spell\u2019s level fire damage on a failed save, or half as much on a success.', allowsSave: true, dcStat: 'summon' },
+      devilsSight: { name: "Devil's Sight", description: "Magical darkness doesn't impede the fiend's darkvision." },
+      magicResistance: { name: 'Magic Resistance', description: 'The fiend has advantage on saving throws against spells and other magical effects.' },
+    },
+    attacks: {
+      bite: { name: 'Bite', reach: reachMediumShort, damageType: damageTypes.necrotic, damageDice: 1, damageDieSize: 12, damageBonusBase: 3 },
+      claws: { name: 'Claws', reach: reachMediumShort, damageType: damageTypes.slashing, damageDice: 1, damageDieSize: 8, damageBonusBase: 3, text: 'Immediately after the attack hits or misses, the fiend can magically teleport up to 30 feet to an unoccupied space it can see.' },
+      hurlFlame: { name: 'Hurl Flame', ranged: true, spellAttack: true, range: 150, damageType: damageTypes.fire, damageDice: 2, damageDieSize: 6, damageBonusBase: 3, text: "If the target is a flammable object that isn't being worn or carried, it also catches fire." },
+    },
+    options: {
+      demon: { name: 'Demon', hitPoints: 50, climb: 40, attacks: ['bite'], traits: ['deathThroes', 'magicResistance'] },
+      devil: { name: 'Devil', hitPoints: 40, fly: 60, attacks: ['hurlFlame'], traits: ['devilsSight', 'magicResistance'] },
+      yugoloth: { name: 'Yugoloth', hitPoints: 60, attacks: ['claws'], traits: ['magicResistance'] },
+    },
+  },
+  shadowspawn: {
+    name: 'Shadow Spirit',
+    spellName: 'Summon Shadowspawn',
+    minLevel: 3,
+    type: creatureTypes.monstrosity,
+    size: sizeMedium,
+    baseArmor: 11,
+    hitPoints: 35,
+    hitPointsPerLevel: 15,
+    speed: 40,
+    darkvision: 120,
+    str: 13, dex: 16, con: 15, int: 4, wis: 10, cha: 16,
+    resistances: [damageTypes.necrotic],
+    conditionImmunities: [conditions.frightened],
+    languages: [languages.understandsCaster],
+    multiattack: 'halfLevel',
+    traits: {
+      terrorFrenzy: { name: 'Terror Frenzy', description: 'The spirit has advantage on attack rolls against frightened creatures.' },
+      weightOfSorrow: { name: 'Weight of Sorrow', description: 'Any creature, other than you, that starts its turn within 5 feet of the spirit has its speed reduced by 20 feet until the start of that creature\u2019s next turn.' },
+    },
+    attacks: {
+      chillingHand: { name: 'Chilling Hand', reach: reachMediumShort, damageType: damageTypes.cold, damageDice: 1, damageDieSize: 12, damageBonusBase: 3 },
+    },
+    actions: {
+      dreadfulScream: { name: 'Dreadful Scream (1/Day)', description: 'The spirit screams. Each creature within 30 feet of it must succeed on a DC {{trait:DC}} Wisdom saving throw or be frightened of the spirit for 1 minute. A frightened creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.', allowsSave: true, dcStat: 'summon' },
+    },
+    bonusActions: {
+      shadowStealth: { name: 'Shadow Stealth', description: 'While in dim light or darkness, the spirit takes the Hide action.' },
+    },
+    options: {
+      fury: { name: 'Fury', attacks: ['chillingHand'], traits: ['terrorFrenzy'] },
+      despair: { name: 'Despair', attacks: ['chillingHand'], traits: ['weightOfSorrow'] },
+      fear: { name: 'Fear', attacks: ['chillingHand'] },
+    },
+  },
+  undead: {
+    name: 'Undead Spirit',
+    spellName: 'Summon Undead',
+    minLevel: 3,
+    type: creatureTypes.undead,
+    size: sizeMedium,
+    baseArmor: 11,
+    hitPoints: 30,
+    hitPointsPerLevel: 10,
+    speed: 30,
+    darkvision: 60,
+    str: 12, dex: 16, con: 15, int: 4, wis: 10, cha: 9,
+    immunities: [damageTypes.necrotic, damageTypes.poison],
+    conditionImmunities: [conditions.exhaustion, conditions.frightened, conditions.paralyzed, conditions.poisoned],
+    languages: [languages.understandsCaster],
+    multiattack: 'halfLevel',
+    traits: {
+      festeringAura: { name: 'Festering Aura', description: 'Any creature, other than you, that starts its turn within 5 feet of the spirit must succeed on a DC {{trait:DC}} Constitution saving throw or be poisoned until the start of its next turn.', allowsSave: true, dcStat: 'summon' },
+      incorporealPassage: { name: 'Incorporeal Passage', description: 'The spirit can move through other creatures and objects as if they were difficult terrain. If it ends its turn inside an object, it is shunted to the nearest unoccupied space and takes 1d10 force damage for every 5 feet traveled.' },
+    },
+    attacks: {
+      deathlyTouch: { name: 'Deathly Touch', reach: reachMediumShort, damageType: damageTypes.necrotic, damageDice: 1, damageDieSize: 8, damageBonusBase: 3, text: 'The creature must succeed on a DC {{trait:DC}} Wisdom saving throw or be frightened of the undead until the end of the target\u2019s next turn.' },
+      graveBolt: { name: 'Grave Bolt', ranged: true, spellAttack: true, range: 150, damageType: damageTypes.necrotic, damageDice: 2, damageDieSize: 4, damageBonusBase: 3 },
+      rottingClaw: { name: 'Rotting Claw', reach: reachMediumShort, damageType: damageTypes.slashing, damageDice: 1, damageDieSize: 6, damageBonusBase: 3, text: 'If the target is poisoned, it must succeed on a DC {{trait:DC}} Constitution saving throw or be paralyzed until the end of its next turn.' },
+    },
+    options: {
+      ghostly: { name: 'Ghostly', hitPoints: 30, fly: 40, attacks: ['deathlyTouch'], traits: ['incorporealPassage'] },
+      putrid: { name: 'Putrid', hitPoints: 30, attacks: ['rottingClaw'], traits: ['festeringAura'] },
+      skeletal: { name: 'Skeletal', hitPoints: 20, attacks: ['graveBolt'] },
+    },
+  },
+};

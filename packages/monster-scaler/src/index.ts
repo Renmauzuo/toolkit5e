@@ -10,6 +10,9 @@ import { monsterList } from './monsters.js';
 export type { MonsterTemplate, MonsterVariant, ScaleMonsterOptions };
 export { monsterList };
 
+export { summonSpirit, summons } from './summons.js';
+export type { SummonID, SummonSpiritOptions } from './summons.js';
+
 // ---------------------------------------------------------------------------
 // Scaling helpers
 // ---------------------------------------------------------------------------
