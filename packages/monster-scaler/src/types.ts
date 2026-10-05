@@ -6,6 +6,12 @@ export interface MonsterVariant {
   stats?: Record<number, Partial<Statblock>>;
   lockedStats?: Partial<Statblock>;
   traits?: string[];
+  /**
+   * Content source id (see `sources` in `@toolkit5e/base`). Overrides the parent
+   * template's source for this variant. Omit to inherit the template's source
+   * (or the default source if the template has none).
+   */
+  source?: string;
 }
 
 export interface MonsterTemplate {
@@ -15,6 +21,12 @@ export interface MonsterTemplate {
   alignment: string;
   race?: string;
   gender?: number;
+  /**
+   * Content source id (see `sources` in `@toolkit5e/base`). Omit to treat this
+   * template as the default source (SRD). Individual variants may override this
+   * via their own `source` field.
+   */
+  source?: string;
   variants?: Record<string, MonsterVariant>;
   lockedStats: Partial<Statblock> & {
     attacks?: Record<string, Partial<Attack>>;

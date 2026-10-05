@@ -2,6 +2,7 @@ import {
   averageStats, traits, procs, actions, sizes, abilities, races, spells,
   abilityScoreModifier, mergeObjects, flattenObject, averageRoll, stepForCR,
   creatureTypes, raceKeys, senses, damageTypes, toSentenceCase,
+  resolveSourceId,
 } from '@toolkit5e/base';
 import type { Statblock, Trait, Attack, ChallengeRating } from '@toolkit5e/base';
 import type { MonsterTemplate, MonsterVariant, ScaleMonsterOptions, Benchmarks } from './types.js';
@@ -329,6 +330,22 @@ export function generateTrait(
 // ---------------------------------------------------------------------------
 
 export type MonsterID = keyof typeof monsterList;
+
+/**
+ * Resolves the content source id for a creature, honoring a variant's source
+ * override when a variant is specified. Falls back to the template source, then
+ * to the default source (SRD) when neither is set.
+ * @param monster A monster ID string (keyof monsterList) or a MonsterTemplate object
+ * @param variant Optional variant key — if the variant declares its own `source`, it wins
+ * @returns The resolved source id (e.g. `'srd'`, `'toolkit5e'`)
+ */
+export function resolveCreatureSource(monster: MonsterID | MonsterTemplate, variant?: string): string {
+  const template: MonsterTemplate = typeof monster === 'string' ? monsterList[monster] : monster;
+  if (!template) return resolveSourceId(undefined);
+  const variantData = variant ? template.variants?.[variant] : undefined;
+  if (variantData?.source) return variantData.source;
+  return resolveSourceId(template);
+}
 
 // ---------------------------------------------------------------------------
 // Legendary modifier

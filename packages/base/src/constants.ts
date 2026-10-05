@@ -170,3 +170,68 @@ export const armorClasses = {
   medium: 2,
   heavy: 3,
 } as const;
+
+// ---------------------------------------------------------------------------
+// Content sources
+// ---------------------------------------------------------------------------
+
+/**
+ * Stable source ids. Content references a source by one of these keys via its
+ * optional `source` field. Content with no `source` is treated as {@link defaultSourceId}.
+ */
+export const sourceKeys = {
+  /**
+   * Source-agnostic / "common" content that isn't tied to any ruleset — structural
+   * scaffolding like geography and settlements. Always generates (never filtered),
+   * so a campaign restricted to a single ruleset still gets a populated world.
+   */
+  common: 'common',
+  srd: 'srd',
+  srd52: 'srd52',
+  toolkit5e: 'toolkit5e',
+} as const;
+
+/**
+ * The source assumed when *statblock-style* content (creatures, etc.) declares no
+ * `source`. Most such content comes from the SRD, so treating "no source" as SRD
+ * keeps the common case annotation-free — only non-SRD content needs an explicit tag.
+ *
+ * Note this default suits ruleset content specifically. Apps whose untagged content
+ * is mostly non-rules scaffolding (e.g. the world generator's geography/settlements)
+ * should default those to {@link sourceKeys.common} instead — see `resolveSourceId`'s
+ * optional `fallback` parameter.
+ */
+export const defaultSourceId = sourceKeys.srd;
+
+/** Registry of known content sources, keyed by {@link sourceKeys}. */
+export const sources = {
+  [sourceKeys.common]: {
+    id: sourceKeys.common,
+    name: 'Common',
+    homebrew: false,
+    filterPolicy: 'always',
+  },
+  [sourceKeys.srd]: {
+    id: sourceKeys.srd,
+    name: 'SRD 5.1',
+    publisher: 'Wizards of the Coast',
+    url: 'https://dnd.wizards.com/resources/systems-reference-document',
+    homebrew: false,
+    filterPolicy: 'default',
+  },
+  [sourceKeys.srd52]: {
+    id: sourceKeys.srd52,
+    name: 'SRD 5.2',
+    publisher: 'Wizards of the Coast',
+    url: 'https://dnd.wizards.com/resources/systems-reference-document',
+    homebrew: false,
+    filterPolicy: 'default',
+  },
+  [sourceKeys.toolkit5e]: {
+    id: sourceKeys.toolkit5e,
+    name: 'toolkit5e Original',
+    publisher: 'toolkit5e',
+    homebrew: false,
+    filterPolicy: 'default',
+  },
+} as const;

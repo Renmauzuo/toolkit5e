@@ -1,3 +1,31 @@
+import { defaultSourceId, sources } from './constants.js';
+import type { Source } from './types.js';
+
+/**
+ * Resolves the source id for a piece of content. Content with no `source`
+ * falls back to `fallback` (default {@link defaultSourceId}, i.e. SRD).
+ * @param content - Any object that may carry an optional `source` id string
+ * @param fallback - The id to use when `content.source` is unset. Apps whose
+ *   untagged content is non-rules scaffolding may pass `sourceKeys.common`.
+ * @returns The resolved source id
+ */
+export function resolveSourceId(content: { source?: string } | null | undefined, fallback: string = defaultSourceId): string {
+  return content?.source ?? fallback;
+}
+
+/**
+ * Resolves the full {@link Source} record for a piece of content, falling back
+ * to `fallback` (default {@link defaultSourceId}) when unset or unknown.
+ * @param content - Any object that may carry an optional `source` id string
+ * @param fallback - The id to use when `content.source` is unset
+ * @returns The resolved `Source` record, or `undefined` if neither the content's
+ *   source nor the fallback is present in the registry
+ */
+export function resolveSource(content: { source?: string } | null | undefined, fallback: string = defaultSourceId): Source | undefined {
+  const id = resolveSourceId(content, fallback);
+  return (sources as Record<string, Source>)[id] ?? (sources as Record<string, Source>)[fallback];
+}
+
 /**
  * Calculates the ability score modifier for a given score.
  */

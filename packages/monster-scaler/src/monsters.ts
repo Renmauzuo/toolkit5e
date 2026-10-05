@@ -2,6 +2,7 @@ import {
     sizeTiny, sizeSmall, sizeMedium, sizeLarge, sizeHuge, sizeGargantuan,
     reachShort, reachMediumShort, reachMedium, reachVeryLong,
     creatureTypes, alignments, damageTypes, conditions, languages, skillRanks, raceKeys, armorMaterials, genders,
+    sourceKeys,
 } from '@toolkit5e/base';
 import type { MonsterTemplate } from './types.js';
 
@@ -1264,6 +1265,7 @@ export const monsterList: Record<string, MonsterTemplate> = {
             },
             squid: {
                 name: 'Squid',
+                source: sourceKeys.toolkit5e,
                 lockedStats: { slug: 'squid' },
                 stats: {
                     0: { name: 'Squid', swim: 40 },

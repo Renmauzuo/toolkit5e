@@ -45,16 +45,30 @@ The root `package.json` is `"private": true` to prevent accidentally publishing 
 
 ### @toolkit5e/base
 
-- `types.ts` — Core interfaces: `Statblock`, `Trait`, `Attack`, `Multiattack`, `ChallengeRating`, `AbilityKey`, `SkillRank`
-- `constants.ts` — String constants use `as const` for literal types (creature types, damage types, conditions, alignments, languages, raceKeys, etc.). Numeric constants do not need `as const` as TypeScript infers literal types for them already.
+- `types.ts` — Core interfaces: `Statblock`, `Trait`, `Attack`, `Multiattack`, `ChallengeRating`, `AbilityKey`, `SkillRank`, `Source`
+- `constants.ts` — String constants use `as const` for literal types (creature types, damage types, conditions, alignments, languages, raceKeys, etc.). Numeric constants do not need `as const` as TypeScript infers literal types for them already. Also `sourceKeys`, `sources` (the content-source registry), and `defaultSourceId`.
 - `data.ts` — Reference data: `sizes`, `abilities`, `skills`, `averageStats`, `traits`, `procs`, `actions`, `armorTypes`, `spells`, `fullCasterSlots`, `pronouns`, `races` (12 species: 9 from SRD 5.1 + goliath and orc from 5.2, with half-elf and half-orc kept as legacy). `RaceData` supports optional `lineages` array (`LineageData[]`) for racial lineages. Lineages work like monster variants — `bonusStats`, `traits`, and `stats` from the lineage are merged on top of the base race. Current lineages: dragonborn (10 dragon colors with breath type and damage resistance), elf (drow/high/wood), gnome (forest/rock), goliath (6 giant ancestries), tiefling (abyssal/chthonic/infernal). Race data updated to SRD 5.2 mechanics (speed, darkvision, base traits).
-- `utils.ts` — Pure utility functions: `abilityScoreModifier`, `averageRoll`, `damageString`, `stringForCR`, `stepForCR`, `toSentenceCase`, `toTitleCase`, `getOrdinal`, `flattenObject`, `mergeObjects`, `mergeArrays`
+- `utils.ts` — Pure utility functions: `abilityScoreModifier`, `averageRoll`, `damageString`, `stringForCR`, `stepForCR`, `toSentenceCase`, `toTitleCase`, `getOrdinal`, `flattenObject`, `mergeObjects`, `mergeArrays`, `resolveSourceId`, `resolveSource`
+
+#### Content Sources
+
+Content (creatures, world-generator types, etc.) can declare an optional `source` id string pointing at an entry in the `sources` registry. The vocabulary lives in `constants.ts`:
+- `sourceKeys` — stable ids: `srd` (SRD 5.1), `srd52` (SRD 5.2), `toolkit5e` (toolkit5e Original).
+- `sources` — the registry of `Source` records (`id`, `name`, optional `publisher`/`url`/`homebrew`, optional `filterPolicy`), keyed by `sourceKeys`. Current keys: `common`, `srd`, `srd52`, `toolkit5e`.
+- `Source.filterPolicy` — `'default' | 'always' | 'setting'` (defaults to `'default'` when unset). Governs *filtering* behavior independent of attribution, for consuming apps: `'default'` = user-toggleable, on by default; `'always'` = never filtered, always included; `'setting'` = opt-in only, off by default (for campaign-setting content). `srd`/`srd52`/`toolkit5e` are `'default'`; `common` is `'always'`.
+- `sourceKeys.common` — source-agnostic content not tied to any ruleset (`filterPolicy: 'always'`). For structural scaffolding that should always generate regardless of which ruleset the user picked (used by the world generator for geography/settlements).
+- `defaultSourceId` — `'srd'`. This is the fallback for **statblock-style ruleset content** (creatures) that declares no `source` — most such content is SRD, so only non-SRD creatures need tagging. It is *not* a universal default: apps whose untagged content is non-rules scaffolding should pass their own fallback (e.g. `sourceKeys.common`).
+- `resolveSourceId(content, fallback?)` / `resolveSource(content, fallback?)` — resolve the id / full record for any object with an optional `source` field. `fallback` (default `defaultSourceId`) is used when `content.source` is unset — pass `sourceKeys.common` for scaffolding content.
+
+Add new sources by extending `sourceKeys` and `sources` together. Consuming apps (e.g. the world generator) read the registry to let users filter content by source.
 
 ### @toolkit5e/monster-scaler
 
 - `monsters.ts` — `monsterList`: the full dataset of scalable monster templates
-- `index.ts` — `scaleMonster(template, targetCR, options?)` plus exported helpers: `findBenchmarksForStat`, `extrapolateFromBenchmark`, `generateTrait`, `findNearestLowerBenchmark`, `hitPointsPerHitDie`, `scaleDamageRoll`, `findDamageDice`, `calculateWeightedAverage`
+- `index.ts` — `scaleMonster(template, targetCR, options?)` plus exported helpers: `findBenchmarksForStat`, `extrapolateFromBenchmark`, `generateTrait`, `findNearestLowerBenchmark`, `hitPointsPerHitDie`, `scaleDamageRoll`, `findDamageDice`, `calculateWeightedAverage`, `resolveCreatureSource`
 - `types.ts` — `MonsterTemplate`, `MonsterVariant`, `ScaleMonsterOptions`, `Benchmarks`
+  - `MonsterTemplate.source` / `MonsterVariant.source` — optional content-source id (see `sources` in `@toolkit5e/base`). A variant's `source` overrides the template's. Untagged = SRD (the default). Currently only the custom `squid` variant on `cephalopod` is tagged `toolkit5e` — nearly everything else is SRD.
+  - `resolveCreatureSource(monster, variant?)` — resolves a creature's source id, honoring a variant override, then the template source, then the default (SRD).
   - `ScaleMonsterOptions.legendary: 3 | 5` — upgrades the statblock with legendary resistances and auto-generated legendary actions after scaling
 
 ### @toolkit5e/statblock

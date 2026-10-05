@@ -247,3 +247,40 @@ export interface SummonSpirit {
    */
   multiattack?: 'halfLevel';
 }
+
+// ---------------------------------------------------------------------------
+// Content sources
+// ---------------------------------------------------------------------------
+
+/**
+ * Describes where a piece of content (a creature, race, world-generator type, etc.)
+ * originates. Sources let consuming apps group, filter, and attribute content —
+ * e.g. letting a user toggle homebrew sources on or off.
+ */
+export interface Source {
+  /** Stable id used to reference this source from content (e.g. `'srd'`, `'toolkit5e'`). */
+  id: string;
+  /** Human-readable display name (e.g. `'SRD 5.1'`, `'toolkit5e Original'`). */
+  name: string;
+  /** Optional publisher / author attribution. */
+  publisher?: string;
+  /** Optional link to the source material. */
+  url?: string;
+  /**
+   * When true, this source is unofficial / third-party / homebrew content.
+   * Apps may default these to off or surface them separately.
+   */
+  homebrew?: boolean;
+  /**
+   * How consuming apps should treat this source when filtering content for
+   * generation. Attribution (what the content *is*) is independent of this —
+   * this field only governs filtering behavior. Defaults to `'default'` when unset.
+   *
+   * - `'default'` — filterable; shown as a toggle, enabled by default, user can turn off.
+   * - `'always'` — exempt from filtering; always generates regardless of user toggles
+   *   (e.g. purely-flavor content that should appear in any setting).
+   * - `'setting'` — opt-in only; disabled by default and never generates unless
+   *   explicitly enabled (e.g. a specific campaign setting's unique content).
+   */
+  filterPolicy?: 'default' | 'always' | 'setting';
+}
